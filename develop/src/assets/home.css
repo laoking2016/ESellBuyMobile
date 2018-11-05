@@ -1,0 +1,31 @@
+.home-img{
+    height: 170px;
+  }
+
+.good-price{
+  position: absolute;
+  bottom: 10px;
+  color: white;
+  background-color: black;
+  opacity: 0.4;
+  height:30px;
+  line-height: 30px;
+  width: 60%;
+  text-align: center;
+  border-radius: 0px  15px 15px 0px;
+  font-size: 14px;
+}
+
+.good-deadline{
+  
+  position: absolute;
+  top: 0px;
+  color: white;
+  background-color: black;
+  opacity: 0.4;
+  height:20px;
+  line-height: 20px;
+  width: 80%;
+  text-align: center;
+  font-size: 10px;
+}

@@ -15,6 +15,7 @@ import Register from './pages/Register.vue'
 import ForgetPassword from './pages/ForgetPassword.vue'
 import SearchResult from './pages/SearchResult.vue'
 import AuctionList from './pages/AuctionList.vue'
+import WechatRegister from './pages/WechatRegister.vue'
 
 const routes = [
     {
@@ -76,6 +77,10 @@ const routes = [
     {
         path: '/forgetpassword',
         component: ForgetPassword
+    },
+    {
+        path: '/wechat/register',
+        component: WechatRegister
     }
 ];
 

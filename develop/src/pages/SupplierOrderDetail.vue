@@ -21,7 +21,7 @@
                     <div class="mui-pull-left" style="padding-left: 0px;height:42px;line-height:42px;">{{title}}</div>
                 </div>
                 <div class="mui-input-row">
-                    <label>成交价格</label>
+                    <label>{{status == '拍卖中' ? '当前' : '成交'}}价格</label>
                     <span class=""><label style="padding-left:0px;">{{price}}元</label></span>
                 </div>
                 <div class="mui-input-row">
@@ -119,7 +119,7 @@
                 if(good.data.order == null){
                     this.price = good.data.price;
                 }else{
-                    this.price = good.data.order.buyPrice;
+                    this.price = Math.round(good.data.finalPrice * 1.03);
                     this.count = good.data.order.buyCount;
                     this.date = formatDate(good.data.order.buyDate);
                     this.orderId = good.data.order.orderId;

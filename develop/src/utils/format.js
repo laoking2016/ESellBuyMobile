@@ -28,6 +28,44 @@ export function formatDate(ticks){
     return date.toLocaleDateString('zh-cn');
 }
 
+export function formatDate2(date){
+    var year = date.getFullYear();
+    var month = date.getMonth()+1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var minute = date.getMinutes();
+    return `${year}年${month}月${day}日${hour}时${minute}分`;
+}
+
+export function formateTime(ticks){
+    var date = new Date(ticks);
+    var year = date.getFullYear();
+    var month = date.getMonth()+1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var minute = date.getMinutes();
+    return `${year}年${month}月${day}日${hour}时${minute}分`;
+}
+
+export function formatDateDiff(date1, date2){
+    if(date1 >= date2){
+        return null;
+    }
+
+    var date3 = date2.getTime() - date1.getTime();
+    var days=Math.floor(date3/(24*3600*1000))
+ 
+    var leave1=date3%(24*3600*1000)    
+    var hours=Math.floor(leave1/(3600*1000))
+
+    var leave2=leave1%(3600*1000)        
+    var minutes=Math.floor(leave2/(60*1000))
+    
+    var leave3=leave2%(60*1000)      
+    var seconds=Math.round(leave3/1000)
+    return `${days}天${hours}小时${minutes}分`;
+}
+
 export function formatMessage(status){
     switch(status){
         case "待支付":

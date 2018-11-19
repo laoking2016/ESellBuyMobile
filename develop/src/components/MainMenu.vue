@@ -48,6 +48,7 @@
         },
         methods:{
             ...mapActions({
+                storeUserId: 'user/storeUserId',
                 storeToken: 'user/storeToken'
             })
         },
@@ -55,9 +56,20 @@
             $('#login-menu').on('tap', function(e){
                 e.preventDefault();
                 if(this.loginFlag){
+                    for ( var i in window.auths ) {
+                        var s = window.auths[i];
+                        if ( s.authResult ) {
+                            s.logout(function(e){
+                                mui.toast('您已登出');
+                            }.bind(this));
+                        }
+                    }
+                    this.storeUserId(null);
                     this.storeToken(null);
                     router.push('/login');
                 }else{
+                    this.storeUserId(null);
+                    this.storeToken(null);
                     router.push('/login');
                 }
                 

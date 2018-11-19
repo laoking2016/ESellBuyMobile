@@ -16,7 +16,7 @@
                     </div>
                     <div class="mui-row">
                         <div class="mui-col-sm-4 mui-col-xs-4 product-item" v-bind:data-id="good.id" style="padding-left:2px;padding-right:2px;" v-for="good in filterredGoods">
-                            <div class="good-deadline">还有1日3时23分</div>
+                            <div class="good-deadline">还有{{formatDateDiff(new Date(), new Date(good.deadline))}}</div>
                             <img style="width:100%;height:120px;" v-bind:data-id="good.id" v-bind:src="formatImage(good.image)">
                             <div class="good-price">￥{{good.quote}}</div>
                         </div>
@@ -31,14 +31,15 @@
     import mainMenu from '../components/MainMenu.vue'
     import fetch from '../utils/fetch.js'
     import router from '../router.js'
-    import { formatImage, formatFeaturedImage } from '../utils/format.js'
+    import { formatImage, formatFeaturedImage, formatDateDiff } from '../utils/format.js'
 
     export default {
         components: {
             mainMenu
         },
         methods: {
-            formatImage: formatImage
+            formatImage: formatImage,
+            formatDateDiff: formatDateDiff
         },
         computed: {
             filterredGoods: function(){
@@ -60,13 +61,13 @@
             fetch.get(`/user/v2/goods?type=拍卖`, null, function(data){
                 this.goods = data.data.map(function(item, index){
                     var image = formatFeaturedImage(item.images);
-
                     return {
                         id: item.goodId,
                         title: item.goodName,
                         image: image,
-                        quote: item.finalPrice,
-                        status: item.status
+                        quote: Math.round(item.finalPrice * 1.03),
+                        status: item.status,
+                        deadline: item.deadline
                     };
                 });
             }.bind(this));

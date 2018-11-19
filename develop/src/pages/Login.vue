@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="mui-content-padded oauth-area">
-                
+                <span class="mui-icon mui-icon-weixin"></span>
             </div>
         </div>
     </div>
@@ -49,18 +49,46 @@
 
                 fetch.post(`/user/v1/tokens?userName=${this.username}&passWord=${this.password}`, null, function(data){
                     if(data.code == 100){
+                        this.storeUserId(data.data.userId);
                         this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
                         this.error = null;
                         router.push(`/`);
                     }
                 }.bind(this), function(data){
-                    console.log(data);
                     this.error = data.message;
                 }.bind(this));
             }.bind(this));
 
             $('#register-btn').on('tap', function(e){
                 router.push("/register");
+            }.bind(this));
+
+            $('.mui-icon-weixin').on('tap', function(e){
+                if(window.auths == null){
+                    return;
+                }
+                var s = window.auths[0];
+                s.login(function(e){
+                    var result = e.target.authResult;
+                    fetch.get(`/user/v2/user/wechat/login?openId=${result.openid}&accessToken=${result.access_token}`, null, function(data){
+                        if(data.code == 100){
+                            this.storeUserId(data.data.userId);
+                            this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
+                            this.error = null;
+                            router.push(`/`);
+                        }
+                    }.bind(this), function(error){
+                        if(error.code == -1002){
+                            router.push('/wechat/register')
+                        }else if(error.code == -1001){
+                            this.error = data.message;
+                        }
+                    }.bind(this));
+                }.bind(this), function(e){
+                    mui.toast('微信认证失败' + JSON.stringify(e));
+                }.bind(this), {
+                    scope: 'snsapi_userinfo'
+                });
             }.bind(this));
         },
         data(){
@@ -71,12 +99,17 @@
             }
         },
         methods: mapActions({
-            storeToken: 'user/storeToken'
+            storeToken: 'user/storeToken',
+            storeUserId: 'user/storeUserId'
         })
     }
 </script>
 
 <style scoped>
+    .mui-icon-weixin{
+        font-size: 40px;
+        color: gray;
+    }
     .ui-page-login,
     body {
         width: 100%;
@@ -150,7 +183,6 @@
         background-position: center center;
         background-repeat: no-repeat;
         margin: 0px 20px;
-        /*-webkit-filter: grayscale(100%); */
         border: solid 1px #ddd;
         border-radius: 25px;
     }

@@ -4,17 +4,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <title>易买卖 EBuySell</title>
+    <title>易买卖 eBuySell</title>
     <link href="css/mui.min.css" type="text/css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/app.css" />
     <link rel="stylesheet" type="text/css" href="css/mui.picker.min.css" />
     <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
     <script src="js/mui.min.js"></script>
     <script src="js/mui.picker.min.js"></script>
+    <script src="js/moment.min.js"></script>
     <script type="text/javascript" charset="utf-8">
       mui.init({
 				swipeBack:true //启用右滑关闭功能
 			});
+      window.auths = null;
+      document.addEventListener( "plusready", function(){
+        // 扩展API加载完毕，现在可以正常调用扩展API
+        plus.oauth.getServices( function(services){
+          window.auths = services;
+        }, function(e){
+          alert( "获取分享服务列表失败："+e.message+" - "+e.code );
+        } );
+      }, false);
     </script>
   </head>
   <body>

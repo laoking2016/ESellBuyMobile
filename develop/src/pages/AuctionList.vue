@@ -8,11 +8,11 @@
             </header>
             <div class="mui-content mui-scroll-wrapper">
                 <ul class="mui-table-view mui-table-view-chevron">
-                    <li class="mui-table-view-cell mui-media" v-for="order in orders">
+                    <li class="mui-table-view-cell mui-media" v-for="(order, index) in orders">
                         <span  class="mui-navigate-right">
                             <span class="mui-media-object mui-pull-right order-item">{{order.price}}</span>
                             <div class="mui-media-body">
-                                {{order.buyer}}({{order.phone}})
+                                <span>{{order.buyer}}({{order.phone}})</span><span style='color:red' v-show='index == 0'>领先</span>
                                 <p class="mui-ellipsis">{{order.date}}</p>
                             </div>
                         </span>
@@ -26,7 +26,7 @@
 <script>
     import fetch from '../utils/fetch.js'
     import router from '../router.js'
-    import { formatDate } from '../utils/format.js'
+    import { formateTime } from '../utils/format.js'
 
     export default {
         data(){
@@ -42,11 +42,12 @@
 
             fetch.get(`/user/v2/good/${this.id}`, null, function(good){
                 this.title = good.data.goodName;
+                var nextBid = good.data.nextBid;
                 this.orders = good.data.orders.map(function(item, index){
                     return {
                         buyer: item.buyerName,
-                        date: formatDate(item.buyDate),
-                        price: item.buyPrice,
+                        date: formateTime(item.buyDate),
+                        price: item.buyPrice > nextBid ? nextBid : item.buyPrice,
                         phone: item.phone
                     };
                 }.bind(this));

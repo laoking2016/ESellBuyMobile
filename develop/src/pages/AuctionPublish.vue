@@ -155,8 +155,8 @@
                     }.bind(this));
                 }else{
                     event.target.picker = new mui.DtPicker({
-                        beginYear: 2018,
-                        endYear: 2028
+                        beginDate: moment().toDate(),
+                        endDate: moment().add(14, 'day').toDate()
                     });
                     event.target.picker.show(function(rs){
                         this.deadline = rs.text;

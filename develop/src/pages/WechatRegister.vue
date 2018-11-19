@@ -2,29 +2,21 @@
     <div>
         <header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">注册</h1>
+			<h1 class="mui-title">微信用户注册</h1>
 		</header>
         <div class="mui-content">
 			<form class="mui-input-group">
 				<div class="mui-input-row">
-					<label>用户名</label>
-					<input v-model="userName" type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
-				</div>
-				<div class="mui-input-row">
-					<label>登录密码</label>
-					<input v-model="passWord" type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
-				</div>
-				<div class="mui-input-row">
-					<label>确认密码</label>
-					<input v-model="confirmPassword" type="password" class="mui-input-clear mui-input" placeholder="请确认密码">
+					<label>昵称</label>
+                    <span class="label">{{nickName}}</span>
 				</div>
                 <div class="mui-input-row">
-					<label>昵称</label>
-					<input v-model="nickName" type="text" class="mui-input-clear mui-input" placeholder="请输入昵称">
+					<label>头像</label>
+                    <img class="label" v-bind:src="avatar"/>
 				</div>
                 <div class="mui-input-row">
 					<label>性别</label>
-					<label id="sex-btn" style="padding-left:0px;">{{sex}}</label>
+                    <span class="label">{{sex}}</span>
 				</div>
                 <div class="mui-input-row">
 					<label>出生日期</label>
@@ -40,7 +32,8 @@
 				</div>
                 <div class="mui-input-row" style="height:auto;">
 					<label>联系地址</label>
-					<textarea v-model="address" type="text" rows="4" class="mui-input-clear mui-input" placeholder="请输入联系地址"></textarea>
+					<textarea v-model="address" type="text" class="mui-input-clear mui-input" rows="4" placeholder="请输入联系地址">
+                    </textarea>
 				</div>
 			</form>
 			<div class="mui-content-padded">
@@ -54,21 +47,21 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex'   
+    import { mapActions } from 'vuex'
     import fetch from '../utils/fetch.js'
     import router from '../router.js'
 
     export default {
         data(){
             return {
-                userName: null,
-                passWord: null,
-                confirmPassword: null,
+                nickName: null,
                 phone: null,
                 sex: '请选择',
                 birth: '请选择',
+                avatar: null,
                 email: null,
-                address: null
+                address: null,
+                openId: null
             }
         },
         methods: mapActions({
@@ -129,28 +122,8 @@
 
             $('#register-btn').on('tap', function(event){
                 
-                if(this.userName == null || this.userName == ""){
-                    mui.toast('请输入用户名');
-                    return;
-                }
-
-                if(this.passWord == null || this.passWord == ""){
-                    mui.toast('请输入密码');
-                    return;
-                }
-
-                if(this.confirmPassword == null || this.confirmPassword == ""){
-                    mui.toast('请输入确认密码');
-                    return;
-                }
-
-                if(this.passWord != this.confirmPassword){
-                    mui.toast('密码和确认密码必须相同');
-                    return;
-                }
-
-                if(this.nickName == null || this.nickName == ""){
-                    mui.toast('请输入昵称');
+                if(this.phone == null || this.phone == ""){
+                    mui.toast('请输入电话');
                     return;
                 }
 
@@ -161,11 +134,6 @@
 
                 if(this.birth == '请选择'){
                     mui.toast('请选择出生日期');
-                    return;
-                }
-                
-                if(this.phone == null || this.phone == ""){
-                    mui.toast('请输入电话');
                     return;
                 }
 
@@ -180,29 +148,47 @@
                 }
 
                 fetch.post(`/user/v2/user`, {
-                    userName: this.userName,
-                    passWord: this.passWord,
-                    confirmPassword: this.confirmPassword,
-                    phone: this.phone,
-                    sex: this.sex,
                     nickName: this.nickName,
+                    phone: this.phone,
+                    avatar: this.avatar,
+                    sex: this.sex,
                     birth: new Date(this.birth),
                     email: this.email,
-                    address: this.address
+                    address: this.address,
+                    openId: this.openId,
+                    role: 'buyer'
                 }, function(data){
                     if(data.code == 100){
                         this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
                         router.push(`/`);
-                    }else if(data.code = -1005){
-                        mui.toast('用户名已存在');
                     }
                 }.bind(this));
             }.bind(this));
+
+
+            if(window.auths == null){
+                return null;
+            }
+
+            var s = window.auths[0];
+            if(s.authResult){
+                s.login(function(e){
+                    s.getUserInfo(function(e){
+                        this.openId = s.userInfo.openid;
+                        this.nickName = s.userInfo.nickname;
+                        this.sex = s.userInfo.sex == 1 ? '男' : '女'
+                        this.avatar = s.userInfo.headimgurl;
+                    }.bind(this));
+                }.bind(this));
+            }
         }
     }
 </script>
 
 <style scoped>
+    .label{
+        line-height: 40px;
+    }
     .ui-page-login,
     body {
         width: 100%;

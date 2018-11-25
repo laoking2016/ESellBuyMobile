@@ -26,7 +26,7 @@
             </div>
             <ul class="mui-table-view">
 				<li class="mui-table-view-cell">
-					{{title}}
+					{{title}}<div class="mui-pull-right"><span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra" v-on:tap="favoriteOnTap(id)"></span></div>
   				</li>
 				<li class="mui-table-view-cell">
 					{{description}}
@@ -90,12 +90,23 @@
                 supplier: null,
                 buyerName: null,
                 orders: [],
-                postage: null
+                postage: null,
+                favoriteFlag: false
             }
         },
         methods: {
+            favoriteOnTap: function(goodId){
+                fetch.post(`/user/v2/good/${goodId}/favorite`, null, function(data){
+                    this.favoriteFlag = data.data;    
+                }.bind(this));
+            },
             formatImage: formatImage,
             formatDate2: formatDate2,
+            loadFavorite: function(goodId){
+                fetch.get(`/user/v2/good/${goodId}/favorite`, null, function(data){
+                    this.favoriteFlag = data.data;
+                }.bind(this));
+            },
             loadQuestions: function(goodId){
                 fetch.get(`/user/v2/good/${goodId}/questions`, null, function(data){
                     this.questions = data.data.map(function(item, index){
@@ -212,6 +223,7 @@
 
             this.loadGood(goodId)
             this.loadQuestions(goodId);
+            this.loadFavorite(goodId);
         }
     }
 </script>

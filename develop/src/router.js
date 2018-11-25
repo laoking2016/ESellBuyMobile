@@ -16,6 +16,8 @@ import ForgetPassword from './pages/ForgetPassword.vue'
 import SearchResult from './pages/SearchResult.vue'
 import AuctionList from './pages/AuctionList.vue'
 import WechatRegister from './pages/WechatRegister.vue'
+import Instruction from './pages/Instruction.vue'
+import FavoritedGoods from './pages/FavoritedGoods'
 
 const routes = [
     {
@@ -81,6 +83,14 @@ const routes = [
     {
         path: '/wechat/register',
         component: WechatRegister
+    },
+    {
+        path: '/instruction',
+        component: Instruction
+    },
+    {
+        path: '/favorited/goods',
+        component: FavoritedGoods
     }
 ];
 

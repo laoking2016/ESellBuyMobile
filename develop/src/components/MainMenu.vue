@@ -6,11 +6,12 @@
                 <ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted">
                     <li id="login-menu" class="mui-table-view-cell menu-item">{{loginFlag ? '登出' : '登陆'}}</li>
                     <li id="home-menu" class="mui-table-view-cell menu-item">首页</li>
-                    <li class="mui-table-view-cell menu-item">竞价说明</li>
+                    <li id="instruction-menu" class="mui-table-view-cell menu-item">竞价说明</li>
                     <li v-show="role == 'buyer' || role == 'supplier'" id="customer-menu" class="mui-table-view-cell menu-item">买家商品管理</li>
                     <li v-show="role == 'supplier'" id="supplier-menu" class="mui-table-view-cell menu-item">卖家商品管理</li>
                     <li v-show="role == 'supplier'" id="auction-publish-menu" class="mui-table-view-cell menu-item">出品(上拍)</li>
                     <li v-show="false" id="shop-menu" class="mui-table-view-cell menu-item">出品(上架)</li>
+                    <li id="favorite-menu" class="mui-table-view-cell menu-item" v-on:tap="favoriteOnTap">关注的商品</li>
                     <li class="mui-table-view-cell menu-item">系统设定</li>
                 </ul>
             </div>
@@ -50,7 +51,11 @@
             ...mapActions({
                 storeUserId: 'user/storeUserId',
                 storeToken: 'user/storeToken'
-            })
+            }),
+            favoriteOnTap: function(){
+                router.push('/favorited/goods');
+                mui('#offCanvasSide').offCanvas('close');
+            }
         },
         mounted() {
             $('#login-menu').on('tap', function(e){
@@ -103,6 +108,12 @@
             document.getElementById('shop-menu').addEventListener('tap', function(e){
                 e.preventDefault();
                 router.push('/shop');
+                mui('#offCanvasSide').offCanvas('close');
+            });
+
+            document.getElementById('instruction-menu').addEventListener('tap', function(e){
+                e.preventDefault();
+                router.push('/instruction');
                 mui('#offCanvasSide').offCanvas('close');
             });
         },

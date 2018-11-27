@@ -12,7 +12,7 @@
                     <li v-show="role == 'supplier'" id="auction-publish-menu" class="mui-table-view-cell menu-item">出品(上拍)</li>
                     <li v-show="false" id="shop-menu" class="mui-table-view-cell menu-item">出品(上架)</li>
                     <li id="favorite-menu" class="mui-table-view-cell menu-item" v-on:tap="favoriteOnTap">关注的商品</li>
-                    <li class="mui-table-view-cell menu-item">系统设定</li>
+                    <!--li class="mui-table-view-cell menu-item">系统设定</li-->
                 </ul>
             </div>
         </div>

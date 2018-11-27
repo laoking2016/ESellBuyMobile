@@ -7,29 +7,31 @@
 				<a href="#offCanvasSide" class="mui-icon mui-action-menu mui-icon-bars mui-pull-left"></a>
 				<h1 class="mui-title">买家商品管理</h1>
 			</header>
-			<div class="mui-content mui-scroll-wrapper">
-				<div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-positive">
-					<a class="mui-control-item tab-item mui-active" data-status="拍卖中" href="#">拍卖中的商品</a>
-					<a class="mui-control-item tab-item" data-status="待支付" href="#">已成交的商品(交易中)</a>
-					<a class="mui-control-item tab-item" data-status="已完成" href="#">完成交易的商品</a>
+			<div id="scroll-customer-orders" class="mui-content mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-positive">
+						<a class="mui-control-item tab-item mui-active" data-status="拍卖中" href="#">拍卖中的商品</a>
+						<a class="mui-control-item tab-item" data-status="待支付" href="#">已成交的商品(交易中)</a>
+						<a class="mui-control-item tab-item" data-status="已完成" href="#">完成交易的商品</a>
+					</div>
+					<div v-show="status =='待支付' || status == '待发货' || status == '待签收'">
+						<span class="mui-badge" data-status="待支付" v-bind:class="{'mui-badge-warning': status == '待支付'}">待支付</span>
+						<span class="mui-badge" data-status="待发货" v-bind:class="{'mui-badge-warning': status == '待发货'}">待发货</span>
+						<span class="mui-badge" data-status="待签收" v-bind:class="{'mui-badge-warning': status == '待签收'}">待签收</span>
+					</div>
+					<ul class="mui-table-view mui-table-view-chevron">
+						<li class="mui-table-view-cell mui-media" v-on:tap="onOrderItemTap(order.id, order.goodId, order.status)" v-for="order in filterredOrders">
+							<a class="mui-navigate-right">
+								<span class="mui-media-object mui-pull-right">{{order.type}}</span>
+								<img class="mui-media-object mui-pull-left" v-bind:src="formatImage(order.image)">
+								<div class="mui-media-body">
+									{{order.title}}
+									<p class="mui-ellipsis">{{order.status}}</p>
+								</div>
+							</a>
+						</li>
+					</ul>
 				</div>
-				<div v-show="status =='待支付' || status == '待发货' || status == '待签收'">
-					<span class="mui-badge" data-status="待支付" v-bind:class="{'mui-badge-warning': status == '待支付'}">待支付</span>
-					<span class="mui-badge" data-status="待发货" v-bind:class="{'mui-badge-warning': status == '待发货'}">待发货</span>
-					<span class="mui-badge" data-status="待签收" v-bind:class="{'mui-badge-warning': status == '待签收'}">待签收</span>
-				</div>
-				<ul class="mui-table-view mui-table-view-chevron">
-					<li class="mui-table-view-cell mui-media" v-on:tap="onOrderItemTap(order.id, order.goodId, order.status)" v-for="order in filterredOrders">
-						<a class="mui-navigate-right">
-                            <span class="mui-media-object mui-pull-right">{{order.type}}</span>
-							<img class="mui-media-object mui-pull-left" v-bind:src="formatImage(order.image)">
-							<div class="mui-media-body">
-								{{order.title}}
-								<p class="mui-ellipsis">{{order.status}}</p>
-							</div>
-						</a>
-					</li>
-				</ul>
 			</div>  
 		</div>
     </div>
@@ -102,7 +104,10 @@
 					}
 				}.bind(this));
 			}.bind(this));
-        }
+        },
+		updated(){
+			mui("#scroll-customer-orders").scroll();
+		}
     }
 </script>
 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>易买卖 eBuySell</title>
+    <link href="css/mui.min.css" type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link rel="stylesheet" type="text/css" href="css/mui.picker.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/icons-extra.css" />
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/mui.min.js"></script>
+    <script src="js/mui.picker.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+      mui.init({
+				swipeBack:true //启用右滑关闭功能
+			});
+
+    </script>
+  </head>
+  <body>
+    <!-- 侧滑导航根容器 -->
+<div class="mui-off-canvas-wrap mui-draggable">
+    <!-- 菜单容器 -->
+    <aside id="offCanvasSide" class="mui-off-canvas-left">
+      <div class="mui-scroll-wrapper">
+        <div class="mui-scroll">
+          <!-- 菜单具体展示内容 -->
+          ...
+        </div>
+      </div>
+    </aside>
+    <!-- 主页面容器 -->
+    <div class="mui-inner-wrap">
+      <!-- 主页面标题 -->
+      <header class="mui-bar mui-bar-nav">
+        <a href="#offCanvasSide" class="mui-icon mui-action-menu mui-icon-bars mui-pull-left"></a>
+        <h1 class="mui-title">标题</h1>
+      </header>
+      <div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
+        <div class="mui-scroll">
+          <!-- 主界面具体展示内容 -->
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>1</div>
+          <div>7</div>
+          <div>8</div>
+          <div>9</div>
+          <div>10</div>
+        </div>
+        <div class="mui-content">
+          <a href="#modal" class="mui-btn mui-btn-primary mui-btn-block">Click</a>
+        </div>
+      </div> 
+      <div id="modal" class="mui-modal">
+          <header class="mui-bar mui-bar-nav">
+            <a class="mui-icon mui-icon-close mui-pull-right" href="#modal"></a>
+            <h1 class="mui-title">Modal</h1>
+          </header>
+          <div class="mui-content" style="height: 100%;">
+            <p class="mui-content-padded">The contents of my modal go here. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</p>
+          </div>
+        </div>
+    </div>
+  </div>
+  </body>
+  <script>
+      
+mui('#offCanvasContentScroll').scroll();
+  </script>
+</html>

@@ -7,7 +7,7 @@
 				<a href="#offCanvasSide" class="mui-icon mui-action-menu mui-icon-bars mui-pull-left"></a>
 				<h1 class="mui-title"><span id="search-btn" class="mui-icon mui-icon-search"></span></h1>
 			</header>
-			<div class="mui-content mui-scroll-wrapper">
+			<div id="scroll-home" class="mui-content mui-scroll-wrapper">
                 <div class="mui-scroll">
                     <div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-positive">
                         <a class="mui-control-item" href="#item1">精品商城</a>
@@ -71,12 +71,14 @@
                     };
                 });
             }.bind(this));
-
 		},
         data(){
             return {
                 goods:[]
             }
+        },
+        updated(){
+            mui("#scroll-home").scroll();
         }
     }
 </script>

@@ -3,26 +3,24 @@
         <!-- 主页面标题 -->
         <header class="mui-bar mui-bar-nav">
             <a href="#offCanvasSide" class="mui-action-back mui-icon mui-action-menu mui-icon-back mui-pull-left"></a>
-            <h1 class="mui-title">{{title}}</span></h1>
+            <h1 class="mui-title">{{title}}</h1>
         </header>
         <div class="mui-content">
             <div id="slider" class="mui-slider">
                 <div class="mui-slider-group">
-                    <div class="mui-slider-item" v-for="image in images">
+                    <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
                         <a href="#">
                             <img style="height:220px;" v-bind:src="formatImage(image)">
                         </a>
                     </div>
                 </div>
                 <div class="mui-slider-indicator">
-                    <div class="mui-indicator" v-bind:class="{'mui-active': index==0}" v-for="(image, index) in images">
-                    
-                    </div>
+                    <div v-bind:key="image" class="mui-indicator" v-bind:class="{'mui-active': index==0}" v-for="(image, index) in images"></div>
                 </div>
             </div>
-            <div class="title" style="margin-top:15px;">
-                截止时间 {{formatDate2(new Date(this.deadline))}}<br/>
-                剩余{{remainTitle}}   <span v-on:tap="orderCountOnTap(id)">出价次数{{orderCount}}次</span>{{buyerName == null ? '' : '(' + buyerName + ')'}}
+            <div class="title" style="padding:10px;margin-top:0px;margin-bottom:0px;">
+                <div style="line-height:normal">截止时间 {{formatDate2(new Date(this.deadline))}}</div>
+                <div style="line-height:normal">剩余{{remainTitle}}   <span v-on:tap="orderCountOnTap(id)">出价次数{{orderCount}}次</span>{{buyerName == null ? '' : '(' + buyerName + ')'}}</div>
             </div>
             <ul class="mui-table-view">
 				<li class="mui-table-view-cell">
@@ -49,7 +47,7 @@
 				</li>
 			</ul>
             <ul class="mui-table-view">
-                <li class="mui-table-view-cell" v-for="(question, index) in questions">
+                <li v-bind:key="question.id" class="mui-table-view-cell" v-for="(question, index) in questions">
                     <p>提问{{index + 1}}&nbsp;&nbsp;{{question.question}}</p>
                     <p class="mui-ellipsis" style="color:black;"><b>{{question.answer}}</b></p>
                 </li>
@@ -119,14 +117,12 @@
             },
             loadGood: function(goodId){
                 fetch.get(`/user/v2/good/${goodId}`, null, function(data){
-                    
+                    var price = data.data.price;
                     this.id = data.data.goodId;
                     this.images = JSON.parse(data.data.images);
                     this.title = data.data.goodName;
                     this.description = data.data.description;
-                    this.price = data.data.nextBid;
-                    this.priceInput = data.data.nextBid;
-                    this.basePrice = data.data.nextBid;
+                    
                     this.status = data.data.status;
                     this.deadline = data.data.deadline;
                     this.orderCount = data.data.orders.length;
@@ -134,9 +130,14 @@
                     this.orders = data.data.orders;
                     this.postage = data.data.postage;
                     if(data.data.order != null){
+                        var price = data.data.order.buyPrice;
                         this.buyerName = data.data.order.buyerName;
                         this.ownerFlag = data.data.order.ownerFlag;
                     }    
+
+                    this.price = price;
+                    this.priceInput = price;
+                    this.basePrice = price;
 
                 }.bind(this));
             },

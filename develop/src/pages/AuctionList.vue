@@ -8,7 +8,7 @@
             </header>
             <div class="mui-content mui-scroll-wrapper">
                 <ul class="mui-table-view mui-table-view-chevron">
-                    <li class="mui-table-view-cell mui-media" v-for="(order, index) in orders">
+                    <li v-bind:key="order.id" class="mui-table-view-cell mui-media" v-for="(order, index) in orders">
                         <span  class="mui-navigate-right">
                             <span class="mui-media-object mui-pull-right order-item">{{order.price}}</span>
                             <div class="mui-media-body">
@@ -47,7 +47,8 @@
                     return {
                         buyer: item.buyerName,
                         date: formateTime(item.buyDate),
-                        price: item.buyPrice > nextBid ? nextBid : item.buyPrice,
+                        //price: item.buyPrice > nextBid ? nextBid : item.buyPrice,
+                        price: item.buyPrice,
                         phone: item.phone
                     };
                 }.bind(this));

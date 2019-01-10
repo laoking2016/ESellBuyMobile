@@ -20,7 +20,7 @@
 						<span class="mui-badge" data-status="待签收" v-bind:class="{'mui-badge-warning': status == '待签收'}">待签收</span>
 					</div>
 					<ul class="mui-table-view mui-table-view-chevron">
-						<li class="mui-table-view-cell mui-media" v-on:tap="onOrderItemTap(order.id, order.goodId, order.status)" v-for="order in filterredOrders">
+						<li v-bind:key="order.id" class="mui-table-view-cell mui-media" v-on:tap="onOrderItemTap(order.id, order.goodId, order.status)" v-for="order in filterredOrders">
 							<a class="mui-navigate-right">
 								<span class="mui-media-object mui-pull-right">{{order.type}}</span>
 								<img class="mui-media-object mui-pull-left" v-bind:src="formatImage(order.image)">

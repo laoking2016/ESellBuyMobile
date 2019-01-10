@@ -53,12 +53,12 @@
                     <span class=""><label style="width:65%;padding-left:0px;">{{contact.phone}}</label></span>
                 </div>
                 <div class="mui-button-row">
-                    <button type="button" id="auction-list-btn" v-bind:data-id="id" class="mui-btn mui-btn-danger"  style="width:100px;">竞拍明细</button>
+                    <button v-show="type == '拍卖'" type="button" id="auction-list-btn" v-bind:data-id="id" class="mui-btn mui-btn-danger"  style="width:100px;">竞拍明细</button>
                     <button type="button" v-show="status == '待发货'" id="shipped-btn" class="mui-btn mui-btn-danger"  style="width:100px;">确认发货</button>
                 </div>
             </form>
             <ul class="mui-table-view">
-                <li class="mui-table-view-cell" v-for="(question, index) in questions">
+                <li v-bind:key="question.id" class="mui-table-view-cell" v-for="(question, index) in questions">
                     <p>提问{{index + 1}}&nbsp;&nbsp;{{question.question}}</p>
                     <div v-if="question.shownFlag"><textarea v-bind:id="'response-input-' + question.id" rows="3" placeholder="">{{question.answer}}</textarea></div>
                     <p v-if="question.answer" class="mui-ellipsis" style="color:black;"><b>{{question.answer}}</b></p>
@@ -93,7 +93,8 @@
                     name: null,
                     phone: null
                 },
-                questions: []
+                questions: [],
+                type: null
             }
         },
         methods: {
@@ -108,9 +109,11 @@
         mounted() {
             
             var goodId = this.$route.params.goodId;
+            var orderId = this.$route.params.orderId;
 
             fetch.get(`/user/v2/good/${goodId}`, null, function(good){
                 this.id = goodId;
+                this.type = good.data.type;
                 this.image = formatFeaturedImage(good.data.images);
                 this.title = good.data.goodName;
                 this.description = good.data.description;
@@ -131,6 +134,21 @@
                 }
                 
                 this.postage = good.data.postage;
+
+                if(good.data.type == '精品商城'){
+                    fetch.get(`/user/v2/order/${orderId}`, null, function(order){
+                        this.price = Math.round(order.data.buyPrice * 1.03);
+                        this.count = order.data.buyCount;
+                        this.date = formatDate(order.data.buyDate);
+                        this.orderId = order.data.orderId;
+                        this.status = order.data.status;
+                        this.contact = {
+                            address: order.data.address,
+                            name: order.data.buyerName,
+                            phone: order.data.phone
+                        }
+                    }.bind(this));
+                }
 
             }.bind(this));
 

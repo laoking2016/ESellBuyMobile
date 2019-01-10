@@ -10,15 +10,27 @@
 			<div id="scroll-home" class="mui-content mui-scroll-wrapper">
                 <div class="mui-scroll">
                     <div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-positive">
-                        <a class="mui-control-item" href="#item1">精品商城</a>
-                        <a class="mui-control-item mui-active" href="#item2">当前热拍</a>
-                        <a class="mui-control-item" href="#item3">最新消息</a>
+                        <a class="mui-control-item mui-active" href="#item1">当前热拍</a>
+                        <a class="mui-control-item" href="#item2">精品商城</a>
+                        <!--a class="mui-control-item" href="#item3">最新消息</a-->
                     </div>
-                    <div class="mui-row">
-                        <div class="mui-col-sm-4 mui-col-xs-4 product-item" v-bind:data-id="good.id" style="padding-left:2px;padding-right:2px;" v-for="good in filterredGoods">
-                            <div class="good-deadline">还有{{formatDateDiff(new Date(), new Date(good.deadline))}}</div>
-                            <img style="width:100%;height:120px;" v-bind:data-id="good.id" v-bind:src="formatImage(good.image)">
-                            <div class="good-price">￥{{good.quote}}</div>
+                    <div id="item1" class="mui-control-content mui-active">
+                        <div class="mui-row">
+                            <div v-bind:key="good.id" v-on:tap="auctionItemOnTap(good.id)" class="mui-col-sm-4 mui-col-xs-4" v-bind:data-id="good.id" style="padding-left:2px;padding-right:2px;" v-for="good in filterredAuctionGoods">
+                                <div class="good-deadline">还有{{formatDateDiff(new Date(), new Date(good.deadline))}}</div>
+                                <img style="width:100%;height:120px;" v-bind:data-id="good.id" v-bind:src="formatImage(good.image)">
+                                <div class="good-price">￥{{good.quote}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="item2" class="mui-control-content">
+                        <div class="mui-row">
+                            <div class="mui-row">
+                                <div v-bind:key="good.id" v-on:tap="shopItemOnTap(good.id)" class="mui-col-sm-4 mui-col-xs-4" v-bind:data-id="good.id" style="padding-left:2px;padding-right:2px;" v-for="good in filterredShopGoods">
+                                    <img style="width:100%;height:120px;" v-bind:data-id="good.id" v-bind:src="formatImage(good.image)">
+                                    <div class="good-price">￥{{good.quote}}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -39,11 +51,20 @@
         },
         methods: {
             formatImage: formatImage,
-            formatDateDiff: formatDateDiff
+            formatDateDiff: formatDateDiff,
+            shopItemOnTap: function(id){
+                router.push(`/shop/detail/${id}`);
+            },
+            auctionItemOnTap: function(id){
+                router.push(`/auction/detail/${id}`);
+            }
         },
         computed: {
-            filterredGoods: function(){
-                return this.goods.filter(e => e.status == '拍卖中');
+            filterredAuctionGoods: function(){
+                return this.goods.filter(e => e.status == '拍卖中' && e.type == '拍卖');
+            },
+            filterredShopGoods: function(){
+                return this.goods.filter(e => e.status == '拍卖中' && e.type == '精品商城');
             }
         },
 	  	mounted() {
@@ -53,28 +74,24 @@
                 mui('#offCanvasSide').offCanvas('close');
             });
 
-            mui(".mui-row").on('tap', '.product-item', function(event){
-                var id = $(event.target).data("id");
-                router.push(`/auction/detail/${id}`);
-            });
-
-            fetch.get(`/user/v2/goods?type=拍卖`, null, function(data){
+            fetch.get(`/user/v2/goods`, null, function(data){
                 this.goods = data.data.map(function(item, index){
                     var image = formatFeaturedImage(item.images);
                     return {
                         id: item.goodId,
                         title: item.goodName,
                         image: image,
-                        quote: Math.round(item.finalPrice * 1.03),
+                        quote: Math.round(item.topPrice * 1.03),
                         status: item.status,
-                        deadline: item.deadline
+                        deadline: item.deadline,
+                        type: item.type
                     };
                 });
             }.bind(this));
 		},
         data(){
             return {
-                goods:[]
+                goods: []
             }
         },
         updated(){

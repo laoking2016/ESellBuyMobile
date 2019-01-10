@@ -2,8 +2,6 @@ import VueRouter from 'vue-router'
 
 import Home from './pages/Home.vue'
 import Search from './pages/Search.vue'
-import CategoryFirst from './pages/CategoryFirst.vue'
-import CategorySecond from './pages/CategorySecond.vue'
 import Auction from './pages/Auction.vue'
 import AuctionPublish from './pages/AuctionPublish.vue'
 import CustomerOrders from './pages/CustomerOrders.vue'
@@ -18,6 +16,8 @@ import AuctionList from './pages/AuctionList.vue'
 import WechatRegister from './pages/WechatRegister.vue'
 import Instruction from './pages/Instruction.vue'
 import FavoritedGoods from './pages/FavoritedGoods'
+import ShopPublish from './pages/ShopPublish.vue'
+import Shop from './pages/Shop.vue'
 
 const routes = [
     {
@@ -31,14 +31,6 @@ const routes = [
     {
         path: '/search/result',
         component: SearchResult
-    },
-    {
-        path: '/category/first/:flag',
-        component: CategoryFirst
-    },
-    {
-        path: '/category/second/:flag/:id',
-        component: CategorySecond
     },
     {
         path: '/auction/detail/:goodId',
@@ -65,7 +57,7 @@ const routes = [
         component: CustomerOrderDetail
     },
     {
-        path: '/supplier/order/detail/:goodId',
+        path: '/supplier/order/detail/:goodId/:orderId',
         component: SupplierOrderDetail
     },
     {
@@ -91,6 +83,14 @@ const routes = [
     {
         path: '/favorited/goods',
         component: FavoritedGoods
+    },
+    {
+        path: '/shop/publish',
+        component: ShopPublish
+    },
+    {
+        path: '/shop/detail/:goodId',
+        component: Shop
     }
 ];
 

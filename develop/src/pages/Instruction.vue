@@ -17,7 +17,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="map in maps">
+                    <tr v-bind:key="map.name" v-for="map in maps">
                         <td align="center">{{map.name}}</td>
                         <td align="center">{{map.mark}}</td>
                         <td>{{map.description}}</td>
@@ -33,7 +33,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="paper in pagers">
+                    <tr v-bind:key="paper.mark" v-for="paper in pagers">
                         <td align="center">{{paper.mark}}</td>
                         <td>{{paper.description}}</td>
                     </tr>
@@ -41,7 +41,7 @@
             </table>
             <h4>购买流程</h4>
             <ol>
-                <li v-for="step in steps">{{step}}</li>
+                <li v-bind:key="step" v-for="step in steps">{{step}}</li>
             </ol>
         </div>
     </div>

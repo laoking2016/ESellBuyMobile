@@ -6,12 +6,13 @@
         </header>
         <div class="mui-content">
             <ul class="mui-table-view" v-show="categoriesShown" style="margin-top:0px;">
-                <li class="mui-table-view-cell category-item" v-bind:data-id="category.id" v-for="category in categories">
+                <li class="mui-table-view-cell category-item" v-bind:key="category.id" v-bind:data-id="category.id" v-for="category in categories">
                     <span class="mui-navigate-right" v-bind:data-id="category.id">{{category.title}}</span>
                 </li>
             </ul>
             <ul class="mui-table-view" v-show="categories2Shown">
                 <li class="mui-table-view-cell category2-item" 
+                    v-bind:key="category.id"
                     v-bind:data-id="category.id" 
                     v-bind:data-title="category.title" 
                     v-for="category in categories2">

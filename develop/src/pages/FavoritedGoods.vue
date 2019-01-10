@@ -10,7 +10,7 @@
 			<div id="scroll-favorite-goods" class="mui-content mui-scroll-wrapper">
 				<div class="mui-scroll">
 					<ul class="mui-table-view mui-table-view-chevron">
-						<li class="mui-table-view-cell mui-media" v-for="good in goods" v-on:tap="goodOnTap(good.id)">
+						<li v-bind:key="good.id" class="mui-table-view-cell mui-media" v-for="good in goods" v-on:tap="goodOnTap(good.id, good.type)">
 							<a class="mui-navigate-right">
 								<span class="mui-media-object mui-pull-right">{{good.type}}</span>
 								<img class="mui-media-object mui-pull-left" v-bind:src="formatImage(good.image)">
@@ -40,8 +40,12 @@
 		},
 		methods: {
 			formatImage: formatImage,
-			goodOnTap: function(id){
-				router.push(`/auction/detail/${id}`);
+			goodOnTap: function(id, type){
+				if(type == '精品商城'){
+					router.push(`/shop/detail/${id}`);
+				}else{
+					router.push(`/auction/detail/${id}`);
+				}
 			}
 		},
         data(){

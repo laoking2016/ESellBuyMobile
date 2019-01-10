@@ -3,11 +3,11 @@
         <div v-show="selfShown">
             <header class="mui-bar mui-bar-nav">
                 <a href="#offCanvasSide" class="mui-action-back mui-icon mui-action-menu mui-icon-back mui-pull-left "></a>
-                <h1 class="mui-title">拍卖出品</span></h1>
+                <h1 class="mui-title">拍卖出品</h1>
             </header>
             <div class="mui-content feedback">
                 <div id="image-list" class="row image-list">
-                    <div  class="image-item space" v-for="image in images" v-bind:style="{backgroundImage: `url(${formatImage(image)}`}">
+                    <div  class="image-item space" v-bind:key="image" v-for="image in images" v-bind:style="{backgroundImage: `url(${formatImage(image)}`}">
                         <div class="image-close" v-bind:data-image="image">X</div>
                         <div></div>
                     </div>
@@ -77,7 +77,7 @@
             return {
                 images: [],
                 deadline: null,
-                payment: '支付宝',
+                payment: '微信',
                 postage: null,
                 goodName: null,
                 originalPrice: null,
@@ -116,34 +116,32 @@
 			}.bind(this));
 
             $('#file-input').on('tap', function(event){
-                if(plus){
-                    plus.gallery.pick(function(path){
+                plus.gallery.pick(function(path){
 
-                        var name = path.substr(path.lastIndexOf('/') + 1);
-                        
-                        plus.zip.compressImage({
-                            src: path,
-                            dst: '_doc/' + name,
-                            overwrite: true,
-                            quality: 50
-                        }, function(zip){
-                            uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
-                                var url = json.data;
-                                var index = _.findIndex(this.images, c => c == url);
-                                if(index < 0){
-                                    this.images.push(url);
-                                }
-                            }.bind(this));
-                        }.bind(this), function(zipe){
-
+                    var name = path.substr(path.lastIndexOf('/') + 1);
+                    
+                    plus.zip.compressImage({
+                        src: path,
+                        dst: '_doc/' + name,
+                        overwrite: true,
+                        quality: 50
+                    }, function(zip){
+                        uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
+                            var url = json.data;
+                            var index = _.findIndex(this.images, c => c == url);
+                            if(index < 0){
+                                this.images.push(url);
+                            }
                         }.bind(this));
-                        
-                    }.bind(this), function(e){
-                        console.log(e);
-                    }.bind(this), false);
-                }else{
-                    $("#file-input-handler").trigger('click');
-                }
+                    }.bind(this), function(zipe){
+
+                    }.bind(this));
+                    
+                }.bind(this), function(e){
+                    console.log(e);
+                }.bind(this), false);
+
+                //$("#file-input-handler").trigger('click');
             }.bind(this));
 
             $('#deadline-btn').on('tap', function(event){
@@ -179,11 +177,11 @@
                     event.target.picker = new mui.PopPicker();
                     event.target.picker.setData([
                         {
-                            value: '支付宝',
-                            text: '支付宝'
-                        },{
                             value: '微信',
                             text: '微信'
+                        },{
+                            value: '支付宝',
+                            text: '支付宝'
                         }
                     ]);
                     event.target.picker.show(function(items){

@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="mui-row" style="clear:both;">
-                    <div class="mui-col-sm-4 mui-col-xs-4 good-item" v-bind:data-id="good.id" style="padding-left:2px;padding-right:2px;" v-for="good in filterredGoods">
+                    <div v-bind:key="good.id" class="mui-col-sm-4 mui-col-xs-4 good-item" v-bind:data-id="good.id" style="padding-left:2px;padding-right:2px;" v-for="good in filterredGoods">
                         <div class="good-deadline">还有1日3时23分</div>
                         <img style="width:100%;height:120px;" v-bind:data-id="good.id" v-bind:src="formatImage(good.image)">
                         <div class="good-price">￥{{good.quote}}</div>

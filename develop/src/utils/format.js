@@ -1,17 +1,17 @@
 import { FILE_URL } from './const.js'
 
 export function formatImage(img){
-    //return `${FILE_URL}/files/${img}`;
     return `${FILE_URL}/upload_dir/${img}`;
 }
 
 export function formatFeaturedImage(json){
     var images = JSON.parse(json);
+    
     var image = null;
     if(images.length > 0){
         image = images[0];
     }
-
+    
     return image;
 }
 
@@ -85,4 +85,26 @@ export function formatMessage(status){
 
 export function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
-  }
+}
+
+export function formatCategoryImage(image){
+    return `${FILE_URL}/upload_dir/category/${image}`;
+}
+
+export function formatImageBackground(image){
+    if(image.image == null){
+        return {
+            backgroundImage: `url(${formatImage(image)}`, 
+            backgroundSize: '100% 100%', 
+            backgroundRepeat: 'no-repeat', 
+        }
+    }else{
+        return {
+            backgroundImage: `url(${formatImage(image.image)}`, 
+            backgroundPosition: `${image.x == null || isNaN(image.x) ? 0 : image.x}% ${image.y == null || isNaN(image.y) ? 0 : image.y}%`, 
+            backgroundSize: `${image.w}% ${image.h}%`, 
+            backgroundRepeat: 'no-repeat', 
+            backgroundOrigin: '0px 0px'
+        }
+    }
+}

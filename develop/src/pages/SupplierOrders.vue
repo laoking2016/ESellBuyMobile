@@ -1,89 +1,87 @@
 <template>
-	<div class="mui-off-canvas-wrap mui-draggable">
-		<main-menu />
-		<div class="mui-inner-wrap">
-			<!-- 主页面标题 -->
-			<header class="mui-bar mui-bar-nav">
-				<a href="#offCanvasSide" class="mui-icon mui-action-menu mui-icon-bars mui-pull-left"></a>
-				<h1 class="mui-title">{{customerId == -1 ? '卖家商品管理' : customerName + '的拍品'}}</h1>
-			</header>
-			<div id="scroll-supplier-orders" class="mui-content mui-scroll-wrapper tab-panel">
-				<div class="mui-scroll">
-					<div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-positive">
-						<a class="mui-control-item tab-item mui-active" data-status="拍卖中" href="#">拍卖中的商品</a>
-						<a class="mui-control-item tab-item" data-status="待支付" href="#">已成交的商品(交易中)</a>
-						<a class="mui-control-item tab-item" data-status="已完成" href="#">完成交易的商品</a>
-					</div>
-					<div v-show="status =='待支付' || status == '待发货' || status == '待签收' || status == '已流拍'">
-						<span class="mui-badge sub-item" data-status="待支付" v-bind:class="{'mui-badge-warning': status == '待支付'}">待支付</span>
-						<span class="mui-badge sub-item" data-status="待发货" v-bind:class="{'mui-badge-warning': status == '待发货'}">待发货</span>
-						<span class="mui-badge sub-item" data-status="待签收" v-bind:class="{'mui-badge-warning': status == '待签收'}">待签收</span>
-						<span class="mui-badge" v-on:tap="openCustomerModal">按客户ID显示</span>
-						<span class="mui-badge sub-item" data-status="已流拍" v-bind:class="{'mui-badge-warning': status == '已流拍'}">已流拍</span>
-					</div>
-					<ul class="mui-table-view mui-table-view-chevron">
-						<li v-bind:key="order.id" class="mui-table-view-cell mui-media" v-on:tap="onOrderItemTap(order.goodId, order.orderId, order.status, order.source)" v-for="order in filterredOrders">
-							<span  class="mui-navigate-right">
-								<span class="mui-media-object mui-pull-right" style="max-width:none;">{{order.source}}</span>
-								<img class="mui-media-object mui-pull-left" v-bind:src="formatImage(order.image)">
-								<div class="mui-media-body">
-									{{order.title}}
-									<p class="mui-ellipsis">{{order.source == '精品商城' && order.status == '拍卖中' ? '出售中' : order.status}}</p>
+
+	<div>
+		<div v-show="!customerShownFlag">
+			<main-menu top-button-type="MENU" v-bind:header-text="customer.id == -1 ? '卖家商品管理' : customer.name + '的拍品'" />
+			<div class="pm_main">
+				<div class="pm_menu tabmenu">
+					<li class="lk" v-on:tap="tabOnTap('拍卖中')" v-bind:class="{cur: status=='拍卖中'}">拍卖中的商品</li>
+					<li class="lk" v-on:tap="tabOnTap('待支付')" v-bind:class="{cur: status =='待支付' || status == '待发货' || status == '待签收' || status == '已流拍'}">已成交的商品</li>
+					<li class="lk" v-on:tap="tabOnTap('已完成')" v-bind:class="{cur: status == '已完成'}">完成交易的商品</li>
+				</div>
+				<div class="tabwrap">
+					<div class="module">
+						<div class="pm_tags" v-show="status =='待支付' || status == '待发货' || status == '待签收' || status == '已流拍'">
+							<a href="#" v-on:tap="tabOnTap('待支付')" class="lk" v-bind:class="{cur: status == '待支付'}">待支付</a>
+							<a href="#" v-on:tap="tabOnTap('待发货')" class="lk" v-bind:class="{cur: status == '待发货'}">待发货</a>
+							<a href="#" v-on:tap="tabOnTap('待签收')" class="lk" v-bind:class="{cur: status == '待签收'}">待签收</a>
+							<a href="#" class="lk" v-on:tap="openCustomerModal">按客户ID显示</a>
+							<a href="#" v-on:tap="tabOnTap('已流拍')" class="lk" v-bind:class="{cur: status == '已流拍'}">已流拍</a>
+						</div>
+						<ul class="pm_list">
+							<li v-bind:key="order.id" v-on:tap="onOrderItemTap(order.goodId, order.orderId, order.status, order.source)" v-for="order in filterredOrders" class="item clearfix">
+								<div class="img fl" v-bind:style="formatImageBackground(order.image)"></div>
+								<div class="info fr">
+									<a href="#" class="title">{{order.title}}</a>
+									<div class="bot clearfix">
+										<span class="tag yellow_gradient">{{order.source == '精品商城' && order.status == '拍卖中' ? '出售中' : order.status}}</span>
+										<a href="#" class="pink_gradient button fr">{{order.source}}</a>
+									</div>
 								</div>
-							</span>
-						</li>
-					</ul>
+							</li>
+							
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="mui-modal" v-bind:class="customerShownFlag ? 'mui-active' : ''">
-			<header class="mui-bar mui-bar-nav">
-				<span v-on:tap="closeCustomerModal" class="mui-icon mui-action-menu mui-icon-back mui-pull-left"></span>
-				<h1 class="mui-title">卖家商品管理(按客户显示)</h1>
-			</header>
-			<div id="scroll-supplier-customers" class="mui-content mui-scroll-wrapper" style="padding-top:44px;">
-				<div class="mui-scroll">
-					<ul class="mui-table-view mui-table-view-chevron">
-						<li class="mui-table-view-cell mui-media" v-on:tap="onCustomerTap(-1, null)">
-							<span class="mui-navigate-right">
-								<span class="mui-media-object mui-pull-left">全部</span>
-							</span>
-						</li>
-						<li v-bind:key="customer.id" class="mui-table-view-cell mui-media" v-on:tap="onCustomerTap(customer.id, customer.name)" v-for="customer in customers">
-							<span class="mui-navigate-right">
-								<span class="mui-media-object mui-pull-left">{{customer.name}}</span>
-							</span>
-						</li>
-					</ul>
-				</div>
+		<div v-show="customerShownFlag">
+			<div class="head clearfix">
+				<a href="javascript:;" class="hd_back fl" v-on:tap="closeCustomerModal"></a>
+				<span class="title" style="z-index:-1">卖家商品管理(按客户显示)</span>
+			</div>
+			<div class="goodscata_main">
+				<ul class="goodscata_list">
+					<li v-on:tap="onCustomerTap(-1, null)">
+						<a href="#">全部</a>
+					</li>
+					<li v-bind:key="customer.id" v-on:tap="onCustomerTap(customer.id, customer.name)" v-for="customer in customers">
+						<a href="#">{{customer.name}}</a>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-
+	import { mapGetters, mapActions } from 'vuex'
 	import mainMenu from '../components/MainMenu.vue'
-    import router from '../router.js'
+    import nav from '../utils/nav.js'
 	import fetch from '../utils/fetch.js'
-	import { formatFeaturedImage, formatImage } from '../utils/format.js'
+	import { formatFeaturedImage, formatImage, formatImageBackground } from '../utils/format.js'
 
     export default {
 		components: {
 			mainMenu
 		},
 		methods: {
+			...mapActions({
+				storeStatus: 'manage/storeSupplierStatus',
+				storeCustomer: 'manage/storeCustomer'
+			}),
 			formatImage: formatImage,
+			formatImageBackground: formatImageBackground,
 			onOrderItemTap: function(goodId, orderId, status, source){
 				if(status == '拍卖中'){
 					if(source == '精品商城'){
-						router.push(`/shop/detail/${goodId}`);
+						nav.go(`/shop/detail/${goodId}`);
 					}else{
-						router.push(`/auction/detail/${goodId}`);
+						nav.go(`/auction/detail/${goodId}`);
 					}
 					
 				}else{
-					router.push(`/supplier/order/detail/${goodId}/${orderId}`);
+					nav.go(`/supplier/order/detail/${goodId}/${orderId}`);
 				}
 			},
 			loadGoods: function(){
@@ -120,48 +118,45 @@
 				this.customerShownFlag = false;
 			},
 			onCustomerTap: function(id, name){
-				this.customerId = id;
-				this.customerName = name;
+				this.storeCustomer({
+					id: id,
+					name: name
+				});
 				this.customerShownFlag = false;
+			},
+			tabOnTap: function(status){
+				this.storeStatus(status);
+				//this.status = status;
 			}
 		},
         data(){
             return {
 				orders: [],
-				status: '拍卖中',
 				customerShownFlag: false,
-				customerId: -1,
-				customerName: null,
+				//customer: null,
 				customers: []
             }
         },
 		computed: {
+			...mapGetters({
+				status: 'manage/supplierStatus',
+				customer: 'manage/customer'
+			}),
 			filterredOrders: function(){
-				if(this.customerId == -1){
+				if(this.customer.id == -1){
 					return this.orders.filter(e => e.status == this.status);
 				}else{
-					console.log(this.customerId);
-					console.log(this.orders);
-					return this.orders.filter(e => e.status == this.status && e.buyer == this.customerId);
+					return this.orders.filter(e => e.status == this.status && e.buyer == this.customer.id);
 				}
 			}
 		},
         mounted() {
-
-			$('.tab-item').on('tap', function(e){
-				this.status = $(e.target).data('status');
-			}.bind(this));
-
-			$('.sub-item').on('tap', function(e){
-				this.status = $(e.target).data('status');
-			}.bind(this));
 			
 			this.loadGoods();
 			this.loadCustomers();
         },
 		updated(){
-			mui("#scroll-supplier-orders").scroll();
-			mui("#scroll-supplier-customers").scroll();
+			
 		}
     }
 </script>

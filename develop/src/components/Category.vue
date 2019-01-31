@@ -1,26 +1,22 @@
 <template>
-    <div>
-         <!-- 主页面标题 -->
-        <header class="mui-bar mui-bar-nav">
-            <a href="###" id="close-btn" class="mui-icon mui-action-menu mui-icon-back mui-pull-left"></a>
-        </header>
-        <div class="mui-content">
-            <ul class="mui-table-view" v-show="categoriesShown" style="margin-top:0px;">
-                <li class="mui-table-view-cell category-item" v-bind:key="category.id" v-bind:data-id="category.id" v-for="category in categories">
-                    <span class="mui-navigate-right" v-bind:data-id="category.id">{{category.title}}</span>
-                </li>
-            </ul>
-            <ul class="mui-table-view" v-show="categories2Shown">
-                <li class="mui-table-view-cell category2-item" 
-                    v-bind:key="category.id"
-                    v-bind:data-id="category.id" 
-                    v-bind:data-title="category.title" 
-                    v-for="category in categories2">
-                    <span class="mui-navigate-right" 
-                        v-bind:data-id="category.id" 
-                        v-bind:data-title="category.title">{{category.title}}</span>
-                </li>
-            </ul>
+    <div class="cata_main">
+        <div class="cata_menu tabmenu">
+            <li v-bind:class="{ cur: id == first.id }" class="lk" v-bind:key="first.id" v-for="first in firsts" v-on:tap="firstOnTap(first.id)">{{first.title}}</li>
+        </div>
+        <div class="cata_conta tabwrap">
+            <div class="module">
+                <div class="cata_pic">
+                    <img src="images/cata_01.jpg" alt="" class="img"/>
+                </div>
+                <ul class="cata_list clearfix">
+                    <li class="item" v-bind:key="second.id" v-for="second in seconds" v-on:tap="secondOnTap(second.id, second.title)">
+                        <a href="#">
+                            <img v-bind:src="formatCategoryImage(second.image)" alt="" class="img"/>
+                            <h6 class="title">{{second.title}}</h6>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -29,65 +25,52 @@
     
     import fetch from '../utils/fetch.js'
     import router from '../router.js'
+    import { formatCategoryImage } from '../utils/format.js'
 
     export default {
-        props: ['search', 'close'],
+        props: ['search'],
         data(){
             return {
-                categories: [],
-                categories2: [],
-                categoriesShown: true,
-                categories2Shown: false
+                id: null,
+                firsts: [],
+                seconds: []
+            }
+        },
+        methods: {
+            formatCategoryImage: formatCategoryImage,
+            firstOnTap: function(id){
+                this.id = id;
+                this.fetchSeconds(id);
+            },
+            secondOnTap: function(id, title){
+                this.$props.search(id, title);
+            },
+            fetchSeconds: function(id){
+                fetch.get(`/user/v1/category/first/child/${id}`, null, function(data){
+                    this.seconds = data.data.map(function(item, index){
+                        return {
+                            title: item.categoryName,
+                            id: item.categorySecondId,
+                            image: item.image
+                        }
+                    });
+                }.bind(this));
             }
         },
         mounted() {
-
-            var flag = this.$route.params.flag;
-
             fetch.get(`/user/v1/category/first`, null, function(data){
-                this.categories = data.data.map(function(item, index){
+                this.firsts = data.data.map(function(item, index){
                     return {
                         title: item.categoryName,
                         id: item.categoryFirstId
-                    };
-                });
-            }.bind(this));
-
-            document.getElementById('close-btn').addEventListener('tap', function(event){
-                this.$props.close();
-			}.bind(this));
-
-            mui(".mui-table-view").on('tap', '.category2-item', function(event){
-                var id = $(event.target).data('id');
-                var title = $(event.target).data('title');
-                this.$props.search(id, title);
-                this.categoriesShown = true;
-                this.categories2Shown = false;
-            }.bind(this));
-
-            mui(".mui-table-view").on('tap', '.category-item', function(event){
-                var id = $(event.target).data('id');
-                fetch.get(`/user/v1/category/first/child/${id}`, null, function(data){
-                    if(data.data.length == 0){
-                        this.categories = [];
-                    }else{
-                        this.categories2 = data.data.map(function(item, index){
-                            return {
-                                title: item.categoryName,
-                                id: item.categorySecondId
-                            };
-                        });
                     }
-                    this.categoriesShown = false;
-                    this.categories2Shown = true;
-                    
-                }.bind(this));
+                });
+                if(this.firsts.length > 0){
+                    this.id = this.firsts[0].id;
+                    this.fetchSeconds(this.firsts[0].id);
+                }
             }.bind(this));
         },
         name: 'category'
     }
 </script>
-
-<style scoped>
-    @import "../assets/category.css";
-</style>

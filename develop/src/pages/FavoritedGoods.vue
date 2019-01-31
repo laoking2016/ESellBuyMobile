@@ -1,38 +1,36 @@
 <template>
-    <div class="mui-off-canvas-wrap mui-draggable">
-		<main-menu />
-		<div class="mui-inner-wrap">
-			<!-- 主页面标题 -->
-			<header class="mui-bar mui-bar-nav">
-				<a href="#offCanvasSide" class="mui-icon mui-action-menu mui-icon-bars mui-pull-left"></a>
-				<h1 class="mui-title">关注的商品</h1>
-			</header>
-			<div id="scroll-favorite-goods" class="mui-content mui-scroll-wrapper">
-				<div class="mui-scroll">
-					<ul class="mui-table-view mui-table-view-chevron">
-						<li v-bind:key="good.id" class="mui-table-view-cell mui-media" v-for="good in goods" v-on:tap="goodOnTap(good.id, good.type)">
-							<a class="mui-navigate-right">
-								<span class="mui-media-object mui-pull-right">{{good.type}}</span>
-								<img class="mui-media-object mui-pull-left" v-bind:src="formatImage(good.image)">
-								<div class="mui-media-body">
-									{{good.title}}
-									<p class="mui-ellipsis">￥{{good.quote}}</p>
+	<div>
+		<main-menu top-button-type="MENU" header-text="关注的商品" />
+		<div class="pm_main">
+			<div class="tabwrap">
+				<div class="module">
+					<ul class="pm_list">
+						<li v-bind:key="good.id" v-for="good in goods" v-on:tap="goodOnTap(good.id, good.type)" class="item clearfix">
+							<div v-bind:style="formatImageBackground(good.image)" class="img fl"/>
+							<div class="info fr">
+								<a href="#" class="title">{{good.title}}</a>
+								<div class="bot clearfix">
+									<span class="tag yellow_gradient">{{good.quote}}</span>
+									<a href="#" class="pink_gradient button fr">{{good.type}}</a>
 								</div>
-							</a>
+							</div>
 						</li>
+						
 					</ul>
 				</div>
-			</div>  
+			</div>
 		</div>
-    </div>
+	</div>
+
+    
 </template>
 
 <script>
 
 	import fetch from '../utils/fetch.js'
 	import mainMenu from '../components/MainMenu.vue'
-    import router from '../router.js'
-	import { formatFeaturedImage, formatImage } from '../utils/format.js'
+    import nav from '../utils/nav.js'
+	import { formatFeaturedImage, formatImage, formatImageBackground } from '../utils/format.js'
 
     export default {
 		components: {
@@ -40,11 +38,12 @@
 		},
 		methods: {
 			formatImage: formatImage,
+			formatImageBackground: formatImageBackground,
 			goodOnTap: function(id, type){
 				if(type == '精品商城'){
-					router.push(`/shop/detail/${id}`);
+					nav.go(`/shop/detail/${id}`);
 				}else{
-					router.push(`/auction/detail/${id}`);
+					nav.go(`/auction/detail/${id}`);
 				}
 			}
 		},

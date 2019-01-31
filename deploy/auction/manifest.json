@@ -1,7 +1,7 @@
 {
     "@platforms" : [ "android", "iPhone", "iPad" ],
     "id" : "H5075516E", /*应用的标识，创建应用时自动生成，勿手动修改*/
-    "name" : "eBuySell", /*应用名称，程序桌面图标名称*/
+    "name" : "易买卖", /*应用名称，程序桌面图标名称*/
     "version" : {
         "name" : "1.0.0", /*应用版本名称*/
         "code" : "83"
@@ -39,8 +39,8 @@
             "plugins" : {
                 "oauth" : {
                     "weixin" : {
-                        "appid" : "wx66451f6d3810656c",
-                        "appsecret" : "4ae3bd502baba9ba24be931eb9e32394"
+                        "appid" : "wx4715639df890742f",
+                        "appsecret" : "d5599a73572a677839fcdaaf01769dcf"
                     }
                 }
             },
@@ -99,11 +99,12 @@
                     }
                 },
                 "android" : {
-                    "mdpi" : "", /*普通屏程序图标，分辨率：48x48*/
-                    "ldpi" : "", /*大屏程序图标，分辨率：48x48*/
-                    "hdpi" : "", /*高分屏程序图标，分辨率：72x72*/
-                    "xhdpi" : "", /*720P高分屏程序图标，分辨率：96x96*/
-                    "xxhdpi" : ""
+                    "mdpi" : "C:/wwz/codes/auction/logo/ICON/ICON/Android/48.png", /*普通屏程序图标，分辨率：48x48*/
+                    "ldpi" : "C:/wwz/codes/auction/logo/ICON/ICON/Android/48.png", /*大屏程序图标，分辨率：48x48*/
+                    "hdpi" : "C:/wwz/codes/auction/logo/ICON/ICON/Android/72.png", /*高分屏程序图标，分辨率：72x72*/
+                    "xhdpi" : "C:/wwz/codes/auction/logo/ICON/ICON/Android/96.png", /*720P高分屏程序图标，分辨率：96x96*/
+                    "xxhdpi" : "C:/wwz/codes/auction/logo/ICON/ICON/Android/144.png",
+                    "xxxhdpi" : "C:/wwz/codes/auction/logo/ICON/ICON/Android/192.png"
                 }
             },
             "splashscreen" : {

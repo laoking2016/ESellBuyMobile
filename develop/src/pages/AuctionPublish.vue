@@ -1,58 +1,71 @@
 <template>
     <div>
-        <div v-show="selfShown">
-            <header class="mui-bar mui-bar-nav">
-                <a href="#offCanvasSide" class="mui-action-back mui-icon mui-action-menu mui-icon-back mui-pull-left "></a>
-                <h1 class="mui-title">拍卖出品</h1>
-            </header>
-            <div class="mui-content feedback">
-                <div id="image-list" class="row image-list">
-                    <div  class="image-item space" v-bind:key="image" v-for="image in images" v-bind:style="{backgroundImage: `url(${formatImage(image)}`}">
-                        <div class="image-close" v-bind:data-image="image">X</div>
-                        <div></div>
-                    </div>
-                    <div class="image-item space">
-                        <div id="file-input" class="image-up">
-                            <input id="file-input-handler" type="file" style="display:none;">
-                        </div>
+        <main-menu top-button-type="MENU" header-text="拍卖出品"/>
+        <div v-show="dialog == 'self'">
+            <div class="pm_main">
+                <div class="pm_fileup">
+                    <div class="install_filebox">
+                        <ul class="upload-ul clearfix">
+                            <li v-bind:key="image" v-for="image in images">
+                                <div class="webuploader-container clearfix"  v-bind:style="formatImageBackground(image)">
+                                    <div class="image-close" v-on:tap="removeImageOnTag(image.image)"><b>X</b></div>
+                                </div>
+                            </li>
+                            <li class="upload-pick">
+                                <div class="webuploader-container clearfix" v-on:tap="fileInputOnTap"></div>
+                                <input id="file-input-handler" type="file" style="display:none;">
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                <form class="mui-input-group">
-                    <div class="mui-input-row">
-                        <label>商品名</label>
-                        <input type="text" v-model="goodName" placeholder="商品名称"> 
+                <div class="pm_info">
+                    <div class="good_title">
+                        <input type="text" v-model="goodName" class="ipt title" placeholder="商品名称"/>
                     </div>
-                    <div class="mui-input-row" style="height:auto;">
-                        <textarea v-model="description" class="mui-input-clear" placeholder="在此描述商品" data-input-clear="5" style="width:100%"></textarea>
+                    <div>
+                        <textarea class="ipt desc" v-model="description" placeholder="在此描述商品"></textarea>
                     </div>
-                    <div class="mui-input-row">
-                        <label>分类</label>
-                        <a id="category-btn" class="mui-navigate-right"><label style="padding-left:0px;">{{category.title}}</label></a>
-                    </div>
-                    <div class="mui-input-row">
-                        <label>邮费</label>
-                        <input type="text" v-model="postage" placeholder="单位(元)">
-                    </div>
-                    <div class="mui-input-row">
-                        <label>起拍价</label>
-                        <input type="text" v-model="originalPrice" placeholder="单位(元)">
-                    </div>
-                    <div class="mui-input-row" id="deadline-btn">
-                        <label>截标时间</label>
-                        <span class="mui-navigate-right"><label style="width:60%;padding-left:0px;">{{deadline}}</label></span>
-                    </div>
-                    <div class="mui-input-row">
-                        <label>支付方式</label>
-                        <span class="mui-navigate-right"><label id="payment-btn" style="width:60%;padding-left:0px;">{{payment}}</label></span>
-                    </div>
-                    <div class="mui-button-row">
-                        <button type="button" id="submit-btn" class="mui-btn mui-btn-danger"  style="width:90%;">上拍</button>
-                    </div>
-                </form>           
+                </div>
+                <div class="pm_showinfo border_top">
+                    <li class="item clearfix" v-on:tap="categoryOnTap">
+                        <span class="tit">分类</span>
+                        <div class="info">
+                            <input type="text" readonly v-bind:value="category.title" class="ipt ipt_txt" />
+                        </div>
+                    </li>
+                    <li class="item clearfix">
+                        <span class="tit">邮费</span>
+                        <div class="info">
+                            <input type="text" v-model="postage" class="ipt ipt_txt" placeholder="单位(元)"/>
+                        </div>
+                    </li>
+                    <li class="item clearfix">
+                        <span class="tit">起拍价</span>
+                        <div class="info">
+                            <input type="text" v-model="originalPrice" class="ipt ipt_txt" placeholder="单位(元)"/>
+                        </div>
+                    </li>
+                    <li class="item clearfix" v-on:tap="deadlineOnTap">
+                        <span class="tit">截标时间</span>
+                        <div class="info">
+                            <input type="text" readonly v-bind:value="deadline" class="ipt ipt_txt"/>
+                        </div>
+                    </li>
+                    <li class="item clearfix" v-on:tap="paymentOnTap">
+                        <span class="tit">支付方式</span>
+                        <div class="info">
+                            <input type="text" readonly v-bind:value="payment" class="ipt ipt_txt" />
+                        </div>
+                    </li>
+                    <input type="button" v-on:tap="submitOnTap" value="上拍" class="ipt ipt_button pink_gradient" />
+                </div>
             </div>
         </div>
-        <div v-show="categoryShown">
-            <category v-bind:search="processCategorySearch" v-bind:close="processCategoryClose" />
+        <div v-show="dialog == 'category'">
+            <category v-bind:search="handleCategoryCallback" />
+        </div>
+        <div v-show="dialog == 'crop'" style="margin-top: 1rem">
+            <image-crop v-bind:image="cropImage" v-bind:on-crop="onCrop"/>
         </div>
     </div>
 </template>
@@ -65,13 +78,17 @@
     import _ from 'lodash'
     import { uploadFile, uploadFileExt } from '../utils/uploader.js'
     import fetch from '../utils/fetch.js'
-    import router from '../router.js'
+    import nav from '../utils/nav.js'
     import category from '../components/Category.vue'
-    import { formatImage, isNumeric } from '../utils/format.js'
-
+    import mainMenu from '../components/MainMenu.vue'
+    import imageCrop from '../components/ImageCrop.vue'
+    import { formatImage, formatImageBackground, isNumeric } from '../utils/format.js'
+    
     export default {
         components: {
-            category
+            category,
+            imageCrop,
+            mainMenu
         },
         data(){
             return {
@@ -81,41 +98,43 @@
                 postage: null,
                 goodName: null,
                 originalPrice: null,
-                categoryShown: false,
-                selfShown: true,
                 category: {
                     id: -1,
                     title: '所有分类'
                 },
-                description: null
+                description: null,
+                dialog: 'self',
+                cropImage: null
             }
         },
         methods: {
-            processCategorySearch: function(id, title){
+            onCrop: function(args){
+                var searchedImage = this.images.filter(c => c.image == args.image);
+                
+                if(searchedImage.length == 0){
+                    this.images.push(args);
+                }
+                this.cropImage = null;
+                this.dialog = 'self';
+            },
+            handleCategoryCallback: function(id, title){
                 this.category = {
                     id: id,
                     title: title
                 };
-                this.categoryShown = false;
-                this.selfShown = true;
+                this.dialog = 'self';
             },
-            processCategoryClose: function(){
-                this.categoryShown = false;
-                this.selfShown = true;
+            formatImage: formatImage,
+            formatImageBackground: formatImageBackground,
+            removeImageOnTag: function(image){
+                var index = _.findIndex(this.images, c => c.image == image);
+                this.images.splice(index, 1);
+                this.$forceUpdate();
             },
-            formatImage: formatImage
-        },
-        mounted() {
-            
-            var _this = this;
-
-            $('#category-btn').on('tap', function(event){
-				this.categoryShown = true;
-                this.selfShown = false
-                
-			}.bind(this));
-
-            $('#file-input').on('tap', function(event){
+            categoryOnTap: function(){
+                this.dialog = 'category';
+            },
+            fileInputOnTap: function(){
                 plus.gallery.pick(function(path){
 
                     var name = path.substr(path.lastIndexOf('/') + 1);
@@ -124,14 +143,14 @@
                         src: path,
                         dst: '_doc/' + name,
                         overwrite: true,
-                        quality: 50
+                        quality: 10
                     }, function(zip){
                         uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
+
                             var url = json.data;
-                            var index = _.findIndex(this.images, c => c == url);
-                            if(index < 0){
-                                this.images.push(url);
-                            }
+                            this.cropImage = url;
+                            this.dialog = 'crop';
+
                         }.bind(this));
                     }.bind(this), function(zipe){
 
@@ -142,9 +161,8 @@
                 }.bind(this), false);
 
                 //$("#file-input-handler").trigger('click');
-            }.bind(this));
-
-            $('#deadline-btn').on('tap', function(event){
+            },
+            deadlineOnTap: function(event){
                 if(event.target.picker){
                     event.target.picker.show(function(rs){
                         this.deadline = rs.text;
@@ -162,9 +180,8 @@
                         event.target.picker = null;
                     }.bind(this));
                 }
-            }.bind(this));
-
-            $('#payment-btn').on('tap', function(event){
+            },
+            paymentOnTap: function(event){
                 if(event.target.picker){
                     event.target.picker.show(function(items){
                         if(items.length > 0){
@@ -192,62 +209,35 @@
                         event.target.picker = null;
                     }.bind(this));
                 }
-            }.bind(this));
-
-            mui(".feedback").on('tap', '.image-close', function(event){
-                var image = $(event.target).data('image');
-                var index = _.findIndex(_this.images, c => c == image);
-                this.images.splice(index, 1);
-                this.$forceUpdate();
-            }.bind(this));
-
-            $('#file-input-handler').on('change', function(event){
-                
-                var file = event.target.files[0];
-                
-                uploadFile(`/api/v1/fileUpload`, file, null, function(){
-                    if(4 == this.readyState && this.response != null){
-                        var json = eval('(' + this.response + ')');
-
-                        var url = json.data;
-                        var index = _.findIndex(_this.images, c => c == url);
-                        if(index < 0){
-                            _this.images.push(url);
-                        }
-                        event.target.value="";
-                    }
-                });
-            }.bind(this));
-
-            $('#submit-btn').on('tap', function(event){
-
+            },
+            submitOnTap: function(){
                 if(this.category.id == -1){
-                    mui.toast('请选择分类');
+                    mui.alert('请选择分类');
                     return;
                 }
 
                 if(this.postage == null){
-                    mui.toast('请输入邮费');
+                    mui.alert('请输入邮费');
                     return;
                 }
 
                 if(this.originalPrice == null){
-                    mui.toast('请输入起拍价');
+                    mui.alert('请输入起拍价');
                     return;
                 }
 
                 if(this.deadline == null){
-                    mui.toast('请输入截标时间');
+                    mui.alert('请输入截标时间');
                     return;
                 }
 
                 if(!isNumeric(this.postage)){
-                    mui.toast('邮费只能为数字格式');
+                    mui.alert('邮费只能为数字格式');
                     return;
                 }
 
                 if(!isNumeric(this.originalPrice)){
-                    mui.toast('起拍价只能为数字格式');
+                    mui.alert('起拍价只能为数字格式');
                     return;
                 }
 
@@ -261,8 +251,37 @@
                     images: JSON.stringify(this.images),
                     description: this.description
                 }, function(data){
-                    router.push('/supplier/orders')
+                    this.images = [];
+                    this.deadline = null;
+                    this.payment = '微信';
+                    this.postage = null;
+                    this.goodName = null;
+                    this.originalPrice = null;
+                    this.category = {
+                        id: -1,
+                        title: '所有分类'
+                    };
+                    this.description = null;
+                    this.dialog = 'self';
+                    this.cropImage = null;
                 }.bind(this));
+            }
+        },
+        mounted() {
+
+            $('#file-input-handler').on('change', function(event){
+                
+                var file = event.target.files[0];
+                var _this = this;
+                uploadFile(`/api/v1/fileUpload`, file, null, function(){
+                    if(4 == this.readyState && this.response != null){
+                        var json = eval('(' + this.response + ')');
+                        var url = json.data;
+                        _this.cropImage = url;
+                        _this.dialog = 'crop';
+                        event.target.value="";
+                    }
+                });
             }.bind(this));
         }
     }

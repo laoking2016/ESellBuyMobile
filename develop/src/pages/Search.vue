@@ -1,92 +1,128 @@
 <template>
     <div>
-        <div v-bind:style="{display: searchShown}">
-            <!-- 主页面标题 -->
-            <header class="mui-bar mui-bar-nav">
-                <a href="#offCanvasSide" class="mui-action-back mui-icon mui-action-menu mui-icon-back mui-pull-left"></a>
-                <div class="mui-search" style="float:right;width:90%;">
-                    <input id="search-input" type="search" v-model="keyword" class="mui-input-clear" placeholder="请输入要搜索的关键字">
-                </div>
-            </header>
-            <div class="mui-content">
-                <form class="mui-input-group">
-                    <div class="mui-input-group">
-                        <div style="height:40px;width:100%;background-color:rgba(0,0,0,.1);"></div>
-                        <div class="mui-input-row">
-                            <label id="category-btn">按类别搜索</label>
-                            <a class="mui-navigate-right"></a>
-                        </div>
-                        <div style="height:40px;width:100%;background-color:rgba(0,0,0,.1);line-height:40px;padding-left:11px;">过去保存的检索条件</div>
-                    </div>
-                </form>
+        <main-menu top-button-type="MENU" v-bind:search="onSearch" readonly="false"/>
+        <div class="search_main">
+            <div class="search_para" style="z-index:-1">
+                <li class="lk active">
+                     <span class="arrow">
+                        <em class="icon down" v-show="false"></em>
+                    </span>
+                </li>
+                <li class="lk">
+                     <span class="arrow">
+                        <em class="icon up" v-show="false"></em>
+                        <em class="icon down" v-show="false"></em>
+                    </span>
+                </li>
+                <li class="lk" v-on:tap="priceOnTap">
+                    按价格排序 <span class="arrow">
+                        <em class="icon up"></em>
+                        <em class="icon down"></em>
+                    </span>
+                </li>
             </div>
-        </div>
-        <div v-bind:style="{display: categoryShown}">
-            <category v-bind:search="processCategorySearch" v-bind:close="processCategoryClose" />
+            <div class="search_result">
+                <ul class="idx_list clearfix">
+                    <li class="item" v-bind:key="good.id" v-for="good in sortedGoods" v-on:tap="itemOnTap(good.id, good.type)">
+                        <a href="#" class="imgbox">
+                            <div v-bind:style="formatImageBackground(good.image)" class="img"/>
+                            <span v-if="good.type == '拍卖'" class="time">还有{{formatDateDiff(new Date(), new Date(good.deadline))}}</span>
+                        </a>
+                        <a href="#" class="title ellipsis">{{good.title}}</a>
+                        <p class="price">&yen;{{good.quote}}</p>
+                        
+                    </li>
+                    
+                </ul>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-    import category from '../components/Category.vue'
-    import { mapGetters, mapActions } from 'vuex'
+    import mainMenu from '../components/MainMenu.vue'
     import router from '../router.js'
-    import { SEARCH_KBN_KEYWORD, SEARCH_KBN_CATEGORY } from '../utils/const.js'
+    import nav from '../utils/nav.js'
     import fetch from '../utils/fetch.js'
+    import { formatFeaturedImage, formatImage, formatDateDiff, formatImageBackground } from '../utils/format.js'
 
     export default {
         components: {
-            category
+            mainMenu
         },
         data(){
             return {
-                categoryShown: 'none',
-                searchShown: null,
-                keyword: null
+                goods:[],
+                sortType: "PRICE_DESC"
             }
         },
         computed: {
-            ...mapGetters('search', {
-                category: 'category'
-            })
+            sortedGoods: function(){
+                var sortedList = [];
+                switch(this.sortType){
+                    case 'PRICE_DESC':
+                        sortedList = _.sortBy(this.goods, [function(e){ return e.price }]);
+                        break;
+                    case 'PRICE_ASC':
+                        sortedList = _.sortBy(this.goods, [function(e){ return e.price }]).reverse();
+                        break;
+                    default:
+                        sortedList = [];
+                        break;
+                }
+                return sortedList;
+            }
         },
         methods: {
-            ...mapActions({
-                setKeyword: 'search/setKeyword',
-                setCategory: 'search/setCategory',
-                setKbn: 'search/setKbn'
-            }),
-            processCategorySearch: function(id, title){
-                this.setKbn(SEARCH_KBN_CATEGORY);
-                this.setCategory(id);
-                router.push(`/search/result`);
-                this.categoryShown = 'none';
-                this.searchShown = null;
-            },
-            processCategoryClose: function(){
-                this.categoryShown = 'none';
-                this.searchShown = null;
-            }
+            formatImage: formatImage,
+            formatDateDiff: formatDateDiff,
+            formatImageBackground: formatImageBackground,
+            onSearch: function(keyword){
+               fetch.get(`/user/v2/goods/search/keyword/${keyword}`, null, function(data){
+                    this.goods = data.data.map(function(item, index){
+                        return {
+                            id: item.goodId,
+                            title: item.goodName,
+                            image: formatFeaturedImage(item.images),
+                            quote: item.type == '拍卖' ? Math.round(item.nextBid * 1.03) : item.topPrice,
+                            status: item.status,
+                            deadline: item.deadline,
+                            type: item.type
+                        }
+                    }.bind(this));
+                }.bind(this));
+           },
+           itemOnTap: function(id, type){
+               var url = null;
+               if('拍卖' == type){
+                   url = `/auction/detail/${id}`;
+               }else{
+                   url = `/shop/detail/${id}`;
+               }
+               //router.push(url);
+               nav.go(url);
+           },
+           timeOnTap: function(){
+               if('TIME_DESC' == this.sortType){
+                   this.sortType == 'TIME_ASC';
+               }else if('TIME_ASC' == this.sortType){
+                   this.sortType = 'TIME_DESC';
+               }else{
+                   this.sortType = 'TIME_DESC';
+               }
+               //this.$forceUpdate();
+           },
+           priceOnTap: function(){
+               if('PRICE_DESC' == this.sortType){
+                   this.sortType = 'PRICE_ASC';
+               }else{
+                   this.sortType = 'PRICE_DESC';
+               }
+               //this.$forceUpdate();
+           }
         },
         mounted() {
             
-            document.getElementById('category-btn').addEventListener('tap', function(event){
-                this.categoryShown = null;
-                this.searchShown = 'none';
-                this.$forceUpdate();
-			}.bind(this));
-
-            document.getElementById('search-input').addEventListener('keyup', function(event){
-                if(event.keyCode == 13){
-                    this.setKeyword(this.keyword);
-                    this.setKbn(SEARCH_KBN_KEYWORD);
-                    router.push('/search/result');
-                }
-            }.bind(this));
-
-            mui(".mui-row").on('tap', '.product-item', function(event){
-                router.push('/auction');
-            }.bind(this));
         }
     }
 </script>

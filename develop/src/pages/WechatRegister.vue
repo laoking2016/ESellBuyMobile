@@ -1,55 +1,36 @@
 <<template>
-    <div>
-        <header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">微信用户注册</h1>
-		</header>
-        <div class="mui-content">
-			<form class="mui-input-group">
-				<div class="mui-input-row">
-					<label>昵称</label>
-                    <span class="label">{{nickName}}</span>
-				</div>
-                <div class="mui-input-row">
-					<label>头像</label>
-                    <img class="label" v-bind:src="avatar"/>
-				</div>
-                <div class="mui-input-row">
-					<label>性别</label>
-                    <span class="label">{{sex}}</span>
-				</div>
-                <div class="mui-input-row">
-					<label>出生日期</label>
-					<label id="birth-btn" style="padding-left:0px;">{{birth}}</label>
-				</div>
-                <div class="mui-input-row">
-					<label>联系电话</label>
-					<input v-model="phone" type="text" class="mui-input-clear mui-input" placeholder="请输入电话">
-				</div>
-				<div class="mui-input-row">
-					<label>Email</label>
-					<input v-model="email" type="email" class="mui-input-clear mui-input" placeholder="请输入Email">
-				</div>
-                <div class="mui-input-row" style="height:auto;">
-					<label>联系地址</label>
-					<textarea v-model="address" type="text" class="mui-input-clear mui-input" rows="4" placeholder="请输入联系地址">
-                    </textarea>
-				</div>
-			</form>
-			<div class="mui-content-padded">
-				<button id='register-btn' class="mui-btn mui-btn-block mui-btn-primary">注册</button>
-			</div>
-			<div class="mui-content-padded">
-				<p></p>
-			</div>
-		</div>
+    <div class="reg_main">
+        <div class="reg_top">
+            <img src="images/logo.png" alt="" class="logo" />
+        </div>
+        <div class="reg_form">
+            <li class="nickname">
+                <input type="text" class="ipt ipt_txt" placeholder="请输入您的昵称"/>
+            </li>
+            <li class="sex" v-on:tap="sexOnTap">
+                <input type="text" readonly v-bind:value="sex" class="ipt ipt_txt"/>
+            </li>
+            <li class="birth" v-on:tap="birthOnTap">
+                <input type="text" readonly v-bind:value="birth" class="ipt ipt_txt"/>
+            </li>
+            <li class="tel">
+                <input type="text" v-model="phone" class="ipt ipt_txt" placeholder="请输入您的电话"/>
+            </li>
+            <li class="email">
+                <input type="text" v-model="email" class="ipt ipt_txt" placeholder="请输入您的Email"/>
+            </li>
+            <li class="address">
+                <input type="text" v-model="address" class="ipt ipt_txt" placeholder="请输入联系地址"/>
+            </li>
+            <input type="button" value="注册" class="ipt ipt_button pink_gradient" v-on:tap="registerOnTap" />
+        </div>
     </div>
 </template>
 
 <script>
     import { mapActions } from 'vuex'
     import fetch from '../utils/fetch.js'
-    import router from '../router.js'
+    import nav from '../utils/nav.js'
 
     export default {
         data(){
@@ -64,12 +45,11 @@
                 openId: null
             }
         },
-        methods: mapActions({
-            storeToken: 'user/storeToken'
-        }),
-        mounted() {
-
-            $('#sex-btn').on('tap', function(event){
+        methods: {
+            ...mapActions({
+                storeToken: 'user/storeToken'
+            }),
+            sexOnTap: function(event){
                 if(event.target.picker){
                     event.target.picker.show(function(items){
                         if(items.length > 0){
@@ -97,9 +77,8 @@
                         event.target.picker = null;
                     }.bind(this));
                 }
-            }.bind(this));
-
-            $('#birth-btn').on('tap', function(event){
+            },
+            birthOnTap: function(event){
                 if(event.target.picker){
                     event.target.picker.show(function(rs){
                         this.birth = rs.text;
@@ -118,32 +97,30 @@
                         event.target.picker = null;
                     }.bind(this));
                 }
-            }.bind(this));
-
-            $('#register-btn').on('tap', function(event){
-                
+            },
+            registerOnTap: function(){
                 if(this.phone == null || this.phone == ""){
-                    mui.toast('请输入电话');
+                    mui.alert('请输入电话');
                     return;
                 }
 
                 if(this.sex == '请选择'){
-                    mui.toast('请选择性别');
+                    mui.alert('请选择性别');
                     return;
                 }
 
                 if(this.birth == '请选择'){
-                    mui.toast('请选择出生日期');
+                    mui.alert('请选择出生日期');
                     return;
                 }
 
                 if(this.email == null || this.email == ""){
-                    mui.toast('请输入Email');
+                    mui.alert('请输入Email');
                     return;
                 }
 
                 if(this.address == null || this.address == ""){
-                    mui.toast('请输入联系地址');
+                    mui.alert('请输入联系地址');
                     return;
                 }
 
@@ -160,11 +137,12 @@
                 }, function(data){
                     if(data.code == 100){
                         this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
-                        router.push(`/`);
+                        nav.go(`/`);
                     }
                 }.bind(this));
-            }.bind(this));
-
+            }
+        },
+        mounted() {
 
             if(window.auths == null){
                 return null;

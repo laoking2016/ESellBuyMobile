@@ -1,71 +1,79 @@
 <template>
     <div>
-        <!-- 主页面标题 -->
-        <header class="mui-bar mui-bar-nav">
-            <a href="#offCanvasSide" class="mui-action-back mui-icon mui-action-menu mui-icon-back mui-pull-left"></a>
-            <h1 class="mui-title">{{title}}</h1>
-        </header>
-        <div class="mui-content">
-            <div id="slider" class="mui-slider">
-                <div class="mui-slider-group">
-                    <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
-                        <a href="#">
-                            <img style="height:220px;" v-bind:src="formatImage(image)">
-                        </a>
+        <main-menu top-button-type="BACK" v-bind:header-text="title" />
+
+        <div class="gooddet_top">
+            <div class="img_slide">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" v-bind:key="image" v-for="image in images">
+                            <div class="detail-img" v-bind:style="formatImageBackground(image)" />
+                        </div>
                     </div>
-                </div>
-                <div class="mui-slider-indicator">
-                    <div v-bind:key="image" class="mui-indicator" v-bind:class="{'mui-active': index==0}" v-for="(image, index) in images"></div>
+                    <div class="swiper-pagination"></div>
                 </div>
             </div>
-            <ul class="mui-table-view">
-				<li class="mui-table-view-cell">
-					{{title}}<div class="mui-pull-right"><span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra" v-on:tap="favoriteOnTap(id)"></span></div>
-  				</li>
-				<li class="mui-table-view-cell">
-					{{description}}
-                    <div class="mui-pull-right"></div>
-				</li>
-                <li class="mui-table-view-cell">
-                    {{renderPrice}}元
-                </li>
-                <li class="mui-table-view-cell">
-                    可供数量{{stockCount-orderCount}}
-                </li>
-                <li class="mui-table-view-cell" v-show="submitEnabledFlag">
-					<div class="mui-numbox mui-pull-left" style="width: 220px;">
-                        <button class="mui-btn mui-btn-numbox-minus" type="button" v-on:tap="buyCountOnDec">-</button>
-                        <input class="mui-input-numbox" v-model="buyCount">
-                        <button class="mui-btn mui-btn-numbox-plus" type="button" v-on:tap="buyCountOnInc">+</button>
+            <div class="info">
+                <h5 class="title">{{title}}</h5>
+                <h6 class="smtit">{{description}}</h6>
+                <div class="bot clearfix">
+                    <span class="price">
+                        &yen; <i>{{renderPrice}}</i>
+                    </span>
+                    <span class="num fr">剩余数量：{{stockCount-orderCount}}</span>
+                </div>
+                <div class="bottom clearfix" v-show="submitEnabledFlag">
+                    <div class="gooddet__num_box fl clearfix">
+                        <a id="sub" href="javascript:void(0);" class="min fl" v-on:tap="buyCountOnDec"></a>
+                        <input type="text" v-model="buyCount" class="fl text">
+                        <a id="add" href="javascript:void(0);" class="add fl" v-on:tap="buyCountOnInc"></a>
                     </div>
-                    <div class="mui-pull-right">
-                        <button id="submit-btn" type="button" class="mui-btn mui-btn-danger"  style="width:100px;">购买</button>
+                    <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="submitOnTap">购买</a>
+                </div>
+            </div>
+        </div>
+        <div class="gooddet_eval border_top">
+            <ul class="gooddet_eval_list">
+                <li class="item" v-bind:key="question.id" v-for="(question, index) in questions">
+                    <div class="item_t">
+                        <img src="images/goods_04.jpg" alt="" class="hdimg"/>
+                        <span class="name">挖掘机</span>
                     </div>
-				</li>
-			</ul>
-            <ul class="mui-table-view">
-                <li v-bind:key="question.id" class="mui-table-view-cell" v-for="(question, index) in questions">
-                    <p>提问{{index + 1}}&nbsp;&nbsp;{{question.question}}</p>
-                    <p class="mui-ellipsis" style="color:black;"><b>{{question.answer}}</b></p>
+                    <div class="item_b">
+                        <div class="group clearfix">
+                            <em class="fz fl">问</em>
+                            <div class="txt fr">
+                                提问{{index + 1}}&nbsp;&nbsp;{{question.question}}
+                            </div>
+                        </div>
+                        <div class="group clearfix">
+                            <em class="fz fl">答</em>
+                            <div class="txt fr txt_apply">
+                                {{question.answer}}
+                            </div>
+                        </div>
+                    </div>
                 </li>
-                <li class="mui-table-view-cell" style="text-align:center">
-                    <div><textarea v-model="questionInput" rows="5" placeholder=""></textarea></div>
-                    <div><button id="submit-question-btn" type="button" class="mui-btn mui-btn-danger"  style="width:100px;">提问</button></div>
-                </li>
-                
             </ul>
-            
+            <div class="gooddet_eval_textarea">
+                <textarea name="" class="ipt ipt_textarea" placeholder="这里是内容" v-model="questionInput"></textarea>
+                <input type="button" value="提问" class="ipt ipt_button yellow_gradient" v-on:tap="submitQuestionOnTap" />
+            </div>
         </div>
     </div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
-    import router from '../router.js'
+    import nav from '../utils/nav.js'
     import fetch from '../utils/fetch.js'
-    import { formatImage, formatDateDiff, formatDate2 } from '../utils/format.js'
+    import mainMenu from '../components/MainMenu.vue'
+    import { formatImage, formatDateDiff, formatDate2, formatImageBackground } from '../utils/format.js'
 
     export default {
+        components: {
+            mainMenu
+        },
         data(){
             return {
                 id: null,
@@ -99,6 +107,7 @@
             },
             formatImage: formatImage,
             formatDate2: formatDate2,
+            formatImageBackground: formatImageBackground,
             loadFavorite: function(goodId){
                 fetch.get(`/user/v2/good/${goodId}/favorite`, null, function(data){
                     this.favoriteFlag = data.data;
@@ -146,7 +155,7 @@
                 }.bind(this));
             },
             orderCountOnTap: function(id){
-                router.push(`/auction/list/${id}`);
+                nav.go(`/auction/list/${id}`);
             },
             buyCountOnInc: function(){
                 if(this.buyCount >= (this.stockCount-this.orderCount)){
@@ -159,10 +168,49 @@
                     return;
                 }
                 this.buyCount -= 1;
+            },
+            submitOnTap: function(){
+                if(this.buyCount > (this.stockCount - this.orderCount)){
+                    mui.alert('数量不能高于可供数量');
+                    return;
+                }
+
+                fetch.post(`/user/v2/good/${this.id}/order?type=精品商城`, {
+                    goodId: this.id,
+                    buyPrice: this.priceInput,
+                    goodName: this.title,
+                    goodImages: JSON.stringify(this.images),
+                    buyCount: this.buyCount
+                }, function(data){
+                    mui.toast('购买完成');
+                    this.loadGood(this.id);
+                }.bind(this));
+            },
+            submitQuestionOnTap: function(){
+                if(this.questionInput == null){
+                    mui.alert('请输入提问');
+                    return;
+                }
+
+                var question = {
+                    goodId: this.id,
+                    question: this.questionInput
+                };
+                fetch.post(`/user/v2/good/${this.id}/question`, question, function(data){
+                    this.loadQuestions(this.id);
+                    this.questionInput = "";
+                }.bind(this));
             }
         },
         updated(){
-            mui('#slider').slider({interval: 0});
+            var swiper = new Swiper('.img_slide .swiper-container', {
+                pagination: '.swiper-pagination',
+                paginationClickable: true,
+                spaceBetween: 0,
+                centeredSlides: true,
+                autoplay: 0,
+                autoplayDisableOnInteraction: false
+            });
         },
         computed: {
              ...mapGetters('user', {
@@ -188,42 +236,6 @@
         mounted() {
 
             var goodId = this.$route.params.goodId;
-
-            $('#submit-question-btn').on('tap', function(event){
-
-                if(this.questionInput == null){
-                    mui.toast('请输入提问');
-                    return;
-                }
-
-                var question = {
-                    goodId: goodId,
-                    question: this.questionInput
-                };
-                fetch.post(`/user/v2/good/${goodId}/question`, question, function(data){
-                    this.loadQuestions(goodId);
-                    this.questionInput = "";
-                }.bind(this));
-            }.bind(this));
-
-            $('#submit-btn').on('tap', function(event){
-
-                if(this.buyCount > (this.stockCount - this.orderCount)){
-                    mui.toast('数量不能高于可供数量');
-                    return;
-                }
-
-                fetch.post(`/user/v2/good/${goodId}/order?type=精品商城`, {
-                    goodId: goodId,
-                    buyPrice: this.priceInput,
-                    goodName: this.title,
-                    goodImages: JSON.stringify(this.images),
-                    buyCount: this.buyCount
-                }, function(data){
-                    mui.toast('购买完成');
-                    this.loadGood(goodId);
-                }.bind(this));
-            }.bind(this));
 
             this.loadGood(goodId)
             this.loadQuestions(goodId);

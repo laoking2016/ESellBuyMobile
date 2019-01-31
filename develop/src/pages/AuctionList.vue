@@ -1,34 +1,33 @@
 <template>
-    <div class="mui-off-canvas-wrap mui-draggable">
-        <div class="mui-inner-wrap">
-            <!-- 主页面标题 -->
-            <header class="mui-bar mui-bar-nav">
-                <a href="#offCanvasSide" class="mui-action-back mui-icon mui-action-menu mui-icon-back mui-pull-left"></a>
-                <h1 class="mui-title">{{title}}</h1>
-            </header>
-            <div class="mui-content mui-scroll-wrapper">
-                <ul class="mui-table-view mui-table-view-chevron">
-                    <li v-bind:key="order.id" class="mui-table-view-cell mui-media" v-for="(order, index) in orders">
-                        <span  class="mui-navigate-right">
-                            <span class="mui-media-object mui-pull-right order-item">{{order.price}}</span>
-                            <div class="mui-media-body">
-                                <span>{{order.buyer}}({{order.phone}})</span><span style='color:red' v-show='index == 0'>领先</span>
-                                <p class="mui-ellipsis">{{order.date}}</p>
-                            </div>
-                        </span>
-                    </li>
-                </ul>
-            </div>
+    <div>
+        <main-menu top-button-type="BACK" v-bind:header-text="title"/>
+        <div class="deadline_main">
+            <ul class="deadline_list">
+                <li class="item clearfix first" 
+                    v-bind:key="order.id" 
+                    v-bind:class="{ first: index == 0, second: index == 1, third: index == 2 }" 
+                    v-for="(order, index) in orders">
+                    <span class="rank fl">{{index}}</span>
+                    <div class="info fl">
+                        <h6 class="name">{{order.buyer}}({{order.phone}})</h6>
+                        <p class="date">{{order.date}}</p>
+                    </div>
+                    <span class="num">{{order.price}}</span>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
 
 <script>
     import fetch from '../utils/fetch.js'
-    import router from '../router.js'
+    import mainMenu from '../components/mainMenu.vue'
     import { formateTime } from '../utils/format.js'
 
     export default {
+        components: {
+            mainMenu
+        },
         data(){
             return {
                 id: null,
@@ -43,12 +42,17 @@
             fetch.get(`/user/v2/good/${this.id}`, null, function(good){
                 this.title = good.data.goodName;
                 var nextBid = good.data.nextBid;
-                this.orders = good.data.orders.map(function(item, index){
+                this.orders = good.data.orders.map(function(item, index)
+                {
+                    var price = item.buyPrice;
+                    console.log(price);
+                    if(good.data.type == '拍卖'){
+                        price = item.buyPrice > nextBid ? Math.round(nextBid * 1.03) : item.buyPrice;
+                    }
                     return {
                         buyer: item.buyerName,
                         date: formateTime(item.buyDate),
-                        //price: item.buyPrice > nextBid ? nextBid : item.buyPrice,
-                        price: item.buyPrice,
+                        price: price,
                         phone: item.phone
                     };
                 }.bind(this));

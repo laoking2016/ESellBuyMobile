@@ -11,7 +11,6 @@ import SupplierOrderDetail from './pages/SupplierOrderDetail.vue'
 import Login from './pages/Login.vue'
 import Register from './pages/Register.vue'
 import ForgetPassword from './pages/ForgetPassword.vue'
-import SearchResult from './pages/SearchResult.vue'
 import AuctionList from './pages/AuctionList.vue'
 import WechatRegister from './pages/WechatRegister.vue'
 import Instruction from './pages/Instruction.vue'
@@ -27,10 +26,6 @@ const routes = [
     {
         path: '/search',
         component: Search
-    },
-    {
-        path: '/search/result',
-        component: SearchResult
     },
     {
         path: '/auction/detail/:goodId',
@@ -97,6 +92,11 @@ const routes = [
 const router = new VueRouter({
     mode: 'hash',
     routes: routes
+})
+
+router.afterEach((to, from) => {
+    //console.log(to);
+    //console.log(from);
 })
 
 export default router

@@ -1,62 +1,45 @@
 <<template>
-    <div>
-        <header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">注册</h1>
-		</header>
-        <div class="mui-content">
-			<form class="mui-input-group">
-				<div class="mui-input-row">
-					<label>用户名</label>
-					<input v-model="userName" type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
-				</div>
-				<div class="mui-input-row">
-					<label>登录密码</label>
-					<input v-model="passWord" type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
-				</div>
-				<div class="mui-input-row">
-					<label>确认密码</label>
-					<input v-model="confirmPassword" type="password" class="mui-input-clear mui-input" placeholder="请确认密码">
-				</div>
-                <div class="mui-input-row">
-					<label>昵称</label>
-					<input v-model="nickName" type="text" class="mui-input-clear mui-input" placeholder="请输入昵称">
-				</div>
-                <div class="mui-input-row">
-					<label>性别</label>
-					<label id="sex-btn" style="padding-left:0px;">{{sex}}</label>
-				</div>
-                <div class="mui-input-row">
-					<label>出生日期</label>
-					<label id="birth-btn" style="padding-left:0px;">{{birth}}</label>
-				</div>
-                <div class="mui-input-row">
-					<label>联系电话</label>
-					<input v-model="phone" type="text" class="mui-input-clear mui-input" placeholder="请输入电话">
-				</div>
-				<div class="mui-input-row">
-					<label>Email</label>
-					<input v-model="email" type="email" class="mui-input-clear mui-input" placeholder="请输入Email">
-				</div>
-                <div class="mui-input-row" style="height:auto;">
-					<label>联系地址</label>
-					<textarea v-model="address" type="text" rows="4" class="mui-input-clear mui-input" placeholder="请输入联系地址"></textarea>
-				</div>
-			</form>
-			<div class="mui-content-padded">
-				<button id='register-btn' class="mui-btn mui-btn-block mui-btn-primary">注册</button>
-			</div>
-			<div class="mui-content-padded">
-				<p></p>
-			</div>
-		</div>
+    <div class="reg_main">
+        <div class="reg_top">
+            <img src="images/logo.png" alt="" class="logo" />
+        </div>
+        <div class="reg_form">
+            <li class="username">
+                <input type="text" v-model="userName" class="ipt ipt_txt" placeholder="请输入您的账号"/>
+            </li>
+            <li class="password">
+                <input type="text" v-model="passWord" class="ipt ipt_txt" placeholder="请输入您的密码"/>
+            </li>
+            <li class="password">
+                <input type="text" v-model="confirmPassword" class="ipt ipt_txt" placeholder="请确认您的密码"/>
+            </li>
+            <li class="nickname">
+                <input type="text" class="ipt ipt_txt" placeholder="请输入您的昵称"/>
+            </li>
+            <li class="sex" v-on:tap="sexOnTap">
+                <input type="text" readonly v-bind:value="sex" class="ipt ipt_txt"/>
+            </li>
+            <li class="birth" v-on:tap="birthOnTap">
+                <input type="text" readonly v-bind:value="birth" class="ipt ipt_txt"/>
+            </li>
+            <li class="tel">
+                <input type="text" v-model="phone" class="ipt ipt_txt" placeholder="请输入您的电话"/>
+            </li>
+            <li class="email">
+                <input type="text" v-model="email" class="ipt ipt_txt" placeholder="请输入您的Email"/>
+            </li>
+            <li class="address">
+                <input type="text" v-model="address" class="ipt ipt_txt" placeholder="请输入联系地址"/>
+            </li>
+            <input type="button" value="注册" class="ipt ipt_button pink_gradient" v-on:tap="registerOnTap" />
+        </div>
     </div>
 </template>
 
 <script>
     import { mapActions } from 'vuex'   
     import fetch from '../utils/fetch.js'
-    import router from '../router.js'
+    import nav from '../utils/nav.js'
 
     export default {
         data(){
@@ -65,18 +48,18 @@
                 passWord: null,
                 confirmPassword: null,
                 phone: null,
-                sex: '请选择',
-                birth: '请选择',
+                sex: '请选择性别',
+                birth: '请选择生日',
                 email: null,
                 address: null
             }
         },
-        methods: mapActions({
-            storeToken: 'user/storeToken'
-        }),
-        mounted() {
-
-            $('#sex-btn').on('tap', function(event){
+        methods: {
+            ...mapActions({
+                storeToken: 'user/storeToken'
+            }),
+            sexOnTap: function(event){
+                console.log(event);
                 if(event.target.picker){
                     event.target.picker.show(function(items){
                         if(items.length > 0){
@@ -104,9 +87,8 @@
                         event.target.picker = null;
                     }.bind(this));
                 }
-            }.bind(this));
-
-            $('#birth-btn').on('tap', function(event){
+            },
+            birthOnTap: function(event){
                 if(event.target.picker){
                     event.target.picker.show(function(rs){
                         this.birth = rs.text;
@@ -125,57 +107,56 @@
                         event.target.picker = null;
                     }.bind(this));
                 }
-            }.bind(this));
-
-            $('#register-btn').on('tap', function(event){
+            },
+            registerOnTap: function(){
                 
                 if(this.userName == null || this.userName == ""){
-                    mui.toast('请输入用户名');
+                    mui.alert('请输入用户名');
                     return;
                 }
 
                 if(this.passWord == null || this.passWord == ""){
-                    mui.toast('请输入密码');
+                    mui.alert('请输入密码');
                     return;
                 }
 
                 if(this.confirmPassword == null || this.confirmPassword == ""){
-                    mui.toast('请输入确认密码');
+                    mui.alert('请输入确认密码');
                     return;
                 }
 
                 if(this.passWord != this.confirmPassword){
-                    mui.toast('密码和确认密码必须相同');
+                    mui.alert('密码和确认密码必须相同');
                     return;
                 }
 
                 if(this.nickName == null || this.nickName == ""){
-                    mui.toast('请输入昵称');
+                    mui.alert('请输入昵称');
                     return;
                 }
 
-                if(this.sex == '请选择'){
-                    mui.toast('请选择性别');
+                if(this.sex == '请选择性别'){
+                    mui.alert('请选择性别');
                     return;
                 }
 
                 if(this.birth == '请选择'){
-                    mui.toast('请选择出生日期');
+                    mui.alert('请选择出生日期');
                     return;
                 }
                 
                 if(this.phone == null || this.phone == ""){
-                    mui.toast('请输入电话');
+                    mui.alert('请输入电话');
                     return;
                 }
 
                 if(this.email == null || this.email == ""){
-                    mui.toast('请输入Email');
+                    mui.alert('请输入Email');
                     return;
                 }
 
                 if(this.address == null || this.address == ""){
-                    mui.toast('请输入联系地址');
+                    mui.alert('请输入联系地址');
                     return;
                 }
 
@@ -192,53 +173,14 @@
                 }, function(data){
                     if(data.code == 100){
                         this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
-                        router.push(`/`);
+                        nav.go(`/`);
                     }else if(data.code = -1005){
-                        mui.toast('用户名已存在');
+                        mui.alert('用户名已存在');
                     }
                 }.bind(this));
-            }.bind(this));
+            }
+        },
+        mounted() {
         }
     }
 </script>
-
-<style scoped>
-    .ui-page-login,
-    body {
-        width: 100%;
-        height: 100%;
-        margin: 0px;
-        padding: 0px;
-    }
-    .mui-content{height: 100%;}
-    .area {
-        margin: 20px auto 0px auto;
-    }
-    .mui-input-group:first-child {
-        margin-top: 20px;
-    }
-    .mui-input-group label {
-        width: 22%;
-    }
-    .mui-input-row label~input,
-    .mui-input-row label~select,
-    .mui-input-row label~textarea {
-        width: 78%;
-    }
-    .mui-checkbox input[type=checkbox],
-    .mui-radio input[type=radio] {
-        top: 6px;
-    }
-    .mui-content-padded {
-        margin-top: 25px;
-    }
-    .mui-btn {
-        padding: 10px;
-    }
-    .mui-input-group label{
-        width: 30%;
-    }
-    .mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea{
-        width: 70%;
-    }
-</style>

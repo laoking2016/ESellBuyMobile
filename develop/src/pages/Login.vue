@@ -1,49 +1,55 @@
 <template>
     <div>
-        <header class="mui-bar mui-bar-nav">
-            <h1 class="mui-title">登录</h1>
-        </header>
-        <div class="mui-content">
-            <div class="mui-message mui-badge-yellow" v-show="error != null"><span class="mui-icon mui-icon-info"></span>{{error}}</div>
-            <form id='login-form' class="mui-input-group">
-                <div class="mui-input-row">
-                    <label>账号</label>
-                    <input id='account-input' v-model="username" type="text" class="mui-input-clear mui-input" placeholder="请输入账号" value="test@163.com">
-                </div>
-                <div class="mui-input-row">
-                    <label>密码</label>
-                    <input id='password-input' v-model="password" type="password" class="mui-input-clear mui-input" placeholder="请输入密码" value="111111">
-                </div>
-            </form>
-            <div class="mui-content-padded">
-                <button id='login-btn' type="button" class="mui-btn mui-btn-block mui-btn-primary">登录</button>
-                <div class="link-area"><a id='register-btn'>注册账号</a> <!--span class="spliter">|</span> <a id='forgetPassword-btn'>忘记密码</a-->
-                </div>
+        <div class="reg_main">
+            <div class="reg_top">
+                <img src="images/logo.png" alt="" class="logo">
             </div>
-            <div class="mui-content-padded oauth-area">
-                <span class="mui-icon mui-icon-weixin"></span>
+            <div class="reg_form login_form">
+                <li class="username">
+                    <input type="text" v-model="username" class="ipt ipt_txt" placeholder="请输入您的账号">
+                </li>
+                <li class="password">
+                    <input type="password" v-model="password" class="ipt ipt_txt" placeholder="请输入您的密码">
+                </li>
+                <input type="button" value="登录" class="ipt ipt_button pink_gradient" v-on:tap="handleLogin">
+                <div class="tips">
+                    <a href="#" class="lk" v-on:tap="handleWechatLogin">微信登陆</a>|
+                    <a href="#" class="lk" v-on:tap="handleRegister">注册账号</a>
+                </div>
+                <a href="#" class="vx_icon" v-show="false" v-on:tap="handleWechatLogin"></a>
             </div>
         </div>
     </div>
-    
 </template>
 
 <script>
     import { mapActions } from 'vuex'
-    import router from '../router.js'
+    import nav from '../utils/nav.js'
     import fetch from '../utils/fetch.js'
 
     export default {
         mounted() {
-            $('#login-btn').on('tap', function(e){
-
+        },
+        data(){
+            return {
+                username: null,
+                password: null,
+                error: null
+            }
+        },
+        methods: {
+            ...mapActions({
+                storeToken: 'user/storeToken',
+                storeUserId: 'user/storeUserId'
+            }),
+            handleLogin: function(){
                 if(this.username == null || this.username == ""){
-                    mui.toast('请输入用户名');
+                    mui.alert('请输入用户名');
                     return;
                 }
 
                 if(this.password == null || this.password == ""){
-                    mui.toast('请输入密码');
+                    mui.alert('请输入密码');
                     return;
                 }
 
@@ -52,18 +58,16 @@
                         this.storeUserId(data.data.userId);
                         this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
                         this.error = null;
-                        router.push(`/`);
+                        nav.go(`/`);
                     }
                 }.bind(this), function(data){
                     this.error = data.message;
                 }.bind(this));
-            }.bind(this));
-
-            $('#register-btn').on('tap', function(e){
-                router.push("/register");
-            }.bind(this));
-
-            $('.mui-icon-weixin').on('tap', function(e){
+            },
+            handleRegister: function(){
+                nav.go("/register");
+            },
+            handleWechatLogin: function(){
                 if(window.auths == null){
                     return;
                 }
@@ -75,33 +79,22 @@
                             this.storeUserId(data.data.userId);
                             this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
                             this.error = null;
-                            router.push(`/`);
+                            nav.go(`/`);
                         }
                     }.bind(this), function(error){
                         if(error.code == -1002){
-                            router.push('/wechat/register')
+                            nav.go('/wechat/register')
                         }else if(error.code == -1001){
                             this.error = data.message;
                         }
                     }.bind(this));
                 }.bind(this), function(e){
-                    mui.toast('微信认证失败' + JSON.stringify(e));
+                    mui.alert('微信认证失败' + JSON.stringify(e));
                 }.bind(this), {
                     scope: 'snsapi_userinfo'
                 });
-            }.bind(this));
-        },
-        data(){
-            return {
-                username: null,
-                password: null,
-                error: null
             }
-        },
-        methods: mapActions({
-            storeToken: 'user/storeToken',
-            storeUserId: 'user/storeUserId'
-        })
+        } 
     }
 </script>
 

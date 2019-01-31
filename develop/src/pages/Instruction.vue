@@ -1,54 +1,60 @@
 <template>
     <div>
-        <!-- 主页面标题 -->
-        <header class="mui-bar mui-bar-nav">
-            <a href="#offCanvasSide" class="mui-action-back mui-icon mui-action-menu mui-icon-back mui-pull-left"></a>
-            <h1 class="mui-title">竞价说明</span></h1>
-        </header>
-        <div class="mui-content" style="padding:10px;margin-top:45px;">
-            <h3>拍片描述标准</h3>
-            <h4>邮品类品相</h4>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th style="width:75px;">中文名称</th>
-                        <th style="width:40px;">符号</th>
-                        <th>描述</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-bind:key="map.name" v-for="map in maps">
-                        <td align="center">{{map.name}}</td>
-                        <td align="center">{{map.mark}}</td>
-                        <td>{{map.description}}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <h4>纸钞类品相</h4>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th style="width:40px;">符号</th>
-                        <th>描述</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-bind:key="paper.mark" v-for="paper in pagers">
-                        <td align="center">{{paper.mark}}</td>
-                        <td>{{paper.description}}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <h4>购买流程</h4>
-            <ol>
-                <li v-bind:key="step" v-for="step in steps">{{step}}</li>
-            </ol>
+        <main-menu top-button-type="MENU" header-text="竞价说明" />
+        <div class="bidding_main">
+            <div class="bidding_module">
+                <h5 class="t_tit">拍片描述标准</h5>
+                <h6 class="b_smtit">邮品类品相</h6>
+                <table class="bidding_table">
+                    <thead>
+                        <tr><th width="20%">中文名称</th>
+                        <th width="20%">符号</th>
+                        <th width="60%">描述</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr v-bind:key="map.name" v-for="map in maps">
+                            <td align="center">{{map.name}}</td>
+                            <td align="center">{{map.mark}}</td>
+                            <td>{{map.description}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="bidding_module">
+                <h6 class="b_smtit">邮品类品相</h6>
+                <table class="bidding_table">
+                    <thead>
+                        <tr><th width="20%">符号</th>
+                        <th width="80%">描述</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr v-bind:key="paper.mark" v-for="paper in pagers">
+                            <td align="center">{{paper.mark}}</td>
+                            <td>{{paper.description}}</td>
+                        </tr>
+                    </tbody>
+                </table> 
+            </div>
+            
+            <div class="bidding_module">
+                <h6 class="b_smtit">购买流程</h6>
+                <div class="text">
+                    <p v-bind:key="step" v-for="step in steps">{{step}}</p>
+                </div>
+            </div>   
         </div>
     </div>
+    
 </template>
 
 <script>
+    import mainMenu from '../components/MainMenu.vue'
+
     export default {
+        components: {
+            mainMenu
+        },
         data(){
             return {
                 maps:[
@@ -126,15 +132,15 @@
                     }
                 ],
                 steps:[
-                    "所有参与拍卖者必须登记成为会员",
-                    "本拍卖出价结算为人民币（外币按当时汇率计算）",
-                    "本拍卖所有拍品保真保品。如果实物与图不符签收后3日内包退。",
-                    "买家需付成交价的3%佣金，（中国内地包申通或顺丰到付，香港/澳门及海外地区包香港平邮，挂号另外加收20元，或香港店取）",
-                    "拍品成交后，5天内可以通过微信、香港银行转账或PAYPAL (额外5%附加费)付款，付款确认后3个工作天内发货。",
-                    "拍卖结束后逾期（超过5天，不超过10天）未完成付款的，将会被额外收取额外每件10元的逾期行政费，如超过10天不付款，有关成交将被取消，该用户账号将被警告，如果再出现不付款，则取消有关账号竞拍资格。",
-                    "拍卖可以免费保存最多15天，超过15天则需另外收取保管费，每项0.5元1日。",
-                    "所有拍品都有详细描述跟图片，请群友仔细查阅后竞价 ，出价无悔。",
-                    "本公司拥有最终解释权，如对拍卖有疑问可以联系本公司微信号yibuysell。"
+                    "1.所有参与拍卖者必须登记成为会员",
+                    "2.本拍卖出价结算为人民币（外币按当时汇率计算）",
+                    "3.本拍卖所有拍品保真保品。如果实物与图不符签收后3日内包退。",
+                    "4.买家需付成交价的3%佣金，（中国内地包申通或顺丰到付，香港/澳门及海外地区包香港平邮，挂号另外加收20元，或香港店取）",
+                    "5.拍品成交后，5天内可以通过微信、香港银行转账或PAYPAL (额外5%附加费)付款，付款确认后3个工作天内发货。",
+                    "6.拍卖结束后逾期（超过5天，不超过10天）未完成付款的，将会被额外收取额外每件10元的逾期行政费，如超过10天不付款，有关成交将被取消，该用户账号将被警告，如果再出现不付款，则取消有关账号竞拍资格。",
+                    "7.拍卖可以免费保存最多15天，超过15天则需另外收取保管费，每项0.5元1日。",
+                    "8.所有拍品都有详细描述跟图片，请群友仔细查阅后竞价 ，出价无悔。",
+                    "9.本公司拥有最终解释权，如对拍卖有疑问可以联系本公司微信号yibuysell。"
                 ]
             }
         }

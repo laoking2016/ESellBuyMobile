@@ -1,74 +1,106 @@
 <template>
     <div>
-        <!-- 主页面标题 -->
-        <header class="mui-bar mui-bar-nav">
-            <a href="#offCanvasSide" class="mui-action-back mui-icon mui-action-menu mui-icon-back mui-pull-left"></a>
-            <h1 class="mui-title">{{title}}</h1>
-        </header>
-        <div class="mui-content">
-            <div id="slider" class="mui-slider">
-                <div class="mui-slider-group">
-                    <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
-                        <a href="#">
-                            <img style="height:220px;" v-bind:src="formatImage(image)">
-                        </a>
+        <main-menu top-button-type="BACK" v-bind:header-text="title" />
+        <div class="gooddet_top">
+            <div class="img_slide">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" v-bind:key="image" v-for="image in images">
+                            <div class="detail-img" v-bind:style="formatImageBackground(image)" />
+                        </div>
                     </div>
-                </div>
-                <div class="mui-slider-indicator">
-                    <div v-bind:key="image" class="mui-indicator" v-bind:class="{'mui-active': index==0}" v-for="(image, index) in images"></div>
+                    <div class="swiper-pagination"></div>
                 </div>
             </div>
-            <div class="title" style="padding:10px;margin-top:0px;margin-bottom:0px;">
-                <div style="line-height:normal">截止时间 {{formatDate2(new Date(this.deadline))}}</div>
-                <div style="line-height:normal">剩余{{remainTitle}}   <span v-on:tap="orderCountOnTap(id)">出价次数{{orderCount}}次</span>{{buyerName == null ? '' : '(' + buyerName + ')'}}</div>
+            <div class="info">
+                <h6 class="title">{{title}}</h6>
             </div>
-            <ul class="mui-table-view">
-				<li class="mui-table-view-cell">
-					{{title}}<div class="mui-pull-right"><span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra" v-on:tap="favoriteOnTap(id)"></span></div>
-  				</li>
-				<li class="mui-table-view-cell">
-					{{description}}
-                    <div class="mui-pull-right"></div>
-				</li>
-				<li class="mui-table-view-cell" style="text-align:center;padding:20px;">
-					当前价格{{renderPrice}}元(含3%手续费不含邮费, 邮费{{postage}}元)</br>
-                    <b v-show="ownerFlag" style="color:red">您已是最高出价者</b>
-                    <b v-show="!ownerFlag && buyerFlag" style="color:red">您的出价未超过最高出价者</b>
-				</li>
-                <li class="mui-table-view-cell" v-show="submitEnabledFlag">
-					<div class="mui-numbox mui-pull-left" style="width: 220px;">
-                        <button class="mui-btn mui-btn-numbox-minus" type="button" v-on:tap="priceOnDec">-</button>
-                        <input class="mui-input-numbox" v-model="priceInput">
-                        <button class="mui-btn mui-btn-numbox-plus" type="button" v-on:tap="priceOnInc">+</button>
+        </div>
+        <div class="gooddet_para border_top">
+            <div class="row clearfix">
+                <span class="tit fl">商品名称</span>
+                <div class="info fr">
+                    {{title}}
+                </div>
+            </div>
+            <div class="row clearfix">
+                <span class="tit fl">描述</span>
+                <div class="info fr">
+                    {{description}}
+                </div>
+            </div>
+            <div class="row">
+                <li class="clearfix">
+                    <em class="icon icon_1 fl">截至</em>
+                    <div class="txt fl">
+                        截至时间 {{formatDate2(new Date(this.deadline))}}
                     </div>
-                    <div class="mui-pull-right">
-                        <button id="submit-btn" type="button" class="mui-btn mui-btn-danger"  style="width:100px;">竞价</button>
+                </li>
+                <li class="clearfix">
+                    <em class="icon icon_2 fl">剩余</em>
+                    <div class="txt fl">
+                        剩余{{remainTitle}} <span v-on:tap="orderCountOnTap(id)">出价次数{{orderCount}}次</span>{{buyerName == null ? '' : '(' + buyerName + ')'}}
                     </div>
-				</li>
-			</ul>
-            <ul class="mui-table-view">
-                <li v-bind:key="question.id" class="mui-table-view-cell" v-for="(question, index) in questions">
-                    <p>提问{{index + 1}}&nbsp;&nbsp;{{question.question}}</p>
-                    <p class="mui-ellipsis" style="color:black;"><b>{{question.answer}}</b></p>
                 </li>
-                <li class="mui-table-view-cell" style="text-align:center">
-                    <div><textarea v-model="questionInput" rows="5" placeholder=""></textarea></div>
-                    <div><button id="submit-question-btn" type="button" class="mui-btn mui-btn-danger"  style="width:100px;">提问</button></div>
-                </li>
-                
-            </ul>
+            </div>
+        </div>
+        <div class="gooddet_pricebox border_top">
+            <p class="font">当前价格{{renderPrice}}元(含3%手续费不含邮费, 邮费{{postage}}元)</p>
+             <b v-show="ownerFlag" style="color:red">您已是最高出价者</b>
+            <b v-show="!ownerFlag && buyerFlag" style="color:red">您的出价未超过最高出价者</b>
             
+            <div class="box clearfix"  v-show="submitEnabledFlag">
+                <div class="gooddet__num_box fl clearfix">
+                    <a id="sub" href="javascript:void(0);" class="min fl" v-on:tap="priceOnDec"></a>
+                    <input type="text" class="fl text" v-model="priceInput">
+                    <a id="add" href="javascript:void(0);" class="add fl" v-on:tap="priceOnInc"></a>
+                </div>
+                <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="submitOnTap">竞价</a>
+            </div>
+        </div>
+        <div class="gooddet_eval border_top">
+            <ul class="gooddet_eval_list">
+                <li class="item" v-bind:key="question.id" v-for="(question, index) in questions">
+                    <div class="item_t">
+                        <img src="images/goods_04.jpg" alt="" class="hdimg"/>
+                        <span class="name">挖掘机</span>
+                    </div>
+                    <div class="item_b">
+                        <div class="group clearfix">
+                            <em class="fz fl">问</em>
+                            <div class="txt fr">
+                                提问{{index + 1}}&nbsp;&nbsp;{{question.question}}
+                            </div>
+                        </div>
+                        <div class="group clearfix">
+                            <em class="fz fl">答</em>
+                            <div class="txt fr txt_apply">
+                                {{question.answer}}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="gooddet_eval_textarea">
+                <textarea name="" class="ipt ipt_textarea" v-model="questionInput" placeholder="这里是内容"></textarea>
+                <input type="button" value="提问" class="ipt ipt_button yellow_gradient" v-on:tap="submitQuestionOnTap" />
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+    import mainMenu from '../components/MainMenu.vue'
     import { mapGetters } from 'vuex'
     import router from '../router.js'
     import fetch from '../utils/fetch.js'
-    import { formatImage, formatDateDiff, formatDate2 } from '../utils/format.js'
+    import nav from '../utils/nav.js'
+    import { formatImage, formatDateDiff, formatDate2, formatImageBackground } from '../utils/format.js'
 
     export default {
+        components: {
+            mainMenu
+        },
         data(){
             return {
                 id: null,
@@ -100,6 +132,7 @@
             },
             formatImage: formatImage,
             formatDate2: formatDate2,
+            formatImageBackground: formatImageBackground,
             loadFavorite: function(goodId){
                 fetch.get(`/user/v2/good/${goodId}/favorite`, null, function(data){
                     this.favoriteFlag = data.data;
@@ -117,7 +150,8 @@
             },
             loadGood: function(goodId){
                 fetch.get(`/user/v2/good/${goodId}`, null, function(data){
-                    var price = data.data.price;
+                    var price = data.data.nextBid;
+                    console.log(price);
                     this.id = data.data.goodId;
                     this.images = JSON.parse(data.data.images);
                     this.title = data.data.goodName;
@@ -130,7 +164,6 @@
                     this.orders = data.data.orders;
                     this.postage = data.data.postage;
                     if(data.data.order != null){
-                        var price = data.data.order.buyPrice;
                         this.buyerName = data.data.order.buyerName;
                         this.ownerFlag = data.data.order.ownerFlag;
                     }    
@@ -139,10 +172,15 @@
                     this.priceInput = price;
                     this.basePrice = price;
 
+                    if(data.data.order != null && this.ownerFlag){
+                        this.priceInput = data.data.order.buyPrice;
+                        this.basePrice = data.data.order.buyPrice;
+                    }
+
                 }.bind(this));
             },
             orderCountOnTap: function(id){
-                router.push(`/auction/list/${id}`);
+                nav.go(`/auction/list/${id}`);
             },
             priceOnInc: function(){
                 var inc = Math.round(this.priceInput * 0.05);
@@ -157,10 +195,51 @@
                     inc = 1;
                 }
                 this.priceInput -= inc;
+            },
+            submitOnTap: function(){
+                if(this.priceInput <= this.basePrice){
+                    mui.alert('必须高于目前出价');
+                    return;
+                }
+
+                fetch.post(`/user/v2/good/${this.id}/order?type=拍卖`, {
+                    goodId: this.id,
+                    buyPrice: this.priceInput,
+                    goodName: this.title,
+                    goodImages: JSON.stringify(this.images)
+                }, function(data){
+                    mui.toast('竞价完成');
+                    this.loadGood(this.id);
+                }.bind(this), function(data){
+                    mui.alert(data.message);
+                    this.loadGood(this.id);
+                }.bind(this));
+            },
+            submitQuestionOnTap: function(){
+                if(this.questionInput == null){
+                    mui.alert('请输入提问');
+                    return;
+                }
+
+                var question = {
+                    goodId: this.id,
+                    question: this.questionInput
+                };
+                fetch.post(`/user/v2/good/${this.id}/question`, question, function(data){
+                    this.loadQuestions(this.id);
+                    this.questionInput = "";
+                }.bind(this));
             }
         },
         updated(){
-            mui('#slider').slider({interval: 0});
+            var swiper = new Swiper('.img_slide .swiper-container', {
+                pagination: '.swiper-pagination',
+                paginationClickable: true,
+                spaceBetween: 0,
+                centeredSlides: true,
+                autoplay: 0,
+                autoplayDisableOnInteraction: false
+            });
         },
         computed: {
              ...mapGetters('user', {
@@ -186,42 +265,6 @@
         mounted() {
 
             var goodId = this.$route.params.goodId;
-
-            $('#submit-question-btn').on('tap', function(event){
-
-                if(this.questionInput == null){
-                    mui.toast('请输入提问');
-                    return;
-                }
-
-                var question = {
-                    goodId: goodId,
-                    question: this.questionInput
-                };
-                fetch.post(`/user/v2/good/${goodId}/question`, question, function(data){
-                    this.loadQuestions(goodId);
-                    this.questionInput = "";
-                }.bind(this));
-            }.bind(this));
-
-            $('#submit-btn').on('tap', function(event){
-
-                if(this.priceInput < this.basePrice){
-                    mui.toast('必须高于目前出价');
-                    return;
-                }
-
-                fetch.post(`/user/v2/good/${goodId}/order?type=拍卖`, {
-                    goodId: goodId,
-                    buyPrice: this.priceInput,
-                    goodName: this.title,
-                    goodImages: JSON.stringify(this.images)
-                }, function(data){
-                    mui.toast('竞价完成');
-                    this.loadGood(goodId);
-                }.bind(this));
-            }.bind(this));
-
             this.loadGood(goodId)
             this.loadQuestions(goodId);
             this.loadFavorite(goodId);

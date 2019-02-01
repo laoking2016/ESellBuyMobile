@@ -238,6 +238,9 @@
                     description: this.description,
                     deadline: (new Date()).setFullYear(5000, 12, 31)
                 }, function(data){
+
+                    mui.alert('上架成功');
+
                     this.images = [];
                     this.stockCount = null;
                     this.payment = '微信';

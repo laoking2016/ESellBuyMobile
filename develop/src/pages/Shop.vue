@@ -226,7 +226,7 @@
                 return formatDateDiff(new Date(), new Date(this.deadline));
             },
             submitEnabledFlag: function(){
-                return this.supplier != this.userId;
+                return this.supplier != this.userId && this.stockCount - this.orderCount > 0;
             },
             buyerFlag: function(){
                 var orders = this.orders.filter(e => e.buyer == this.userId);

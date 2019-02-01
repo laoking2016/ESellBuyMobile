@@ -26,7 +26,9 @@
         "Events" : {
             "description" : "应用扩展事件"
         },
-        "OAuth" : {}
+        "OAuth" : {
+			"description": "登录授权"
+		}
     },
     "plus" : {
         "splashscreen" : {

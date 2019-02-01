@@ -251,6 +251,9 @@
                     images: JSON.stringify(this.images),
                     description: this.description
                 }, function(data){
+                    
+                    mui.alert('上拍成功');
+
                     this.images = [];
                     this.deadline = null;
                     this.payment = '微信';

@@ -13,8 +13,8 @@
                 </li>
                 <input type="button" value="登录" class="ipt ipt_button pink_gradient" v-on:tap="handleLogin">
                 <div class="tips">
-                    <a href="#" class="lk" v-on:tap="handleWechatLogin">微信登陆</a>|
-                    <a href="#" class="lk" v-on:tap="handleRegister">注册账号</a>
+                    <button style="border:none;" href="#" class="lk" v-on:tap="handleWechatLogin">微信登陆</button>|
+                    <button style="border:none" href="#" class="lk" v-on:tap="handleRegister">注册账号</button>
                 </div>
                 <a href="#" class="vx_icon" v-show="false" v-on:tap="handleWechatLogin"></a>
             </div>
@@ -67,32 +67,39 @@
             handleRegister: function(){
                 nav.go("/register");
             },
+            handleWechatLoginResult: function(openId, accessToken){
+                fetch.get(`/user/v2/user/wechat/login?openId=${openId}&accessToken=${accessToken}`, null, function(data){
+                    if(data.code == 100){
+                        this.storeUserId(data.data.userId);
+                        this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
+                        this.error = null;
+                        nav.go(`/`);
+                    }
+                }.bind(this), function(error){
+                    if(error.code == -1002){
+                        nav.go('/wechat/register')
+                    }else if(error.code == -1001){
+                        this.error = data.message;
+                    }
+                }.bind(this));
+            },
             handleWechatLogin: function(){
                 if(window.auths == null){
                     return;
                 }
                 var s = window.auths[0];
-                s.login(function(e){
-                    var result = e.target.authResult;
-                    fetch.get(`/user/v2/user/wechat/login?openId=${result.openid}&accessToken=${result.access_token}`, null, function(data){
-                        if(data.code == 100){
-                            this.storeUserId(data.data.userId);
-                            this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
-                            this.error = null;
-                            nav.go(`/`);
-                        }
-                    }.bind(this), function(error){
-                        if(error.code == -1002){
-                            nav.go('/wechat/register')
-                        }else if(error.code == -1001){
-                            this.error = data.message;
-                        }
-                    }.bind(this));
-                }.bind(this), function(e){
-                    mui.alert('微信认证失败' + JSON.stringify(e));
-                }.bind(this), {
-                    scope: 'snsapi_userinfo'
-                });
+                if(!s.authResult){
+                    s.login(function(e){
+                        var result = e.target.authResult;
+                        this.handleWechatLoginResult(result.openid, result.access_token);
+                    }.bind(this), function(e){
+                        mui.alert('微信认证失败' + JSON.stringify(e));
+                    }.bind(this), {
+                        scope: 'snsapi_userinfo'
+                    });
+                }else{
+                    this.handleWechatLoginResult(s.authResult.openid, s.authResult.access_token);
+                }
             }
         } 
     }

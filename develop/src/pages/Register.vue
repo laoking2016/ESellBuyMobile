@@ -14,7 +14,7 @@
                 <input type="text" v-model="confirmPassword" class="ipt ipt_txt" placeholder="请确认您的密码"/>
             </li>
             <li class="nickname">
-                <input type="text" class="ipt ipt_txt" placeholder="请输入您的昵称"/>
+                <input type="text" v-model="nickName" class="ipt ipt_txt" placeholder="请输入您的昵称"/>
             </li>
             <li class="sex" v-on:tap="sexOnTap">
                 <input type="text" readonly v-bind:value="sex" class="ipt ipt_txt"/>
@@ -59,7 +59,7 @@
                 storeToken: 'user/storeToken'
             }),
             sexOnTap: function(event){
-                console.log(event);
+                
                 if(event.target.picker){
                     event.target.picker.show(function(items){
                         if(items.length > 0){
@@ -169,7 +169,8 @@
                     nickName: this.nickName,
                     birth: new Date(this.birth),
                     email: this.email,
-                    address: this.address
+                    address: this.address,
+                    role: 'buyer'
                 }, function(data){
                     if(data.code == 100){
                         this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);

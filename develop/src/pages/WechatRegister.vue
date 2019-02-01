@@ -150,13 +150,11 @@
 
             var s = window.auths[0];
             if(s.authResult){
-                s.login(function(e){
-                    s.getUserInfo(function(e){
-                        this.openId = s.userInfo.openid;
-                        this.nickName = s.userInfo.nickname;
-                        this.sex = s.userInfo.sex == 1 ? '男' : '女'
-                        this.avatar = s.userInfo.headimgurl;
-                    }.bind(this));
+                s.getUserInfo(function(e){
+                    this.openId = s.userInfo.openid;
+                    this.nickName = s.userInfo.nickname;
+                    this.sex = s.userInfo.sex == 1 ? '男' : '女'
+                    this.avatar = s.userInfo.headimgurl;
                 }.bind(this));
             }
         }

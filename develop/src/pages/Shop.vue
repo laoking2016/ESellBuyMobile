@@ -14,7 +14,10 @@
                 </div>
             </div>
             <div class="info">
-                <h5 class="title">{{title}}</h5>
+                <div class="shop-info">
+                    <h5 class="title shop-title">{{title}}</h5>
+                    <div class="favorite"><span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra" v-on:tap="favoriteOnTap(id)"></span></div>
+                </div>
                 <h6 class="smtit">{{description}}</h6>
                 <div class="bot clearfix">
                     <span class="price">
@@ -32,12 +35,12 @@
                 </div>
             </div>
         </div>
-        <div class="gooddet_eval border_top">
+        <div v-show="role == 'buyer'" class="gooddet_eval border_top">
             <ul class="gooddet_eval_list">
-                <li class="item" v-bind:key="question.id" v-for="(question, index) in questions">
+                <li class="item" v-bind:key="question.id" v-for="(question, index) in filterredQuestions">
                     <div class="item_t">
-                        <img src="images/goods_04.jpg" alt="" class="hdimg"/>
-                        <span class="name">挖掘机</span>
+                        <img v-bind:src="question.avatar == null ? 'images/goods_04.jpg' : question.avatar" alt="" class="hdimg"/>
+                        <span class="name">{{question.nickName}}</span>
                     </div>
                     <div class="item_b">
                         <div class="group clearfix">
@@ -59,6 +62,31 @@
                 <textarea name="" class="ipt ipt_textarea" placeholder="这里是内容" v-model="questionInput"></textarea>
                 <input type="button" value="提问" class="ipt ipt_button yellow_gradient" v-on:tap="submitQuestionOnTap" />
             </div>
+        </div>
+        <div v-show="role == 'supplier'" class="gooddet_eval border_top">
+            <ul class="gooddet_eval_list">
+                <li class="item" v-bind:key="question.id" v-for="(question, index) in questions">
+                    <div class="item_t">
+                        <img v-bind:src="question.avatar == null ? 'images/goods_04.jpg' : question.avatar" alt="" class="hdimg"/>
+                        <span class="name">{{question.nickName}}</span>
+                    </div>
+                    <div class="item_b">
+                        <div class="group clearfix">
+                            <em class="fz fl">问</em>
+                            <div class="txt fr">
+                                提问{{index + 1}}&nbsp;&nbsp;{{question.question}}
+                            </div>
+                        </div>
+                        <div class="group clearfix">
+                            <em class="fz fl">答</em>
+                            <div class="txt fr txt_apply">
+                                <span>{{question.answer}}</span>
+                                <a href="#" style="float:right" v-on:tap="onReply(question.id)">{{question.shownFlag ? '提交' : '回复'}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -100,6 +128,27 @@
             }
         },
         methods: {
+            onReply: function(questionId){
+                console.log(questionId);
+                var question = this.questions.filter(c => c.id == questionId)[0];
+                
+                if(question == null){
+                    return;
+                }
+
+                mui.prompt(question.question, question.answer, '挖掘机', ['取消', '回复'], function(e){
+                    if(e.index != 1){
+                        return;
+                    }
+                    var answer = e.value;
+                    fetch.post(`/user/v2/good/${this.id}/question/${questionId}`, {
+                        id: questionId,
+                        answer: answer,
+                    }, function(data){
+                        question.answer = answer;
+                    }.bind(this));
+                }.bind(this));
+            },
             favoriteOnTap: function(goodId){
                 fetch.post(`/user/v2/good/${goodId}/favorite`, null, function(data){
                     this.favoriteFlag = data.data;    
@@ -117,8 +166,12 @@
                 fetch.get(`/user/v2/good/${goodId}/questions`, null, function(data){
                     this.questions = data.data.map(function(item, index){
                         return {
+                            id: item.id,
                             question: item.question,
-                            answer: item.answer == null ? '等待回答中' : item.answer
+                            answer: item.answer == null ? '等待回答中' : item.answer,
+                            nickName: item.nickName,
+                            avatar: item.avatar,
+                            questionUser: item.questionUser
                         }
                     });
                 }.bind(this));
@@ -213,9 +266,27 @@
             });
         },
         computed: {
-             ...mapGetters('user', {
-                userId: 'userId'
-            }),
+            ...mapGetters({
+                 token: 'user/token',
+                 userId: 'user/userId'
+             }),
+             role: function(){
+                 if(this.token == null){
+                    return null;
+                }
+
+                var arr = this.token.split('_');
+
+                if(arr.length == 3){
+                    return arr[2];
+                }
+
+                return null;
+            },
+            filterredQuestions: function(){
+
+                return this.questions.filter(e => e.questionUser == this.userId);
+            },
 			renderPrice: function(){
 				return Math.round(this.price * 1.03);				
 			},

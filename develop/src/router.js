@@ -17,6 +17,10 @@ import Instruction from './pages/Instruction.vue'
 import FavoritedGoods from './pages/FavoritedGoods'
 import ShopPublish from './pages/ShopPublish.vue'
 import Shop from './pages/Shop.vue'
+import My from './pages/My.vue'
+import MessageList from './pages/MessageList.vue'
+import MessageDetail from './pages/MessageDetail.vue'
+import MessageSend from './pages/MessageSend.vue'
 
 const routes = [
     {
@@ -86,6 +90,22 @@ const routes = [
     {
         path: '/shop/detail/:goodId',
         component: Shop
+    },
+    {
+        path: '/my',
+        component: My
+    },
+    {
+        path: '/message/list',
+        component: MessageList
+    },
+    {
+        path: '/message/detail/:id',
+        component: MessageDetail
+    },
+    {
+        path: '/message/send/:id',
+        component: MessageSend
     }
 ];
 

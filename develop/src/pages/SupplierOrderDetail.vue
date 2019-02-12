@@ -61,15 +61,28 @@
                 
             </div>
         </div>
-
-
-
-            <ul class="mui-table-view">
-                <li v-bind:key="question.id" class="mui-table-view-cell" v-for="(question, index) in questions">
-                    <p>提问{{index + 1}}&nbsp;&nbsp;{{question.question}}</p>
-                    <div v-if="question.shownFlag"><textarea v-bind:id="'response-input-' + question.id" rows="3" placeholder="">{{question.answer}}</textarea></div>
-                    <p v-if="question.answer" class="mui-ellipsis" style="color:black;"><b>{{question.answer}}</b></p>
-                    <div><button type="button" class="response-btn mui-btn mui-btn-danger" v-bind:data-id="question.id" style="width:100px;float:right;">{{question.shownFlag ? '提交' : '回复'}}</button></div>
+        <div class="gooddet_eval border_top">
+            <ul class="gooddet_eval_list">
+                <li class="item" v-bind:key="question.id" v-for="(question, index) in questions">
+                    <div class="item_t">
+                        <img v-bind:src="question.avatar == null ? 'images/goods_04.jpg' : question.avatar" alt="" class="hdimg"/>
+                        <span class="name">{{question.nickName}}</span>
+                    </div>
+                    <div class="item_b">
+                        <div class="group clearfix">
+                            <em class="fz fl">问</em>
+                            <div class="txt fr">
+                                提问{{index + 1}}&nbsp;&nbsp;{{question.question}}
+                            </div>
+                        </div>
+                        <div class="group clearfix">
+                            <em class="fz fl">答</em>
+                            <div class="txt fr txt_apply">
+                                <span>{{question.answer}}</span>
+                                <a href="#" style="float:right" v-on:tap="onReply(question.id)">{{question.shownFlag ? '提交' : '回复'}}</a>
+                            </div>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -118,6 +131,26 @@
             shippedOnTap: function(){
                  fetch.post(`/user/v2/order/${this.orderId}/status?value=待签收`, null, function(data){
                     nav.go(`/supplier/orders`);
+                }.bind(this));
+            },
+            onReply: function(questionId){
+                var question = this.questions.filter(c => c.id == questionId)[0];
+                
+                if(question == null){
+                    return;
+                }
+
+                mui.prompt(question.question, question.answer, '挖掘机', ['取消', '回复'], function(e){
+                    if(e.index != 1){
+                        return;
+                    }
+                    var answer = e.value;
+                    fetch.post(`/user/v2/good/${this.id}/question/${questionId}`, {
+                        id: questionId,
+                        answer: answer,
+                    }, function(data){
+                        question.answer = answer;
+                    }.bind(this));
                 }.bind(this));
             }
         },
@@ -179,12 +212,13 @@
                             id: item.id,
                             question: item.question,
                             answer: item.answer == null ? '等待回答中' : item.answer,
-                            shownFlag: false
+                            nickName: item.nickName,
+                            avatar: item.avatar
                         }
                 }.bind(this));
             }.bind(this));
 
-            mui(".mui-table-view").on('tap', '.response-btn', function(e){
+            /*mui(".mui-table-view").on('tap', '.response-btn', function(e){
                 
                 var id = $(e.target).data("id");
                 var question = this.questions.filter(c => c.id == id)[0];
@@ -205,17 +239,7 @@
                 }else{
                     question.shownFlag = !question.shownFlag;
                 }
-            }.bind(this));
-
-            $('#auction-list-btn').on('tap', function(e){
-                var id = $(e.target).data("id");
-                nav.go(`/auction/list/${id}`);
-            }.bind(this));
-
-            $('#shipped-btn').on('tap', function(e){
-
-               
-            }.bind(this));
+            }.bind(this));*/
         }
     }
 </script>

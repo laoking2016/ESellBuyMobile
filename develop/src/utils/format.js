@@ -37,6 +37,16 @@ export function formatDate2(date){
     return `${year}年${month}月${day}日${hour}时${minute}分`;
 }
 
+export function formatDate3(ticks){
+    var date = new Date(ticks);
+    var year = date.getFullYear();
+    var month = date.getMonth()+1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var minute = date.getMinutes();
+    return `${year}/${month}/${day} ${hour}:${minute}`;
+}
+
 export function formateTime(ticks){
     var date = new Date(ticks);
     var year = date.getFullYear();

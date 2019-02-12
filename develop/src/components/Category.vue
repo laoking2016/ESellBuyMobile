@@ -5,11 +5,8 @@
         </div>
         <div class="cata_conta tabwrap">
             <div class="module">
-                <div class="cata_pic">
-                    <img src="images/cata_01.jpg" alt="" class="img"/>
-                </div>
                 <ul class="cata_list clearfix">
-                    <li class="item" v-bind:key="second.id" v-for="second in seconds" v-on:tap="secondOnTap(second.id, second.title)">
+                    <li class="item" v-bind:key="second.id" v-for="second in seconds" v-on:tap="secondOnTap(second.id, second.title, second.firstId)">
                         <a href="#">
                             <img v-bind:src="formatCategoryImage(second.image)" alt="" class="img"/>
                             <h6 class="title">{{second.title}}</h6>
@@ -42,13 +39,14 @@
                 this.id = id;
                 this.fetchSeconds(id);
             },
-            secondOnTap: function(id, title){
-                this.$props.search(id, title);
+            secondOnTap: function(id, title, firstId){
+                this.$props.search(id, title, firstId);
             },
             fetchSeconds: function(id){
                 fetch.get(`/user/v1/category/first/child/${id}`, null, function(data){
                     this.seconds = data.data.map(function(item, index){
                         return {
+                            firstId: id,
                             title: item.categoryName,
                             id: item.categorySecondId,
                             image: item.image

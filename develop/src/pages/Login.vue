@@ -12,11 +12,8 @@
                     <input type="password" v-model="password" class="ipt ipt_txt" placeholder="请输入您的密码">
                 </li>
                 <input type="button" value="登录" class="ipt ipt_button pink_gradient" v-on:tap="handleLogin">
-                <div class="tips">
-                    <button style="border:none;" href="#" class="lk" v-on:tap="handleWechatLogin">微信登陆</button>|
-                    <button style="border:none" href="#" class="lk" v-on:tap="handleRegister">注册账号</button>
-                </div>
-                <a href="#" class="vx_icon" v-show="false" v-on:tap="handleWechatLogin"></a>
+                <input type="button" value="微信登陆" class="ipt ipt_button pink_gradient" v-on:tap="handleWechatLogin">
+                <input type="button" value="注册账号" class="ipt ipt_button pink_gradient" v-on:tap="handleRegister">
             </div>
         </div>
     </div>
@@ -67,8 +64,40 @@
             handleRegister: function(){
                 nav.go("/register");
             },
-            handleWechatLoginResult: function(openId, accessToken){
-                fetch.get(`/user/v2/user/wechat/login?openId=${openId}&accessToken=${accessToken}`, null, function(data){
+            handleWechatLoginResult: function(){
+
+                var s = window.auths[0];
+                if(s.authResult){
+                    s.getUserInfo(function(e){
+                        var openId = s.userInfo.openid;
+                        var nickName = s.userInfo.nickname;
+                        var sex = s.userInfo.sex == 1 ? '男' : '女'
+                        var avatar = s.userInfo.headimgurl;
+                        var phone = s.userInfo.phonenumber;
+                        var email = s.userInfo.email;
+
+                        fetch.post(`/user/v2/wechat/user`, {
+                            nickName: nickName,
+                            phone: phone,
+                            avatar: avatar,
+                            sex: sex,
+                            birth: null,
+                            email: email,
+                            address: null,
+                            openId: openId,
+                            role: 'buyer'
+                        }, function(data){
+                            if(data.code == 100){
+                                this.storeUserId(data.data.userId);
+                                this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
+                                nav.go(`/`);
+                            }
+                        }.bind(this));
+
+                    }.bind(this));
+                }
+
+                /*fetch.get(`/user/v2/user/wechat/login?openId=${openId}&accessToken=${accessToken}`, null, function(data){
                     if(data.code == 100){
                         this.storeUserId(data.data.userId);
                         this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
@@ -81,7 +110,7 @@
                     }else if(error.code == -1001){
                         this.error = data.message;
                     }
-                }.bind(this));
+                }.bind(this));*/
             },
             handleWechatLogin: function(){
                 if(window.auths == null){
@@ -91,107 +120,16 @@
                 if(!s.authResult){
                     s.login(function(e){
                         var result = e.target.authResult;
-                        this.handleWechatLoginResult(result.openid, result.access_token);
+                        this.handleWechatLoginResult();
                     }.bind(this), function(e){
                         mui.alert('微信认证失败' + JSON.stringify(e));
                     }.bind(this), {
                         scope: 'snsapi_userinfo'
                     });
                 }else{
-                    this.handleWechatLoginResult(s.authResult.openid, s.authResult.access_token);
+                    this.handleWechatLoginResult();
                 }
             }
         } 
     }
 </script>
-
-<style scoped>
-    .mui-icon-weixin{
-        font-size: 40px;
-        color: gray;
-    }
-    .ui-page-login,
-    body {
-        width: 100%;
-        height: 100%;
-        margin: 0px;
-        padding: 0px;
-    }
-    .mui-content{height: 100%;}
-
-    .area {
-        margin: 20px auto 0px auto;
-    }
-    
-    .mui-input-group {
-        margin-top: 10px;
-    }
-    
-    .mui-input-group:first-child {
-        margin-top: 20px;
-    }
-    
-    .mui-input-group label {
-        width: 22%;
-    }
-    
-    .mui-input-row label~input,
-    .mui-input-row label~select,
-    .mui-input-row label~textarea {
-        width: 78%;
-    }
-    
-    .mui-checkbox input[type=checkbox],
-    .mui-radio input[type=radio] {
-        top: 6px;
-    }
-    
-    .mui-content-padded {
-        margin-top: 25px;
-    }
-    
-    .mui-btn {
-        padding: 10px;
-    }
-    
-    .link-area {
-        display: block;
-        margin-top: 25px;
-        text-align: center;
-    }
-    
-    .spliter {
-        color: #bbb;
-        padding: 0px 8px;
-    }
-    
-    .oauth-area {
-        position: absolute;
-        bottom: 20px;
-        left: 0px;
-        text-align: center;
-        width: 100%;
-        padding: 0px;
-        margin: 0px;
-    }
-    
-    .oauth-area .oauth-btn {
-        display: inline-block;
-        width: 50px;
-        height: 50px;
-        background-size: 30px 30px;
-        background-position: center center;
-        background-repeat: no-repeat;
-        margin: 0px 20px;
-        border: solid 1px #ddd;
-        border-radius: 25px;
-    }
-    
-    .oauth-area .oauth-btn:active {
-        border: solid 1px #aaa;
-    }
-    
-    .oauth-area .oauth-btn.disabled {
-        background-color: #ddd;
-    }
-</style>

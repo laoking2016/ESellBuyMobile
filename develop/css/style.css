@@ -376,3 +376,184 @@ input[type="text"]{
 .mui-content{
     background-color: white !important;
 }
+
+.aunction-info {
+    height: .80rem;
+}
+
+.aunction-title{
+    float:left;
+}
+
+.shop-info {
+    height: .40rem;
+}
+
+.shop-title{
+    float:left;
+}
+
+.gooddet_top .info .favorite{
+    float: right;
+}
+
+.home-category{
+    height: .48rem;
+    overflow-x: scroll;
+    padding: 0;
+    width: 100%;
+    white-space: nowrap;
+}
+
+.home-category .lk{
+    font-size: .25rem;
+    color: #999999;
+    line-height: .45rem;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 .16rem;
+    border-radius: .22rem;
+}
+
+.home-category-second{
+    height: .48rem;
+    overflow-x: scroll;
+    padding: 0;
+    width: 100%;
+    white-space: nowrap;
+}
+
+.home-category-second .lk{
+    font-size: .22rem;
+    color: #999999;
+    line-height: .45rem;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 .22rem;
+    border-radius: .22rem;
+}
+
+.home-category .lk.cur{
+    color: black;
+    font-weight: bold;
+}
+
+.home-category-second .lk.cur{
+    color: black;
+    font-weight: bold;
+}
+
+.mui-bar{
+    background-color: #fff;
+    border-top: 1px solid #f1f6f9;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.bottom-menu span.login{
+    font-size: .3rem;
+    color: #333333;
+    border-bottom: 1px solid #e5e5e5;
+    padding: .4rem 0;
+    line-height: .5rem;
+    padding-left: .55rem;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: .4rem;
+    background-image: url(../images/menu_01.png);
+}
+
+.bottom-menu span.index{
+    font-size: .3rem;
+    color: #333333;
+    border-bottom: 1px solid #e5e5e5;
+    padding: .4rem 0;
+    line-height: .5rem;
+    padding-left: .55rem;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: .4rem;
+    background-image: url(../images/menu_02.png);
+}
+
+.bottom-menu span.explan{
+    font-size: .3rem;
+    color: #333333;
+    border-bottom: 1px solid #e5e5e5;
+    padding: .4rem 0;
+    line-height: .5rem;
+    padding-left: .55rem;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: .4rem;
+    background-image: url(../images/menu_03.png);
+}
+
+.my-avatar-panel{
+    line-height: 3rem;
+    height: 3rem;
+    width: 4.65rem;
+    margin: .35rem auto 0;
+}
+
+.my-avatar{
+    font-size: .60rem;
+    background-image: url(../images/reg_02.png);
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 1.5rem;
+    padding-left: 1.65rem;
+}
+
+.reg_form .username {
+    background-image: url(../images/menu_03.png);
+}
+
+.reg_form .buyer {
+    background-image: url(../images/menu_04.png);
+}
+
+.reg_form .seller {
+    background-image: url(../images/menu_05.png);
+}
+
+.reg_form .focus {
+    background-image: url(../images/menu_08.png);
+}
+
+.reg_form .explan {
+    background-image: url(../images/menu_03.png);
+}
+
+.reg_form .login {
+    background-image: url(../images/menu_02.png);
+}
+
+.message-message{
+    float:left;
+    width:4.5rem !important;
+}
+
+.message-time{
+    float:right;
+    width: auto !important;
+}
+
+.message-row{
+    padding: .1rem 0 !important;
+}
+
+.message-info{
+    width: 5.5rem !important;
+}
+
+.message-unread{
+    font-weight: bold;
+}
+
+.message-title{
+    text-align: left !important;
+    padding-right: auto !important;
+    height: auto !important;
+    margin-bottom: auto !important;
+}

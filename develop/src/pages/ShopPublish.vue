@@ -51,10 +51,10 @@
                             <input type="text" v-model="stockCount" class="ipt ipt_txt" placeholder=""/>
                         </div>
                     </li>
-                    <li class="item clearfix" v-on:tap="paymentOnTap">
+                    <li class="item clearfix">
                         <span class="tit">支付方式</span>
-                        <div class="info">
-                            <input type="text" readonly v-bind:value="payment" class="ipt ipt_txt" />
+                        <div class="info" style="width:5rem;">
+                            <button v-on:tap="paymentOnTap(index)" style="padding:5px;margin:5px;" class="mui-btn mui-btn-outlined" v-bind:class="{'mui-btn-success': item.checked}" v-bind:key="item" v-for="(item, index) in payment">{{item.name}}</button>
                         </div>
                     </li>
                     <input type="button" v-on:tap="submitOnTap" value="上架" class="ipt ipt_button pink_gradient" />
@@ -94,7 +94,32 @@
             return {
                 images: [],
                 stockCount: null,
-                payment: '微信',
+                payment: [
+                    {
+                        name: '微信',
+                        checked: true
+                    },
+                    {
+                        name: '支付宝',
+                        checked: false
+                    },
+                    {
+                        name: '内地银行转账',
+                        checked: false
+                    },
+                    {
+                        name: '香港银行转账',
+                        checked: false
+                    },
+                    {
+                        name: 'PayPal',
+                        checked: false
+                    },
+                    {
+                        name: '店取',
+                        checked: false
+                    }
+                ],
                 postage: null,
                 goodName: null,
                 originalPrice: null,
@@ -117,7 +142,7 @@
                 this.cropImage = null;
                 this.dialog = 'self';
             },
-            handleCategoryCallback: function(id, title){
+            handleCategoryCallback: function(id, title, firstId){
                 this.category = {
                     id: id,
                     title: title
@@ -162,34 +187,8 @@
 
                 //$("#file-input-handler").trigger('click');
             },
-            paymentOnTap: function(event){
-                if(event.target.picker){
-                    event.target.picker.show(function(items){
-                        if(items.length > 0){
-                            this.payment = items[0].value;
-                        }
-                        event.target.picker.dispose();
-                        event.target.picker = null;
-                    }.bind(this));
-                }else{
-                    event.target.picker = new mui.PopPicker();
-                    event.target.picker.setData([
-                        {
-                            value: '微信',
-                            text: '微信'
-                        },{
-                            value: '支付宝',
-                            text: '支付宝'
-                        }
-                    ]);
-                    event.target.picker.show(function(items){
-                        if(items.length > 0){
-                            this.payment = items[0].value;
-                        }
-                        event.target.picker.dispose();
-                        event.target.picker = null;
-                    }.bind(this));
-                }
+            paymentOnTap: function(index){
+                this.payment[index].checked = !this.payment[index].checked;
             },
             submitOnTap: function(){
                 if(this.category.id == -1){
@@ -233,7 +232,7 @@
                     postage: this.postage,
                     price: this.originalPrice,
                     stockCount: this.stockCount,
-                    payment: this.payment,
+                    payment: JSON.stringify(this.payment),
                     images: JSON.stringify(this.images),
                     description: this.description,
                     deadline: (new Date()).setFullYear(5000, 12, 31)

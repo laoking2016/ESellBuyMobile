@@ -2,7 +2,7 @@
     <div>
         <main-menu top-button-type="BACK" header-text="我的消息" />
         <div class="pm_main">
-            <ul class="pm_list">
+            <ul class="pm_list" id="message-list">
                 <li v-bind:key="message.id" v-for="message in messages" 
                     class="item clearfix message-row" v-bind:class="{'message-unread': !message.readFlag && userId == message.receiver}"
                     v-on:tap="onReply(message.id)">
@@ -33,22 +33,28 @@
         },
         data(){
             return {
+                page: 1,
                 messages: []
             }
         },
         mounted(){
-            fetch.get(`/user/v2/user/messages`, null, function(data){
-                this.messages = data.data.map(function(item, index){
-                    return {
-                        id: item.id,
-                        title: item.title,
-                        message: item.message,
-                        messageTime: item.messageTime,
-                        readFlag: item.readFlag,
-                        receiver: item.receiver
+            this.loadMessage(this.page);
+            
+
+            var _this = this;
+
+            mui("#message-list").pullToRefresh({
+                up: {
+                    callback: function(){
+                        var self = this;
+                        setTimeout(function(){
+                            _this.page = _this.page + 1;
+                            _this.loadMessage(_this.page);
+                            self.endPullUpToRefresh();
+                        }, 1000);
                     }
-                }.bind(this));
-            }.bind(this));
+                }
+            });
         },
         computed: {
             ...mapGetters({
@@ -62,6 +68,20 @@
             },
             onReply: function(id){
                 nav.go(`/message/detail/${id}`);
+            },
+            loadMessage: function(page){
+                fetch.get(`/user/v2/user/messages?page=${page}`, null, function(data){
+                    data.data.map(function(item, index){
+                        this.messages.push({
+                            id: item.id,
+                            title: item.title,
+                            message: item.message,
+                            messageTime: item.messageTime,
+                            readFlag: item.readFlag,
+                            receiver: item.receiver
+                        });
+                    }.bind(this));
+                }.bind(this));
             }
         }
     }

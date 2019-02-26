@@ -5,11 +5,11 @@
             <li class="my-avatar" v-bind:style="{backgroundImage: `url(${avatar})`}">我的管理</li>
         </div>
         <div class="reg_form">
-            <li class="username">编辑我的信息</li>
+            <li class="username" v-on:tap="onProfile">编辑我的信息</li>
             <li class="seller" v-on:tap="onSeller">我发布的商品</li>
             <li class="buyer" v-on:tap="onBuyer">我出价的商品</li>
             <li class="focus" v-on:tap="onFavorite">我关注的商品</li>
-            <li class="explan" v-on:tap="onMessageList">我的消息</li>
+            <li class="explan" v-on:tap="onMessageList">我的消息<b v-show="unReadCount > 0">({{unReadCount}})</b></li>
             <li class="login" v-on:tap="onLogout">登出</li>
         </div>
     </div>
@@ -26,19 +26,26 @@
         },
         data(){
             return {
-                avatar: null
+                avatar: null,
+                messages: []
             }
         },
         computed: {
             ...mapGetters({
                 userId: 'user/userId'
-            })
+            }),
+            unReadCount: function(){
+                return this.messages.filter(e => e.readFlag == false && e.receiver == this.userId).length;
+            }
         },
         methods: {
             ...mapActions({
                 storeUserId: 'user/storeUserId',
                 storeToken: 'user/storeToken'
             }),
+            onProfile: function(){
+                nav.go('/profile');
+            },
             onMessageList: function(){
                 nav.go('/message/list');
             },
@@ -68,6 +75,19 @@
         mounted() {
             fetch.get(`/user/v1/user/${this.userId}`, null, function(data){
                 this.avatar = data.data.avatar;
+            }.bind(this));
+
+            fetch.get(`/user/v2/user/messages`, null, function(data){
+                data.data.map(function(item, index){
+                    this.messages.push({
+                        d: item.id,
+                        title: item.title,
+                        message: item.message,
+                        messageTime: item.messageTime,
+                        readFlag: item.readFlag,
+                        receiver: item.receiver
+                    });
+                }.bind(this));
             }.bind(this));
         }
     }

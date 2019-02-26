@@ -28,6 +28,52 @@ class fetch {
         });
     }
 
+    put(url, data, success, error){
+        mui.ajax(`${API_URL}${url}`, {
+            data: data,
+            dataType: 'json',
+            type: 'put',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': store.state.user.token
+            },
+            success: function(data){
+                success(data);
+            },
+            error: function(xhr, type, errorThrown){
+                if(xhr.status == 401){
+                    router.push('/login')
+                }else{
+                    var data = JSON.parse(xhr.response)
+                    error(data);
+                }
+            }
+        });
+    }
+
+    patch(url, data, success, error){
+        mui.ajax(`${API_URL}${url}`, {
+            data: data,
+            dataType: 'json',
+            type: 'patch',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': store.state.user.token
+            },
+            success: function(data){
+                success(data);
+            },
+            error: function(xhr, type, errorThrown){
+                if(xhr.status == 401){
+                    router.push('/login')
+                }else{
+                    var data = JSON.parse(xhr.response)
+                    error(data);
+                }
+            }
+        });
+    }
+
     get(url, data, success, error){
         mui.ajax(`${API_URL}${url}`, {
             data: data,

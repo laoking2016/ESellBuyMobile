@@ -20,26 +20,36 @@
                     <li class="lk" v-bind:class="{ cur: index == 1 }" v-on:tap="switchTo(1)">精品商城</li>
                     <!--li class="lk">最新消息</li-->
                 </div>
-                <div class="mui-content">
-                    <div v-show="index == 0" class="mui-row idx_list clearfix">
-                        <div class="mui-col-sm-6 item" v-bind:key="good.id" v-on:tap="auctionItemOnTap(good.id)" v-for="good in filterredAuctionGoods">
+                <div class="search_para home-price">
+                    <li class="lk" v-on:tap="priceOnTap">
+                        按价格排序 <span class="arrow">
+                            <em class="icon up"></em>
+                            <em class="icon down"></em>
+                        </span>
+                    </li>
+                </div>
+                <div id="good-list">
+                    <ul v-show="index == 0" class="idx_list clearfix">
+                        <li class="item" v-bind:key="good.id" v-on:tap="auctionItemOnTap(good.id)" v-for="good in filterredAuctionGoods">
                             <a href="#" class="imgbox">
-                                <div class="img" v-bind:style="formatImageBackground(good.image)" />
+                                <div v-bind:style="formatImageBackground(good.image)" class="img"/>
                                 <span class="time">还有{{formatDateDiff(new Date(), new Date(good.deadline))}}</span>
                             </a>
                             <a href="#" class="title ellipsis">{{good.title}}</a>
                             <p class="price">&yen;{{good.quote}}</p>
-                        </div>
-                    </div>
-                    <div v-show="index == 1" class="mui-row idx_list clearfix">
-                        <div class="mui-col-sm-6 item" v-bind:key="good.id" v-on:tap="shopItemOnTap(good.id)" v-for="good in filterredShopGoods">
-                            <a href="#" class="imgbox">
-                            <div class="img" v-bind:style="formatImageBackground(good.image)" />
-                        </a>
-                        <a href="#" class="title ellipsis">{{good.title}}</a>
-                        <p class="price">&yen;{{good.quote}}</p>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
+                    <ul v-show="index == 1" class="idx_list clearfix">
+                        <li class="item" v-bind:key="good.id" v-on:tap="shopItemOnTap(good.id)" v-for="good in filterredShopGoods">
+    
+                                <a href="#" class="imgbox">
+                                    <div v-bind:style="formatImageBackground(good.image)" class="img"/>
+                                </a>
+                                <a href="#" class="title ellipsis">{{good.title}}</a>
+                                <p class="price">&yen;{{good.quote}}</p>
+                            
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -71,6 +81,23 @@
             formatImage: formatImage,
             formatDateDiff: formatDateDiff,
             formatImageBackground: formatImageBackground,
+            priceOnTap: function(){
+                if('PRICE_DESC' == this.sortType){
+                    this.sortType = 'PRICE_ASC';
+                }else{
+                    this.sortType = 'PRICE_DESC';
+                }
+                switch(this.sortType){
+                    case 'PRICE_DESC':
+                        this.goods.sort((a, b) => a.quote - b.quote);
+                        break;
+                    case 'PRICE_ASC':
+                        this.goods.sort((a, b) => b.quote - a.quote);
+                        break;
+                    default:
+                        break;
+                }
+            },
             shopItemOnTap: function(id){
                 nav.go(`/shop/detail/${id}`);
             },
@@ -94,6 +121,25 @@
             },
             onMoreCategory: function(){
                 this.showIndex = 1;
+            },
+            loadGoods: function(page){
+                fetch.get(`/user/v2/goods?page=${page}`, null, function(data){
+                    data.data.map(function(item, index){
+                        var image = formatFeaturedImage(item.images);
+                        this.goods.push({
+                            id: item.goodId,
+                            title: item.goodName,
+                            image: image,
+                            quote: item.type == '拍卖' ? Math.round(item.nextBid * 1.03) : item.topPrice,
+                            status: item.status,
+                            deadline: item.deadline,
+                            type: item.type,
+                            categorySecondId: item.categorySecondId,
+                            categoryFirstId: item.categoryFirstId
+                        });
+                        
+                    }.bind(this));
+                }.bind(this));
             }
         },
         computed: {
@@ -147,33 +193,30 @@
                 });
             }.bind(this));
 
-            fetch.get(`/user/v2/goods`, null, function(data){
-                this.goods = data.data.map(function(item, index){
-                    var image = formatFeaturedImage(item.images);
-                    
-                    return {
-                        id: item.goodId,
-                        title: item.goodName,
-                        image: image,
-                        quote: item.type == '拍卖' ? Math.round(item.nextBid * 1.03) : item.topPrice,
-                        status: item.status,
-                        deadline: item.deadline,
-                        type: item.type,
-                        categorySecondId: item.categorySecondId,
-                        categoryFirstId: item.categoryFirstId
-                    };
-                    
-                });
-            }.bind(this));
-
-
+            this.loadGoods(this.page);
+            var _this = this;
+            mui("#good-list").pullToRefresh({
+                up: {
+                    callback: function(){
+                        console.log("ddsd");
+                        var self = this;
+                        setTimeout(function(){
+                            _this.page = _this.page + 1;
+                            _this.loadGoods(_this.page);
+                            self.endPullUpToRefresh();
+                        }, 1000);
+                    }
+                }
+            });
 		},
         data(){
             return {
+                page: 1,
                 showIndex: 0,
                 goods: [],
                 firsts: [],
-                seconds: []
+                seconds: [],
+                sortType: "PRICE_DESC"
             }
         }
     }

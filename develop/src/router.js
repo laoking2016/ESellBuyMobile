@@ -21,6 +21,9 @@ import My from './pages/My.vue'
 import MessageList from './pages/MessageList.vue'
 import MessageDetail from './pages/MessageDetail.vue'
 import MessageSend from './pages/MessageSend.vue'
+import Profile from './pages/Profile.vue'
+import SupplierGoods from './pages/SupplierGoods.vue'
+import Contact from './pages/Contact.vue'
 
 const routes = [
     {
@@ -106,6 +109,18 @@ const routes = [
     {
         path: '/message/send/:id',
         component: MessageSend
+    },
+    {
+        path: '/profile',
+        component: Profile
+    },
+    {
+        path: '/supplier/goods/:id',
+        component: SupplierGoods
+    },
+    {
+        path: '/contact',
+        component: Contact
     }
 ];
 
@@ -115,8 +130,6 @@ const router = new VueRouter({
 })
 
 router.afterEach((to, from) => {
-    //console.log(to);
-    //console.log(from);
 })
 
 export default router

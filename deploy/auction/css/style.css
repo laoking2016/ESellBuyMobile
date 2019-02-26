@@ -62,12 +62,12 @@ html{font-size:13.333vw;}
 .idx_menu .lk.cur:after{display: block;}
 
 .idx_list{margin-left: -.2rem;}
-.idx_list .item{float: left;margin:0 0 .2rem .2rem;width: 3.4rem;}
-.idx_list .item .imgbox{display: block;border-radius:.1rem;overflow: hidden;height: 3.4rem;position:relative;}
+.idx_list .item{float: left;margin:0 0 .2rem .2rem;width: 3.4rem;background-color: #f2f5f7;}
+.idx_list .item .imgbox{display: block;border-radius: none;overflow: hidden;height: 3.4rem;position:relative;}
 .idx_list .item .img{width: 3.4rem;max-height:3.4rem;height:3.4rem}
 .idx_list .item .time{font-size: .24rem;color: #fff;background: url(../images/idx_06.png) no-repeat center;background-size:contain;width: 2.75rem;height: .44rem;position:absolute;left: 0;top: 0;line-height: .44rem;padding:0 .1rem;}
-.idx_list .item .title{font-size: .26rem;color: #333333;display: block;margin-top: .1rem;}
-.idx_list .item .price{font-size: .28rem;color: #fa192c;margin-top: .1rem;}
+.idx_list .item .title{font-size: .26rem;color: #333333;display: block;padding-left: .1rem;}
+.idx_list .item .price{font-size: .28rem;color: #fa192c;margin-bottom: .1rem;padding-left:.1rem}
 
 /*搜索结果*/
 .hd_search.w620{width: 6.2rem;}
@@ -411,7 +411,7 @@ input[type="text"]{
     line-height: .45rem;
     display: inline-block;
     vertical-align: middle;
-    padding: 0 .22rem;
+    padding: 0 .16rem;
     border-radius: .22rem;
 }
 
@@ -441,4 +441,148 @@ input[type="text"]{
 .home-category-second .lk.cur{
     color: black;
     font-weight: bold;
+}
+
+.mui-bar{
+    background-color: #fff;
+    border-top: 1px solid #f1f6f9;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.bottom-menu span.login{
+    font-size: .3rem;
+    color: #333333;
+    border-bottom: 1px solid #e5e5e5;
+    padding: .4rem 0;
+    line-height: .5rem;
+    padding-left: .55rem;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: .4rem;
+    background-image: url(../images/menu_01.png);
+}
+
+.bottom-menu span.index{
+    font-size: .3rem;
+    color: #333333;
+    border-bottom: 1px solid #e5e5e5;
+    padding: .4rem 0;
+    line-height: .5rem;
+    padding-left: .55rem;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: .4rem;
+    background-image: url(../images/menu_02.png);
+}
+
+.bottom-menu span.explan{
+    font-size: .3rem;
+    color: #333333;
+    border-bottom: 1px solid #e5e5e5;
+    padding: .4rem 0;
+    line-height: .5rem;
+    padding-left: .55rem;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: .4rem;
+    background-image: url(../images/menu_03.png);
+}
+
+.my-avatar-panel{
+    line-height: 3rem;
+    height: 3rem;
+    width: 4.65rem;
+    margin: .35rem auto 0;
+}
+
+.my-avatar{
+    font-size: .60rem;
+    background-image: url(../images/reg_02.png);
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 1.5rem;
+    padding-left: 1.65rem;
+}
+
+.reg_form .username {
+    background-image: url(../images/menu_03.png);
+}
+
+.reg_form .buyer {
+    background-image: url(../images/menu_04.png);
+}
+
+.reg_form .seller {
+    background-image: url(../images/menu_05.png);
+}
+
+.reg_form .focus {
+    background-image: url(../images/menu_08.png);
+}
+
+.reg_form .explan {
+    background-image: url(../images/menu_03.png);
+}
+
+.reg_form .login {
+    background-image: url(../images/menu_02.png);
+}
+
+.message-message{
+    float:left;
+    width:4.5rem !important;
+}
+
+.message-time{
+    float:right;
+    width: auto !important;
+}
+
+.message-row{
+    padding: .1rem 0 !important;
+}
+
+.message-info{
+    width: 5.5rem !important;
+}
+
+.message-unread{
+    font-weight: bold;
+}
+
+.message-title{
+    text-align: left !important;
+    padding-right: auto !important;
+    height: auto !important;
+    margin-bottom: auto !important;
+}
+
+.mui-pull-bottom-tips{
+    display: none;
+}
+
+.auction-supplier{
+    background-size: .5rem .5rem;
+    width: 50%;
+    background-repeat: no-repeat;
+    padding-left: .6rem;
+}
+
+.home-price{
+    z-index:-1;
+    text-align:right;
+    position:inherit;
+    padding:auto;
+    border-bottom:none;
+    margin-top: -.75rem;
+    margin-bottom: .35rem;
+}
+
+.red_gradient{
+    margin-left: .2rem;
+    background: -webkit-linear-gradient(left top, red , red);
+    background: -o-linear-gradient(bottom right, red, red); 
+    background: -moz-linear-gradient(bottom right, red, red);
+    background: linear-gradient(to bottom right, red,red);
 }

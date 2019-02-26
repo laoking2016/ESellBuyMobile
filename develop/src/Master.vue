@@ -6,7 +6,7 @@
             <a class="mui-tab-item" href="#" v-on:tap="onHome">
                 <span class="index">首页</span>
             </a>
-            <a class="mui-tab-item" href="#">
+            <a class="mui-tab-item" href="#" v-on:tap="onContact">
                 <span class="explan">联系我们</span>
             </a>
             <a class="mui-tab-item" href="#" v-on:tap="onLogin">
@@ -35,6 +35,9 @@
             }),
             onHome: function(){
                 nav.go('/');
+            },
+            onContact: function(){
+                nav.go('/contact');
             },
             onLogin: function(){
                 if(this.loginFlag){

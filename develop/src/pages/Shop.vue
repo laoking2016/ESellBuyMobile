@@ -13,6 +13,12 @@
                     <div class="swiper-pagination"></div>
                 </div>
             </div>
+            <div class="info aunction-info">
+                <h6 class="title aunction-title auction-supplier" v-bind:style='{backgroundImage: `url(${supplierImage})`}'>{{supplierName}}</h6>
+                <div class="favorite">
+                    <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="onSupplierGoods">在售商品</a>
+                </div>
+            </div>
             <div class="info">
                 <div class="shop-info">
                     <h5 class="title shop-title">{{title}}</h5>
@@ -124,7 +130,9 @@
                 postage: null,
                 favoriteFlag: false,
                 stockCount: null,
-                buyCount: 1
+                buyCount: 1,
+                supplierName: null,
+                supplierImage: null
             }
         },
         methods: {
@@ -147,6 +155,15 @@
                     }, function(data){
                         question.answer = answer;
                     }.bind(this));
+                }.bind(this));
+            },
+            onSupplierGoods: function(){
+                nav.go(`/supplier/goods/${this.supplier}`);
+            },
+            loadSupplier: function(userId){
+                fetch.get(`/user/v1/user/${userId}`, null, function(data){
+                    this.supplierName = data.data.nickName;
+                    this.supplierImage = data.data.avatar;
                 }.bind(this));
             },
             favoriteOnTap: function(goodId){
@@ -204,7 +221,7 @@
                     }
                     this.stockCount = data.data.stockCount;
                     
-
+                    this.loadSupplier(data.data.supplier);
                 }.bind(this));
             },
             orderCountOnTap: function(id){

@@ -72,6 +72,22 @@
                 this.receiverName = name;
             },
             onSend: function(){
+
+                if(this.receiverName == null || this.receiverName == ""){
+                    mui.alert('请选择收信人');
+                    return;
+                }
+
+                if(this.title == null || this.title == ""){
+                    mui.alert('请输入标题');
+                    return;
+                }
+
+                if(this.message == null || this.message == ""){
+                    mui.alert('请输入内容');
+                    return;
+                }
+
                 fetch.post(`/user/v2/message`, {
                     id: -1,
                     receiver: this.receiverId,

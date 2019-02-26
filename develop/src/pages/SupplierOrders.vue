@@ -19,17 +19,17 @@
 							<a href="#" v-on:tap="tabOnTap('已流拍')" class="lk" v-bind:class="{cur: status == '已流拍'}">已流拍</a>
 						</div>
 						<ul class="pm_list">
-							<li v-bind:key="order.id" v-on:tap="onOrderItemTap(order.goodId, order.orderId, order.status, order.source)" v-for="order in filterredOrders" class="item clearfix">
+							<li v-bind:key="order.id" v-for="order in filterredOrders" class="item clearfix">
 								<div class="img fl" v-bind:style="formatImageBackground(order.image)"></div>
 								<div class="info fr">
 									<a href="#" class="title">{{order.title}}</a>
 									<div class="bot clearfix">
 										<span class="tag yellow_gradient">{{order.source == '精品商城' && order.status == '拍卖中' ? '出售中' : order.status}}</span>
-										<a href="#" class="pink_gradient button fr">{{order.source}}</a>
+										<span v-on:tap="onCancel(order.goodId, $event)" v-show="order.status == '拍卖中' && order.source == '拍卖'" class="tag red_gradient">取消</span>
+										<a href="#" class="pink_gradient button fr" v-on:tap="onOrderItemTap(order.goodId, order.orderId, order.status, order.source)">{{order.source}}</a>
 									</div>
 								</div>
 							</li>
-							
 						</ul>
 					</div>
 				</div>
@@ -72,6 +72,16 @@
 			}),
 			formatImage: formatImage,
 			formatImageBackground: formatImageBackground,
+			onCancel: function(id, e){
+				mui.confirm('确定要取消该商品？', "拍品取消", ['确定', '取消'], function(btn){
+					
+					if(btn.index == 0){
+						fetch.patch(`/user/v2/good/${id}?cancelFlag=true`, null, function(data){
+							this.loadGoods();
+						}.bind(this));
+					}
+				}.bind(this));
+			},
 			onOrderItemTap: function(goodId, orderId, status, source){
 				if(status == '拍卖中'){
 					if(source == '精品商城'){
@@ -85,7 +95,7 @@
 				}
 			},
 			loadGoods: function(){
-				fetch.get(`/user/v2/supplier/goods?status=拍卖中`, null, function(data){
+				fetch.get(`/user/v2/supplier/goods`, null, function(data){
 
 					this.orders = data.data.map(function(item, index){
 						return {
@@ -126,14 +136,12 @@
 			},
 			tabOnTap: function(status){
 				this.storeStatus(status);
-				//this.status = status;
 			}
 		},
         data(){
             return {
 				orders: [],
 				customerShownFlag: false,
-				//customer: null,
 				customers: []
             }
         },

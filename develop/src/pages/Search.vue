@@ -118,7 +118,21 @@
                }else{
                    this.sortType = 'PRICE_DESC';
                }
-               //this.$forceUpdate();
+               if('PRICE_DESC' == this.sortType){
+                    this.sortType = 'PRICE_ASC';
+                }else{
+                    this.sortType = 'PRICE_DESC';
+                }
+                switch(this.sortType){
+                    case 'PRICE_DESC':
+                        this.goods.sort((a, b) => a.quote - b.quote);
+                        break;
+                    case 'PRICE_ASC':
+                        this.goods.sort((a, b) => b.quote - a.quote);
+                        break;
+                    default:
+                        break;
+                }
            }
         },
         mounted() {

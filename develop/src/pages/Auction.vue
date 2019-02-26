@@ -12,7 +12,13 @@
                     <div class="swiper-pagination"></div>
                 </div>
             </div>
-            <div class="info aunction-info">
+            <div class="info auction-info">
+                <h6 class="title aunction-title auction-supplier" v-bind:style='{backgroundImage: `url(${supplierImage})`}'>{{supplierName}}</h6>
+                <div class="favorite">
+                    <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="onSupplierGoods">在售商品</a>
+                </div>
+            </div>
+            <div class="info aunction-info" style="margin-top:20px;">
                 <h6 class="title aunction-title">{{title}}</h6>
                 <div class="favorite"><span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra" v-on:tap="favoriteOnTap(id)"></span></div>
             </div>
@@ -40,7 +46,7 @@
                 <li class="clearfix">
                     <em class="icon icon_2 fl">剩余</em>
                     <div class="txt fl">
-                        剩余{{remainTitle}} <span v-on:tap="orderCountOnTap(id)">出价次数{{orderCount}}次</span>{{buyerName == null ? '' : '(' + buyerName + ')'}}
+                        剩余{{remainTitle}} <span v-on:tap="orderCountOnTap(id)">出价次数{{orderCount}}次</span>{{buyerName == null ? '' : '(' + buyerName + '领先)'}}
                     </div>
                 </li>
             </div>
@@ -147,7 +153,9 @@
                 buyerName: null,
                 orders: [],
                 postage: null,
-                favoriteFlag: false
+                favoriteFlag: false,
+                supplierName: null,
+                supplierImage: null
             }
         },
         methods: {
@@ -177,6 +185,9 @@
                     this.favoriteFlag = data.data;    
                 }.bind(this));
             },
+            onSupplierGoods: function(){
+                nav.go(`/supplier/goods/${this.supplier}`);
+            },
             formatImage: formatImage,
             formatDate2: formatDate2,
             formatImageBackground: formatImageBackground,
@@ -202,7 +213,7 @@
             loadGood: function(goodId){
                 fetch.get(`/user/v2/good/${goodId}`, null, function(data){
                     var price = data.data.nextBid;
-                    console.log(price);
+
                     this.id = data.data.goodId;
                     this.images = JSON.parse(data.data.images);
                     this.title = data.data.goodName;
@@ -228,23 +239,37 @@
                         this.basePrice = data.data.order.buyPrice;
                     }
 
+                    this.loadSupplier(data.data.supplier);
+
+                }.bind(this));
+            },
+            loadSupplier: function(userId){
+                fetch.get(`/user/v1/user/${userId}`, null, function(data){
+                    this.supplierName = data.data.nickName;
+                    this.supplierImage = data.data.avatar;
                 }.bind(this));
             },
             orderCountOnTap: function(id){
                 nav.go(`/auction/list/${id}`);
             },
             priceOnInc: function(){
-                var inc = Math.round(this.priceInput * 0.05);
-                if(inc <= 0){
-                    inc = 1;
-                }
+                console.log("ddid");
+                var inc = this.getInc(this.priceInput);
                 this.priceInput += inc;
             },
-            priceOnDec: function(){
-                var inc = Math.round(this.priceInput * 0.05);
-                if(inc <= 0){
-                    inc = 1;
+            getInc: function(price){
+                var inc = 0;
+                if(price < 100){
+                    inc = 5;
+                }else if(price >= 100 && price < 1000){
+                    inc = 10;
+                }else{
+                    inc = 20;
                 }
+                return inc;
+            },
+            priceOnDec: function(){
+                var inc = this.getInc(this.priceInput);
                 this.priceInput -= inc;
             },
             submitOnTap: function(){

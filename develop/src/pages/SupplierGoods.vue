@@ -6,7 +6,7 @@
 				<div class="module">
 					<ul class="pm_list">
 						<li v-bind:key="good.id" v-for="good in goods" v-on:tap="goodOnTap(good.id, good.type)" class="item clearfix">
-							<div v-bind:style="formatImageBackground(good.image)" class="img fl"/>
+							<div v-bind:style="formatIconBackground(good.image)" class="img fl"/>
 							<div class="info fr">
 								<a href="#" class="title">{{good.title}}</a>
 								<div class="bot clearfix">
@@ -15,14 +15,11 @@
 								</div>
 							</div>
 						</li>
-						
 					</ul>
 				</div>
 			</div>
 		</div>
 	</div>
-
-    
 </template>
 
 <script>
@@ -30,7 +27,7 @@
 	import fetch from '../utils/fetch.js'
 	import mainMenu from '../components/MainMenu.vue'
     import nav from '../utils/nav.js'
-	import { formatFeaturedImage, formatImage, formatImageBackground } from '../utils/format.js'
+	import { formatFeaturedImage, formatImage, formatImageBackground, formatIconBackground } from '../utils/format.js'
 
     export default {
 		components: {
@@ -39,6 +36,7 @@
 		methods: {
 			formatImage: formatImage,
 			formatImageBackground: formatImageBackground,
+			formatIconBackground: formatIconBackground,
 			goodOnTap: function(id, type){
 				if(type == '精品商城'){
 					nav.go(`/shop/detail/${id}`);

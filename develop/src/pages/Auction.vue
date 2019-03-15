@@ -1,58 +1,73 @@
 <template>
     <div>
         <main-menu top-button-type="BACK" v-bind:header-text="title" />
-        <div class="gooddet_top">
-            <div class="img_slide">
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide" v-bind:key="image" v-for="image in images">
-                            <div class="detail-img" v-bind:style="formatImageBackground(image)" />
+        <div id="slider" class="mui-slider">
+            <div class="mui-slider-group">
+                <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
+                    <a href="#">
+                        <div class="detail-img" v-bind:style="formatImageBackground(image)" />
+                    </a>
+                </div>
+            </div>
+            <div class="mui-slider-indicator">
+                <div v-bind:key="image" class="mui-indicator" v-bind:class="{'mui-active': index==0}" v-for="(image, index) in images"></div>
+            </div>
+        </div>
+        <div class="mui-content">
+            <ul class="mui-table-view" style="margin-top:none;">
+				 <li class="mui-table-view-cell">
+                     <em class="icon icon_1 fl" style="font-size:.28rem;">卖家</em>
+                     <h6 class="title aunction-title auction-supplier" v-bind:style='{backgroundImage: avatar == null ? `url(images/reg_02.png)` : `url(${avatar})`}'>{{supplierName}}</h6>
+                     <div class="favorite">
+                        <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="onSupplierGoods">在售商品</a>
+                    </div>
+                </li>
+                <li class="mui-table-view-cell">
+                    <span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra mui-pull-right" v-on:tap="favoriteOnTap(id)"></span>
+                </li>
+			</ul>
+            <ul class="mui-table-view" style="border-top:.2rem solid #f1f6f9;">
+                <li class="mui-table-view-cell gooddet_para">
+                    <div class="row clearfix">
+                        <span class="tit fl">商品名称</span>
+                        <div class="info fr">
+                            {{title}}
                         </div>
                     </div>
-                    <div class="swiper-pagination"></div>
-                </div>
-            </div>
-            <div class="info auction-info">
-                <h6 class="title aunction-title auction-supplier" v-bind:style='{backgroundImage: `url(${supplierImage})`}'>{{supplierName}}</h6>
-                <div class="favorite">
-                    <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="onSupplierGoods">在售商品</a>
-                </div>
-            </div>
-            <div class="info aunction-info" style="margin-top:20px;">
-                <h6 class="title aunction-title">{{title}}</h6>
-                <div class="favorite"><span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra" v-on:tap="favoriteOnTap(id)"></span></div>
-            </div>
-        </div>
-        <div class="gooddet_para border_top">
-            <div class="row clearfix">
-                <span class="tit fl">商品名称</span>
-                <div class="info fr">
-                    {{title}}
-                </div>
-            </div>
-            <div class="row clearfix">
-                <span class="tit fl">描述</span>
-                <div class="info fr">
-                    {{description}}
-                </div>
-            </div>
-            <div class="row">
-                <li class="clearfix">
-                    <em class="icon icon_1 fl">截至</em>
-                    <div class="txt fl">
-                        截至时间 {{formatDate2(new Date(this.deadline))}}
+                </li>
+                <li class="mui-table-view-cell gooddet_para">
+                    <div class="row clearfix">
+                        <span class="tit fl">描述</span>
+                        <div class="info fr">
+                            {{description}}
+                        </div>
                     </div>
                 </li>
-                <li class="clearfix">
-                    <em class="icon icon_2 fl">剩余</em>
-                    <div class="txt fl">
-                        剩余{{remainTitle}} <span v-on:tap="orderCountOnTap(id)">出价次数{{orderCount}}次</span>{{buyerName == null ? '' : '(' + buyerName + '领先)'}}
+                <li class="mui-table-view-cell ">
+                    <div class="mui-navigate-right" v-on:tap="orderCountOnTap(id)">
+                        <div class="gooddet_para clearfix">
+                            <em class="icon icon_1 fl">截至</em>
+                            <div class="txt fl">
+                                截至时间 {{formatDate2(new Date(this.deadline))}}
+                            </div>
+                        </div>
+                        <div class="gooddet_para ">
+                            <em class="icon icon_2 fl">剩余</em>
+                            <div class="txt fl">
+                                剩余{{remainTitle}} <span >出价次数{{orderCount}}次</span>{{buyerName == null ? '' : '(' + buyerName + '领先)'}}
+                            </div>
+                        </div>
                     </div>
+                    
                 </li>
-            </div>
+                <li class="mui-table-view-cell gooddet_para">
+                    
+                </li>
+            </ul>
         </div>
+
         <div class="gooddet_pricebox border_top">
-            <p class="font">当前价格{{renderPrice}}元(含3%手续费不含邮费, 邮费{{postage}}元)</p>
+            <p class="font">当前价格<span style="font-size:x-large;">{{renderPrice}}</span>元(含3%手续费不含邮费, 邮费{{postage}}元)</p>
              <b v-show="ownerFlag" style="color:red">您已是最高出价者</b>
             <b v-show="!ownerFlag && buyerFlag" style="color:red">您的出价未超过最高出价者</b>
             
@@ -308,14 +323,7 @@
             }
         },
         updated(){
-            var swiper = new Swiper('.img_slide .swiper-container', {
-                pagination: '.swiper-pagination',
-                paginationClickable: true,
-                spaceBetween: 0,
-                centeredSlides: true,
-                autoplay: 0,
-                autoplayDisableOnInteraction: false
-            });
+            mui('#slider').slider({interval: 0});
         },
         computed: {
              ...mapGetters({

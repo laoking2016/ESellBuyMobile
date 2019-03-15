@@ -3,6 +3,7 @@
         <div class="reg_main">
             <div class="reg_top">
                 <img src="images/logo.png" alt="" class="logo">
+                <span class="logo login-title">让你的收藏买卖更容易</span>
             </div>
             <div class="reg_form login_form">
                 <li class="username">
@@ -12,8 +13,8 @@
                     <input type="password" v-model="password" class="ipt ipt_txt" placeholder="请输入您的密码">
                 </li>
                 <input type="button" value="登录" class="ipt ipt_button pink_gradient" v-on:tap="handleLogin">
-                <input type="button" value="微信登陆" class="ipt ipt_button pink_gradient" v-on:tap="handleWechatLogin">
-                <input type="button" value="注册账号" class="ipt ipt_button pink_gradient" v-on:tap="handleRegister">
+                <a href="#" class="ipt ipt_button pink_gradient login-register-btn" v-on:tap="handleRegister">注册账号</a>
+                <img style="width:2rem;" src="images/weixin.png" class="ipt ipt_button pink_gradient" v-on:tap="handleWechatLogin">
             </div>
         </div>
     </div>
@@ -75,6 +76,7 @@
                         var avatar = s.userInfo.headimgurl;
                         var phone = s.userInfo.phonenumber;
                         var email = s.userInfo.email;
+                        console.log(s.userInfo);
 
                         fetch.post(`/user/v2/wechat/user`, {
                             nickName: nickName,

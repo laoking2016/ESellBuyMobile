@@ -17,7 +17,7 @@
 					</div>
 					<ul class="pm_list">
 						<li v-bind:key="order.id" v-on:tap="onOrderItemTap(order.id, order.goodId, order.status)" v-for="order in filterredOrders" class="item clearfix">
-							<div v-bind:style="formatImageBackground(order.image)" class="img fl"/>
+							<div v-bind:style="formatIconBackground(order.image)" class="img fl"/>
 							<div class="info fr">
 								<a href="#" class="title">{{order.title}}</a>
 								<div class="bot clearfix">
@@ -39,7 +39,7 @@
 	import fetch from '../utils/fetch.js'
 	import mainMenu from '../components/MainMenu.vue'
     import nav from '../utils/nav.js'
-	import { formatFeaturedImage, formatImage, formatImageBackground } from '../utils/format.js'
+	import { formatFeaturedImage, formatImage, formatImageBackground, formatIconBackground } from '../utils/format.js'
 
     export default {
 		components: {
@@ -51,6 +51,7 @@
 			}),
 			formatImage: formatImage,
 			formatImageBackground: formatImageBackground,
+			formatIconBackground: formatIconBackground,
 			onOrderItemTap: function(id, goodId, status){
 				if(status=="拍卖中"){
 					nav.go(`/auction/detail/${goodId}`);

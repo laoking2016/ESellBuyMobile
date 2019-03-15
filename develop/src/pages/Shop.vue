@@ -1,28 +1,41 @@
 <template>
     <div>
         <main-menu top-button-type="BACK" v-bind:header-text="title" />
+        <div id="slider" class="mui-slider">
+            <div class="mui-slider-group">
+                <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
+                    <a href="#">
+                        <div class="detail-img" v-bind:style="formatImageBackground(image)" />
+                    </a>
+                </div>
+            </div>
+            <div class="mui-slider-indicator">
+                <div v-bind:key="image" class="mui-indicator" v-bind:class="{'mui-active': index==0}" v-for="(image, index) in images"></div>
+            </div>
+        </div>
+        <div class="mui-content">
+            <ul class="mui-table-view" style="margin-top:none;">
+                <li class="mui-table-view-cell">
+                     <em class="icon icon_1 fl" style="font-size:.28rem;">卖家</em>
+                     <h6 class="title aunction-title auction-supplier" v-bind:style='{backgroundImage: avatar == null ? `url(images/reg_02.png)` : `url(${avatar})`}'>{{supplierName}}</h6>
+                     <div class="favorite">
+                        <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="onSupplierGoods">在售商品</a>
+                    </div>
+                </li>
+                <li class="mui-table-view-cell">
+                    <span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra mui-pull-right" v-on:tap="favoriteOnTap(id)"></span>
+                </li>
+            </ul>
+            <ul class="mui-table-view" style="border-top:.2rem solid #f1f6f9;">
+                
+            </ul>
+        </div>
 
         <div class="gooddet_top">
-            <div class="img_slide">
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide" v-bind:key="image" v-for="image in images">
-                            <div class="detail-img" v-bind:style="formatImageBackground(image)" />
-                        </div>
-                    </div>
-                    <div class="swiper-pagination"></div>
-                </div>
-            </div>
-            <div class="info aunction-info">
-                <h6 class="title aunction-title auction-supplier" v-bind:style='{backgroundImage: `url(${supplierImage})`}'>{{supplierName}}</h6>
-                <div class="favorite">
-                    <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="onSupplierGoods">在售商品</a>
-                </div>
-            </div>
+            
             <div class="info">
                 <div class="shop-info">
                     <h5 class="title shop-title">{{title}}</h5>
-                    <div class="favorite"><span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra" v-on:tap="favoriteOnTap(id)"></span></div>
                 </div>
                 <h6 class="smtit">{{description}}</h6>
                 <div class="bot clearfix">
@@ -273,14 +286,7 @@
             }
         },
         updated(){
-            var swiper = new Swiper('.img_slide .swiper-container', {
-                pagination: '.swiper-pagination',
-                paginationClickable: true,
-                spaceBetween: 0,
-                centeredSlides: true,
-                autoplay: 0,
-                autoplayDisableOnInteraction: false
-            });
+            mui('#slider').slider({interval: 0});
         },
         computed: {
             ...mapGetters({

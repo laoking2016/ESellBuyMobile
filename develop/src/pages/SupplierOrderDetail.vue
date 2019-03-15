@@ -54,6 +54,18 @@
                         <span class="fz">{{contact.phone}}</span>
                     </div>
                 </li>
+                <li class="item clearfix">
+                    <span class="tit">微信</span>
+                    <div class="info">
+                        <span class="fz">{{contact.name}}</span>
+                    </div>
+                </li>
+                <li class="item clearfix">
+                    <span class="tit">Email</span>
+                    <div class="info">
+                        <span class="fz">{{contact.email}}</span>
+                    </div>
+                </li>
                 <div style="text-align:center;">
                     <a href="#" style="display:inline-block" class="more pink_gradient" v-on:tap="auctionListOnTap(id)">竞拍明细</a>
                     <a href="#" style="display:inline-block" class="more pink_gradient" v-show="status == '待发货'" v-on:tap="shippedOnTap">确认发货</a>
@@ -115,7 +127,8 @@
                 contact: {
                     address: null,
                     name: null,
-                    phone: null
+                    phone: null,
+                    email: null
                 },
                 questions: [],
                 type: null
@@ -183,7 +196,8 @@
                     this.contact = {
                         address: good.data.order.address,
                         name: good.data.order.buyerName,
-                        phone: good.data.order.phone
+                        phone: good.data.order.phone,
+                        email: good.data.order.email
                     }
                 }
                 
@@ -199,7 +213,8 @@
                         this.contact = {
                             address: order.data.address,
                             name: order.data.buyerName,
-                            phone: order.data.phone
+                            phone: order.data.phone,
+                            email: order.data.email
                         }
                     }.bind(this));
                 }

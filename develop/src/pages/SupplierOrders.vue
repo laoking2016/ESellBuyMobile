@@ -20,12 +20,12 @@
 						</div>
 						<ul class="pm_list">
 							<li v-bind:key="order.id" v-for="order in filterredOrders" class="item clearfix">
-								<div class="img fl" v-bind:style="formatImageBackground(order.image)"></div>
+								<div class="img fl" v-bind:style="formatIconBackground(order.image)"></div>
 								<div class="info fr">
 									<a href="#" class="title">{{order.title}}</a>
 									<div class="bot clearfix">
 										<span class="tag yellow_gradient">{{order.source == '精品商城' && order.status == '拍卖中' ? '出售中' : order.status}}</span>
-										<span v-on:tap="onCancel(order.goodId, $event)" v-show="order.status == '拍卖中' && order.source == '拍卖'" class="tag red_gradient">取消</span>
+										<span v-on:tap="onCancel(order.goodId, $event)" v-show="order.status == '拍卖中'" class="tag red_gradient">取消</span>
 										<a href="#" class="pink_gradient button fr" v-on:tap="onOrderItemTap(order.goodId, order.orderId, order.status, order.source)">{{order.source}}</a>
 									</div>
 								</div>
@@ -59,7 +59,7 @@
 	import mainMenu from '../components/MainMenu.vue'
     import nav from '../utils/nav.js'
 	import fetch from '../utils/fetch.js'
-	import { formatFeaturedImage, formatImage, formatImageBackground } from '../utils/format.js'
+	import { formatFeaturedImage, formatImage, formatImageBackground, formatIconBackground } from '../utils/format.js'
 
     export default {
 		components: {
@@ -72,8 +72,9 @@
 			}),
 			formatImage: formatImage,
 			formatImageBackground: formatImageBackground,
+			formatIconBackground: formatIconBackground,
 			onCancel: function(id, e){
-				mui.confirm('确定要取消该商品？', "拍品取消", ['确定', '取消'], function(btn){
+				mui.confirm('确定要取消该商品？', "拍品取消", ['确定取消', '不取消'], function(btn){
 					
 					if(btn.index == 0){
 						fetch.patch(`/user/v2/good/${id}?cancelFlag=true`, null, function(data){

@@ -118,3 +118,23 @@ export function formatImageBackground(image){
         }
     }
 }
+
+export function formatIconBackground(image){
+    if(image.image == null){
+        return {
+            backgroundImage: `url(${formatImage(image)}`, 
+            backgroundSize: '100% 100%', 
+            backgroundRepeat: 'no-repeat', 
+        }
+    }else{
+        var icon = image.icon == null ? image.image : image.icon;
+        
+        return {
+            backgroundImage: `url(${formatImage(icon)}`, 
+            backgroundPosition: `${image.x == null || isNaN(image.x) ? 0 : image.x}% ${image.y == null || isNaN(image.y) ? 0 : image.y}%`, 
+            backgroundSize: `${image.w}% ${image.h}%`, 
+            backgroundRepeat: 'no-repeat', 
+            backgroundOrigin: '0px 0px'
+        }
+    }
+}

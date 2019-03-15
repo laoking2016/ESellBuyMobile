@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main-menu top-button-type="MENU" header-text="商城上架"/>
+        <main-menu top-button-type="BACK" header-text="商城上架"/>
         <div v-show="dialog == 'self'">
             <div class="pm_main">
                 <div class="pm_fileup">
@@ -118,6 +118,10 @@
                     {
                         name: '店取',
                         checked: false
+                    },
+                    {
+                        name: 'Email',
+                        checked: false
                     }
                 ],
                 postage: null,
@@ -129,7 +133,8 @@
                 },
                 description: null,
                 dialog: 'self',
-                cropImage: null
+                cropImage: null,
+                icon: null
             }
         },
         methods: {
@@ -137,8 +142,10 @@
                 var searchedImage = this.images.filter(c => c.image == args.image);
                 
                 if(searchedImage.length == 0){
+                    args.icon = this.icon;
                     this.images.push(args);
                 }
+                this.icon = null;
                 this.cropImage = null;
                 this.dialog = 'self';
             },
@@ -163,18 +170,32 @@
                 plus.gallery.pick(function(path){
 
                     var name = path.substr(path.lastIndexOf('/') + 1);
-                    
+
                     plus.zip.compressImage({
                         src: path,
-                        dst: '_doc/' + name,
+                        dst: '_doc/icon_' + name,
                         overwrite: true,
                         quality: 10
                     }, function(zip){
                         uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
+                            this.icon = json.data;
+                            
+                             plus.zip.compressImage({
+                                src: path,
+                                dst: '_doc/' + name,
+                                overwrite: true,
+                                quality: 50
+                            }, function(zip){
+                                uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
 
-                            var url = json.data;
-                            this.cropImage = url;
-                            this.dialog = 'crop';
+                                    var url = json.data;
+                                    this.cropImage = url;
+                                    this.dialog = 'crop';
+
+                                }.bind(this));
+                            }.bind(this), function(zipe){
+
+                            }.bind(this));
 
                         }.bind(this));
                     }.bind(this), function(zipe){

@@ -2,8 +2,16 @@
     <div>
         <main-menu top-button-type="MENU" readonly="true" />
         <div v-show="showIndex == 0">
-            <div class="idx_top">
-                <img src="images/idx_01.jpg" alt="" class="img"/>
+            <div class="mui-content" style="padding:.2rem .25rem .35rem;">
+                <div id="slider" class="mui-slider">
+                    <div class="mui-slider-group">
+                        <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
+                            <a href="#">
+                                <img v-bind:src="formatImage(image.image)" alt="" class="img"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="idx_listwrap">
                 <div class="home-category">
@@ -21,10 +29,16 @@
                     <!--li class="lk">最新消息</li-->
                 </div>
                 <div class="search_para home-price">
+                    <li class="lk" v-on:tap="timeOnTap">
+                        按日期排序 <span class="arrow">
+                            <em class="icon up" v-show="sortType == 'TIME_ASC'"></em>
+                            <em class="icon down" v-show="sortType == 'TIME_DESC'"></em>
+                        </span>
+                    </li>
                     <li class="lk" v-on:tap="priceOnTap">
                         按价格排序 <span class="arrow">
-                            <em class="icon up"></em>
-                            <em class="icon down"></em>
+                            <em class="icon up" v-show="sortType == 'PRICE_ASC'"></em>
+                            <em class="icon down" v-show="sortType == 'PRICE_DESC'"></em>
                         </span>
                     </li>
                 </div>
@@ -32,7 +46,7 @@
                     <ul v-show="index == 0" class="idx_list clearfix">
                         <li class="item" v-bind:key="good.id" v-on:tap="auctionItemOnTap(good.id)" v-for="good in filterredAuctionGoods">
                             <a href="#" class="imgbox">
-                                <div v-bind:style="formatImageBackground(good.image)" class="img"/>
+                                <div v-bind:style="formatIconBackground(good.image)" class="img"/>
                                 <span class="time">还有{{formatDateDiff(new Date(), new Date(good.deadline))}}</span>
                             </a>
                             <a href="#" class="title ellipsis">{{good.title}}</a>
@@ -43,7 +57,7 @@
                         <li class="item" v-bind:key="good.id" v-on:tap="shopItemOnTap(good.id)" v-for="good in filterredShopGoods">
     
                                 <a href="#" class="imgbox">
-                                    <div v-bind:style="formatImageBackground(good.image)" class="img"/>
+                                    <div v-bind:style="formatIconBackground(good.image)" class="img"/>
                                 </a>
                                 <a href="#" class="title ellipsis">{{good.title}}</a>
                                 <p class="price">&yen;{{good.quote}}</p>
@@ -65,7 +79,7 @@
     import category from '../components/Category.vue'
     import fetch from '../utils/fetch.js'
     import nav from '../utils/nav.js'
-    import { formatImage, formatFeaturedImage, formatImageBackground, formatDateDiff } from '../utils/format.js'
+    import { formatImage, formatFeaturedImage, formatImageBackground, formatIconBackground, formatDateDiff } from '../utils/format.js'
 
     export default {
         components: {
@@ -81,12 +95,18 @@
             formatImage: formatImage,
             formatDateDiff: formatDateDiff,
             formatImageBackground: formatImageBackground,
-            priceOnTap: function(){
-                if('PRICE_DESC' == this.sortType){
-                    this.sortType = 'PRICE_ASC';
+            formatIconBackground: formatIconBackground,
+            timeOnTap: function(){
+                if('TIME_DESC' == this.sortType){
+                    this.sortType = 'TIME_ASC';
+                }else if('TIME_ASC' == this.sortType){
+                    this.sortType = 'TIME_DESC';
                 }else{
-                    this.sortType = 'PRICE_DESC';
+                    this.sortType = 'TIME_DESC';
                 }
+                this.onSort();
+            },
+            onSort: function(){
                 switch(this.sortType){
                     case 'PRICE_DESC':
                         this.goods.sort((a, b) => a.quote - b.quote);
@@ -94,9 +114,26 @@
                     case 'PRICE_ASC':
                         this.goods.sort((a, b) => b.quote - a.quote);
                         break;
+                    case 'TIME_DESC':
+                        this.goods.sort((a, b) => a.deadline - b.deadline);
+                        break;
+                    case 'TIME_ASC':
+                        this.goods.sort((a, b) => b.deadline - a.deadline);
+                        break;
                     default:
+                        this.goods.sort((a, b) => a.deadline - b.deadline);
                         break;
                 }
+            },
+            priceOnTap: function(){
+                if('PRICE_DESC' == this.sortType){
+                    this.sortType = 'PRICE_ASC';
+                }else if('PRICE_ASC' == this.sortType){
+                    this.sortType = 'PRICE_DESC';
+                }else{
+                    this.sortType = 'PRICE_DESC';
+                }
+                this.onSort();
             },
             shopItemOnTap: function(id){
                 nav.go(`/shop/detail/${id}`);
@@ -139,6 +176,7 @@
                         });
                         
                     }.bind(this));
+                    this.onSort();
                 }.bind(this));
             }
         },
@@ -172,7 +210,15 @@
         },
 	  	mounted() {
 
-            fetch.get(`/user/v1/category/first`, null, function(data){
+            fetch.get(`/user/v2/advs`, null, function(data){
+                this.images = data.data.map(function(item, index){
+                    return {
+                        image: item.image
+                    };
+                });
+            }.bind(this));
+
+            fetch.get(`/user/v2/category/first`, null, function(data){
                 this.firsts = data.data.map(function(item, index){
                     return {
                         index: index,
@@ -198,13 +244,12 @@
             mui("#good-list").pullToRefresh({
                 up: {
                     callback: function(){
-                        console.log("ddsd");
                         var self = this;
                         setTimeout(function(){
                             _this.page = _this.page + 1;
                             _this.loadGoods(_this.page);
                             self.endPullUpToRefresh();
-                        }, 1000);
+                        }, 5000);
                     }
                 }
             });
@@ -216,8 +261,12 @@
                 goods: [],
                 firsts: [],
                 seconds: [],
-                sortType: "PRICE_DESC"
+                sortType: "TIME_DESC",
+                images: []
             }
+        },
+        updated(){
+            mui('#slider').slider({interval: 0});
         }
     }
 </script>

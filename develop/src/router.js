@@ -24,6 +24,7 @@ import MessageSend from './pages/MessageSend.vue'
 import Profile from './pages/Profile.vue'
 import SupplierGoods from './pages/SupplierGoods.vue'
 import Contact from './pages/Contact.vue'
+import History from './pages/History.vue'
 
 const routes = [
     {
@@ -121,6 +122,10 @@ const routes = [
     {
         path: '/contact',
         component: Contact
+    },
+    {
+        path: '/history',
+        component: History
     }
 ];
 

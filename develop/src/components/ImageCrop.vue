@@ -36,7 +36,7 @@
                 var height = document.body.clientWidth - 20;
 
                 $("#crop-image").cropbox({width: width, height: height, showControls: 'always' }).on('cropbox', function(event, results, img){
-                    console.log(results);
+                    //console.log(results);
                     var w, h, x, y;
                     w = results.width / results.cropW * 100;
                     h = results.height / results.cropH * 100;

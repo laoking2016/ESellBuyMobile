@@ -6,12 +6,12 @@
         </div>
         <div id="my-form" class="reg_form">
             <li class="username my-item" v-on:tap="onProfile">编辑我的信息</li>
-            <li class="seller my-item" v-on:tap="onSeller">我发布的商品</li>
+            <li v-show="role == 'supplier'" class="seller my-item" v-on:tap="onSeller">我发布的商品</li>
             <li class="buyer my-item" v-on:tap="onBuyer">我出价的商品</li>
             <li class="focus my-item" v-on:tap="onFavorite">我关注的商品</li>
             <li class="explan my-item" v-on:tap="onMessageList">我的消息<b v-show="unReadCount > 0">({{unReadCount}})</b></li>
-            <li class="auction my-item" v-on:tap="onAuction">拍卖出品</li>
-            <li class="shop my-item" v-on:tap="onShop">商城上架</li>
+            <li v-show="role == 'supplier'" class="auction my-item" v-on:tap="onAuction">拍卖出品</li>
+            <li v-show="role == 'supplier'" class="shop my-item" v-on:tap="onShop">商城上架</li>
             <li class="login my-item" v-on:tap="onLogout">登出</li>
         </div>
     </div>
@@ -34,8 +34,23 @@
         },
         computed: {
             ...mapGetters({
-                userId: 'user/userId'
+                userId: 'user/userId',
+                token: 'user/token'
             }),
+            role: function(){
+
+                if(this.token == null){
+                    return null;
+                }
+
+                var arr = this.token.split('_');
+
+                if(arr.length == 3){
+                    return arr[2];
+                }
+
+                return null;
+            },
             unReadCount: function(){
                 return this.messages.filter(e => e.readFlag == false && e.receiver == this.userId).length;
             }

@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="mui-content">
-            <ul class="mui-table-view" style="margin-top:none;">
+            <ul class="mui-table-view" style="margin-top:0px !important;">
                 <li class="mui-table-view-cell">
                      <em class="icon icon_1 fl" style="font-size:.28rem;">卖家</em>
                      <h6 class="title aunction-title auction-supplier" v-bind:style='{backgroundImage: avatar == null ? `url(images/reg_02.png)` : `url(${avatar})`}'>{{supplierName}}</h6>

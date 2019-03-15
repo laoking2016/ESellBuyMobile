@@ -94,36 +94,7 @@
             return {
                 images: [],
                 stockCount: null,
-                payment: [
-                    {
-                        name: '微信',
-                        checked: true
-                    },
-                    {
-                        name: '支付宝',
-                        checked: false
-                    },
-                    {
-                        name: '内地银行转账',
-                        checked: false
-                    },
-                    {
-                        name: '香港银行转账',
-                        checked: false
-                    },
-                    {
-                        name: 'PayPal',
-                        checked: false
-                    },
-                    {
-                        name: '店取',
-                        checked: false
-                    },
-                    {
-                        name: 'Email',
-                        checked: false
-                    }
-                ],
+                payment: [],
                 postage: null,
                 goodName: null,
                 originalPrice: null,
@@ -211,6 +182,38 @@
             paymentOnTap: function(index){
                 this.payment[index].checked = !this.payment[index].checked;
             },
+            initPayment: function(){
+                this.payment = [
+                    {
+                        name: '微信',
+                        checked: true
+                    },
+                    {
+                        name: '支付宝',
+                        checked: false
+                    },
+                    {
+                        name: '内地银行转账',
+                        checked: false
+                    },
+                    {
+                        name: '香港银行转账',
+                        checked: false
+                    },
+                    {
+                        name: 'PayPal',
+                        checked: false
+                    },
+                    {
+                        name: '店取',
+                        checked: false
+                    },
+                    {
+                        name: 'Email',
+                        checked: false
+                    }
+                ];
+            },
             submitOnTap: function(){
                 if(this.category.id == -1){
                     mui.alert('请选择分类');
@@ -263,7 +266,7 @@
 
                     this.images = [];
                     this.stockCount = null;
-                    this.payment = '微信';
+                
                     this.postage = null;
                     this.goodName = null;
                     this.originalPrice = null;
@@ -274,11 +277,15 @@
                     this.description = null;
                     this.dialog = 'self';
                     this.cropImage = null;
+
+                    this.initPayment();
                 }.bind(this));
             }
         },
         mounted() {
             
+            this.initPayment();
+
             $('#file-input-handler').on('change', function(event){
                 
                 var file = event.target.files[0];

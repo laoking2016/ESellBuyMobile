@@ -13,6 +13,18 @@
                 <div v-bind:key="image" class="mui-indicator" v-bind:class="{'mui-active': index==0}" v-for="(image, index) in images"></div>
             </div>
         </div>
+        <div class='mui-content'>
+            <div class='mui-row'>
+                <div class="mui-col-sm-6">
+                    <h2>{{title}}</h2>
+                </div>
+                <div class="mui-col-sm-6" style='text-align:right;padding:10px;'>
+                    <span class='mui-icon-extra mui-icon-extra-comment' style='font-size:.41rem;margin-right:10px;'></span>
+                    <span class='mui-icon-extra mui-icon-extra-share' style='margin-right:10px;'></span>
+                    <span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra mui-pull-right" v-on:tap="favoriteOnTap(id)"></span>
+                </div>
+            </div>
+        </div>
         <div class="mui-content">
             <ul class="mui-table-view" style="margin-top:0px !important;">
 				 <li class="mui-table-view-cell">

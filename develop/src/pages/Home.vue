@@ -13,8 +13,26 @@
                     </div>
                 </div>
             </div>
+
+            <div class='mui-content'>
+                <div class="mui-row">
+                    <div class="mui-col-sm-3" style='text-align:center'>
+                        <img style='width:60%' src='images/class.jpg' v-on:tap='onMoreCategory'>
+                    </div>
+                    <div class="mui-col-sm-3" style='text-align:center'>
+                        <img style='width:60%' src='images/contact.jpg' v-on:tap='onContact'/>
+                    </div>
+                    <div class="mui-col-sm-3" style='text-align:center'>
+                        <img style='width:60%' src='images/jingjia.jpg' v-on:tap='onInstruction'/>
+                    </div>
+                    <div class="mui-col-sm-3" style='text-align:center' v-on:tap='historyOnTap'>
+                        <img style='width:60%' src='images/paimai.jpg'/>
+                    </div>
+                </div>
+            </div>
+
             <div class="idx_listwrap">
-                <div class="home-category">
+                <div v-show='false' class="home-category">
                     <a href="#" class="lk" v-bind:class="{'cur': first == -1 }" v-on:tap="onCategory(-1)">全部</a>
                     <a href="#" v-bind:key="item.id" class="lk" v-bind:class="{'cur': first == item.id}" v-for="item in firsts" v-on:tap="onCategory(item.id)">{{item.title}}</a>
                     <a href="#" class="lk" v-on:tap="onMoreCategory">更多分类</a>
@@ -158,6 +176,15 @@
             },
             onMoreCategory: function(){
                 this.showIndex = 1;
+            },
+            onContact: function(){
+                nav.go('/contact');
+            },
+            onInstruction: function(){
+                nav.go('/instruction');
+            },
+            historyOnTap: function(){
+                nav.go(`/history`);
             },
             loadGoods: function(page){
                 fetch.get(`/user/v2/goods?page=${page}`, null, function(data){

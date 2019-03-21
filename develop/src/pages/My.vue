@@ -2,7 +2,7 @@
     <div class="reg_main">
         <main-menu top-button-type="MENU" header-text=" " />
         <div class="my-avatar-panel">
-            <li class="my-avatar" v-bind:style="{backgroundImage: avatar == null ? `url(../images/reg_02.png)` : `url(${avatar})`}">我的管理</li>
+            <li class="my-avatar" v-bind:style="{backgroundImage: avatar == null ? `url(images/reg_02.png)` : `url(${avatar})`}">我的管理</li>
         </div>
         <div id="my-form" class="reg_form">
             <li class="username my-item" v-on:tap="onProfile">编辑我的信息</li>

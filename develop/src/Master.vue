@@ -6,11 +6,8 @@
             <a class="mui-tab-item" href="#" v-on:tap="onHome">
                 <span class="index">首页</span>
             </a>
-            <a class="mui-tab-item" href="#" v-on:tap="onContact">
-                <span class="explan">联系我们</span>
-            </a>
-            <a class="mui-tab-item" href="#" v-on:tap="onInstruction">
-                <span class="auction">竞价说明</span>
+            <a class="mui-tab-item" href="#">
+                <img src='images/logo.jpg' style='width:.8rem'>
             </a>
             <a class="mui-tab-item" href="#" v-on:tap="onLogin">
                 <span class="login" >{{loginFlag ? '我的' : '登陆'}}</span>
@@ -38,12 +35,6 @@
             }),
             onHome: function(){
                 nav.go('/');
-            },
-            onContact: function(){
-                nav.go('/contact');
-            },
-            onInstruction: function(){
-                nav.go('/instruction');
             },
             onLogin: function(){
                 if(this.loginFlag){

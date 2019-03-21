@@ -1,42 +1,7 @@
 <template>
     <div>
-        <main-menu top-button-type="MENU" header-text="竞价说明" />
+        <main-menu top-button-type="BACK" header-text="竞价说明" />
         <div class="bidding_main">
-            <div class="bidding_module">
-                <h5 class="t_tit">拍片描述标准</h5>
-                <h6 class="b_smtit">邮品类品相</h6>
-                <table class="bidding_table">
-                    <thead>
-                        <tr><th width="20%">中文名称</th>
-                        <th width="20%">符号</th>
-                        <th width="60%">描述</th>
-                    </tr></thead>
-                    <tbody>
-                        <tr v-bind:key="map.name" v-for="map in maps">
-                            <td align="center">{{map.name}}</td>
-                            <td align="center">{{map.mark}}</td>
-                            <td>{{map.description}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="bidding_module">
-                <h6 class="b_smtit">邮品类品相</h6>
-                <table class="bidding_table">
-                    <thead>
-                        <tr><th width="20%">符号</th>
-                        <th width="80%">描述</th>
-                    </tr></thead>
-                    <tbody>
-                        <tr v-bind:key="paper.mark" v-for="paper in pagers">
-                            <td align="center">{{paper.mark}}</td>
-                            <td>{{paper.description}}</td>
-                        </tr>
-                    </tbody>
-                </table> 
-            </div>
-            
             <div class="bidding_module">
                 <h6 class="b_smtit">购买流程</h6>
                 <div class="text">

@@ -3,14 +3,13 @@
         <header style="height:1rem;border-bottom:1px solid #f1f6f9" class="mui-bar mui-bar-nav">
             <a class="mui-pull-left" style="margin-top:.1rem;">
                 <a href="#" class="hd_back fl" v-show="topButtonType == 'BACK'" v-on:tap="backOnTap"></a>
-                <img v-show="readonly == 'true'" style="width:.9rem;" src="images/logo.png"/>
             </a>
-            <h1 v-show="headerText == null" class="mui-title hd_search" style="margin-top:.1rem;left:1.2rem;right:1.8rem;" v-bind:style="{right: readonly == 'true' ? '1.8rem' : '.2rem'}">
+            <h1 v-show="headerText == null" class="mui-title hd_search" style="margin-top:.1rem;left:0.2rem;right:0.2rem;">
                 <span type="text" style="text-align:left;" class="ipt ipt_txt" v-show="readonly == 'true'" v-on:tap="toSearchOnTap">搜索</span>
                 <input type="text" v-model="keyword" v-show="readonly == 'false' && headerText != ''" class="ipt ipt_txt"  v-on:keypress="searchOnTap"/>
             </h1>
             <h1 style="z-index:-1;" v-show="headerText != null" class="mui-title title">{{headerText}}</h1>
-            <a class="mui-pull-right" style="margin-top:.1rem;" v-show="readonly == 'true'">
+            <a class="mui-pull-right" style="margin-top:.1rem;" v-show="false">
                 <a class="gooddet_pricebox_button pink_gradient fl" style="width:1.5rem;" v-on:tap="historyOnTap">历史成交</a>
             </a>
         </header>

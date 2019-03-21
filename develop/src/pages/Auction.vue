@@ -80,7 +80,7 @@
                 <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="submitOnTap">竞价</a>
             </div>
         </div>
-        <div v-show="role == 'buyer'" class="gooddet_eval border_top">
+        <!--div v-show="role == 'buyer'" class="gooddet_eval border_top">
             <ul class="gooddet_eval_list">
                 <li class="item" v-bind:key="question.id" v-for="(question, index) in filterredQuestions">
                     <div class="item_t">
@@ -132,7 +132,7 @@
                     </div>
                 </li>
             </ul>
-        </div>
+        </div-->
     </div>
 </template>
 

@@ -15,8 +15,9 @@
         </div>
         <div class='mui-content'>
             <div class='mui-row'>
-                <div class="mui-col-sm-6">
-                    <h2>{{title}}</h2>
+                <div class="mui-col-sm-6" style='padding:10px;'>
+                    <h1 style='font-size:x-large;'>{{title}}</h1>
+                    <div style='font-size:.24rem;color:#999999'>{{description}}</div>
                 </div>
                 <div class="mui-col-sm-6" style='text-align:right;padding:10px;'>
                     <span class='mui-icon-extra mui-icon-extra-comment' style='font-size:.41rem;margin-right:10px;'></span>
@@ -24,12 +25,58 @@
                     <span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra mui-pull-right" v-on:tap="favoriteOnTap(id)"></span>
                 </div>
             </div>
+            <div class='mui-row' style='border-top:1px solid rgb(153, 153, 153);'>
+                <div class='mui-col-sm-9' style='padding:10px;'>
+                    <p class="font" style='font-weight:bold;'><span style='color:red;font-weight:bold;'>当前价</span>&nbsp;<span style="font-size:x-large;font-weight:bold;">{{renderPrice}}&nbsp;</span>元</p>
+                    <p style='font-size:.24rem;color:#999999'>(含3%手续费不含邮费, 邮费{{postage}}元)</p>
+                    <div class="gooddet_para clearfix" style='margin-top:10px;'>
+                        <em class="icon icon_1 fl">截至</em>
+                        <div class="txt fl">
+                            {{formatDate2(new Date(this.deadline))}}
+                        </div>
+                    </div>
+                    <div class="gooddet_para ">
+                        <em class="icon icon_2 fl">剩余</em>
+                        <div class="txt fl">
+                            {{remainTitle}} 
+                        </div>
+                    </div>
+                </div>
+                <div class='mui-col-sm-3' style='text-align:center;padding:10px;' v-on:tap='orderCountOnTap(id)'>
+                    <img src='images/bids.jpg' style='width:24xpx'>
+                    <span style='font-color:red'>{{orderCount}}</span><span>次</span></span>
+                </div>
+            </div>
+            <div class='mui-row'>
+                <div class='mui-col-sm-12'>
+                    <div class='gooddet_pricebox border_top' style='border-top:0px;padding-top:0px;margin-top:0px;'>
+                        <div class="box clearfix"  v-show="submitEnabledFlag">
+                            <div class="gooddet__num_box fl clearfix">
+                                <a id="sub" href="javascript:void(0);" class="min fl" v-on:tap="priceOnDec"></a>
+                                <input type="text" class="fl text" v-model="priceInput">
+                                <a id="add" href="javascript:void(0);" class="add fl" v-on:tap="priceOnInc"></a>
+                            </div>
+                            <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="submitOnTap">竞价</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <div class="mui-content">
+            <div class='mui-row' v-on:tap="onSupplierGoods">
+                <div class='mui-col-sm-6' style='padding:10px;'>
+                    <h6 class="title aunction-title auction-supplier" style='font-size:small;line-height:.5rem;height:.5rem;backgroundImage: url(images/seller.jpg)'>{{supplierName}}</h6>
+                </div>
+                <div class='mui-col-sm-6' style='padding:10px;text-align:right;font-size:small'>
+                    <span>在售商品</span>
+                    <img src='images/list.png' style='width:20px;'>
+                </div>
+            </div>
             <ul class="mui-table-view" style="margin-top:0px !important;">
 				 <li class="mui-table-view-cell">
-                     <em class="icon icon_1 fl" style="font-size:.28rem;">卖家</em>
-                     <h6 class="title aunction-title auction-supplier" v-bind:style='{backgroundImage: avatar == null ? `url(images/reg_02.png)` : `url(${avatar})`}'>{{supplierName}}</h6>
+                     
+                     
                      <div class="favorite">
                         <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="onSupplierGoods">在售商品</a>
                     </div>
@@ -39,34 +86,19 @@
                 </li>
 			</ul>
             <ul class="mui-table-view" style="border-top:.2rem solid #f1f6f9;">
-                <li class="mui-table-view-cell gooddet_para">
-                    <div class="row clearfix">
-                        <span class="tit fl">商品名称</span>
-                        <div class="info fr">
-                            {{title}}
-                        </div>
-                    </div>
-                </li>
-                <li class="mui-table-view-cell gooddet_para">
-                    <div class="row clearfix">
-                        <span class="tit fl">描述</span>
-                        <div class="info fr">
-                            {{description}}
-                        </div>
-                    </div>
-                </li>
+                
                 <li class="mui-table-view-cell ">
                     <div class="mui-navigate-right" v-on:tap="orderCountOnTap(id)">
                         <div class="gooddet_para clearfix">
                             <em class="icon icon_1 fl">截至</em>
                             <div class="txt fl">
-                                截至时间 {{formatDate2(new Date(this.deadline))}}
+                                {{formatDate2(new Date(this.deadline))}}
                             </div>
                         </div>
                         <div class="gooddet_para ">
                             <em class="icon icon_2 fl">剩余</em>
                             <div class="txt fl">
-                                剩余{{remainTitle}} <span >出价次数{{orderCount}}次</span>{{buyerName == null ? '' : '(' + buyerName + '领先)'}}
+                                {{remainTitle}} <span >出价次数{{orderCount}}次</span>{{buyerName == null ? '' : '(' + buyerName + '领先)'}}
                             </div>
                         </div>
                     </div>

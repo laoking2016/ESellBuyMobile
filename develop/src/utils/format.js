@@ -34,7 +34,7 @@ export function formatDate2(date){
     var day = date.getDate();
     var hour = date.getHours();
     var minute = date.getMinutes();
-    return `${year}年${month}月${day}日${hour}时${minute}分`;
+    return `${year}-${month}-${day} ${hour}:${minute}`;
 }
 
 export function formatDate3(ticks){

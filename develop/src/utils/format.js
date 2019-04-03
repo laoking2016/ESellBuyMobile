@@ -102,7 +102,7 @@ export function formatCategoryImage(image){
 }
 
 export function formatImageBackground(image){
-    if(image.image == null){
+    /*if(image.image == null){
         return {
             backgroundImage: `url(${formatImage(image)}`, 
             backgroundSize: '100% 100%', 
@@ -116,11 +116,41 @@ export function formatImageBackground(image){
             backgroundRepeat: 'no-repeat', 
             backgroundOrigin: '0px 0px'
         }
+    }*/
+    var img = null;
+    if(image.image == null){
+        img = image;
+    }else{
+        img = image.image
+    }
+
+    return {
+        backgroundImage: `url(${formatImage(img)}`, 
+        backgroundPosition: 'center', 
+        backgroundSize: 'auto 100%', 
+        backgroundRepeat: 'no-repeat', 
     }
 }
 
 export function formatIconBackground(image){
+    var img = null;
     if(image.image == null){
+        img = image;
+    }else{
+        if(image.icon == null){
+            img = image.image;
+        }else{
+            img = image.icon;
+        }
+    }
+
+    return {
+        backgroundImage: `url(${formatImage(img)}`, 
+        backgroundPosition: 'center', 
+        backgroundSize: 'auto 100%', 
+        backgroundRepeat: 'no-repeat',
+    }
+    /*if(image.image == null){
         return {
             backgroundImage: `url(${formatImage(image)}`, 
             backgroundSize: '100% 100%', 
@@ -136,5 +166,5 @@ export function formatIconBackground(image){
             backgroundRepeat: 'no-repeat', 
             backgroundOrigin: '0px 0px'
         }
-    }
+    }*/
 }

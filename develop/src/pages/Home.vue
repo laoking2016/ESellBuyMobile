@@ -16,16 +16,16 @@
 
             <div class='mui-content'>
                 <div class="mui-row">
-                    <div class="mui-col-sm-3" style='text-align:center'>
+                    <div class="mui-col-sm-3 mui-col-xs-3" style='text-align:center'>
                         <img style='width:60%' src='images/class.jpg' v-on:tap='onMoreCategory'>
                     </div>
-                    <div class="mui-col-sm-3" style='text-align:center'>
+                    <div class="mui-col-sm-3 mui-col-xs-3" style='text-align:center'>
                         <img style='width:60%' src='images/contact.jpg' v-on:tap='onContact'/>
                     </div>
-                    <div class="mui-col-sm-3" style='text-align:center'>
+                    <div class="mui-col-sm-3 mui-col-xs-3" style='text-align:center'>
                         <img style='width:60%' src='images/jingjia.jpg' v-on:tap='onInstruction'/>
                     </div>
-                    <div class="mui-col-sm-3" style='text-align:center' v-on:tap='historyOnTap'>
+                    <div class="mui-col-sm-3 mui-col-xs-3" style='text-align:center' v-on:tap='historyOnTap'>
                         <img style='width:60%' src='images/paimai.jpg'/>
                     </div>
                 </div>

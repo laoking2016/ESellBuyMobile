@@ -1,125 +1,100 @@
 <template>
     <div>
         <main-menu top-button-type="BACK" v-bind:header-text="title" />
-        <div id="slider" class="mui-slider">
-            <div class="mui-slider-group">
-                <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
-                    <a href="#">
-                        <div class="detail-img" v-bind:style="formatImageBackground(image)" />
-                    </a>
+        <div v-show="visibleView == 'IMAGE_VIEW'" style="width:100%;height:100%;background-color:black;position:absolute;z-index:999;"
+            v-on:tap="showMainView">
+            <image-viewer v-bind:image="images[imageIndex].image" />
+        </div>
+        <div  v-show="visibleView == 'MAIN_VIEW'"  style="margin-top:1rem;">
+            <div id="slider" class="mui-slider" v-on:tap="showImageView">
+                <div class="mui-slider-group">
+                    <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
+                        <a href="#" style="background-color:black;">
+                            <div class="detail-img" v-bind:style="formatIconBackground(image)" />
+                        </a>
+                    </div>
+                </div>
+                <div class="mui-slider-indicator">
+                    <div v-bind:key="image" class="mui-indicator" v-bind:class="{'mui-active': index==0}" v-for="(image, index) in images"></div>
                 </div>
             </div>
-            <div class="mui-slider-indicator">
-                <div v-bind:key="image" class="mui-indicator" v-bind:class="{'mui-active': index==0}" v-for="(image, index) in images"></div>
-            </div>
-        </div>
-        <div class="mui-content">
-            <ul class="mui-table-view" style="margin-top:0px !important;">
-                <li class="mui-table-view-cell">
-                     <em class="icon icon_1 fl" style="font-size:.28rem;">卖家</em>
-                     <h6 class="title aunction-title auction-supplier" v-bind:style='{backgroundImage: avatar == null ? `url(images/reg_02.png)` : `url(${avatar})`}'>{{supplierName}}</h6>
-                     <div class="favorite">
-                        <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="onSupplierGoods">在售商品</a>
+            <div class="mui-content">
+                <div class='mui-row'>
+                    <div class="mui-col-sm-6 mui-col-xs-6" style='padding:10px;'>
+                        <h1 style='font-size:x-large;'>{{title}}</h1>
+                        <div style='font-size:.24rem;color:#999999'>{{description}}</div>
                     </div>
-                </li>
-                <li class="mui-table-view-cell">
-                    <span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra mui-pull-right" v-on:tap="favoriteOnTap(id)"></span>
-                </li>
-            </ul>
-            <ul class="mui-table-view" style="border-top:.2rem solid #f1f6f9;">
-                
-            </ul>
-        </div>
+                    <div class="mui-col-sm-6  mui-col-xs-6" style='text-align:right;padding:10px;'>
+                        <span class='mui-icon mui-icon-help' style='font-size:.5rem;margin-right:10px;' v-on:tap="questionOnTap"></span>
+                        <span class='mui-icon-extra mui-icon-extra-comment' style='font-size:.41rem;margin-right:10px;'></span>
+                        <span class='mui-icon-extra mui-icon-extra-share' style='margin-right:10px;'></span>
+                        <span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra mui-pull-right" v-on:tap="favoriteOnTap(id)"></span>
+                    </div>
+                </div>
 
-        <div class="gooddet_top">
-            
-            <div class="info">
-                <div class="shop-info">
-                    <h5 class="title shop-title">{{title}}</h5>
-                </div>
-                <h6 class="smtit">{{description}}</h6>
-                <div class="bot clearfix">
-                    <span class="price">
-                        &yen; <i>{{renderPrice}}</i>
-                    </span>
-                    <span class="num fr">剩余数量：{{stockCount-orderCount}}</span>
-                </div>
-                <div class="bottom clearfix" v-show="submitEnabledFlag">
-                    <div class="gooddet__num_box fl clearfix">
-                        <a id="sub" href="javascript:void(0);" class="min fl" v-on:tap="buyCountOnDec"></a>
-                        <input type="text" v-model="buyCount" class="fl text">
-                        <a id="add" href="javascript:void(0);" class="add fl" v-on:tap="buyCountOnInc"></a>
+                <div class='mui-row' style='border-top:1px solid #f1f6f9;'>
+                    <div class='mui-col-sm-7 mui-col-xs-7' style='padding:10px;'>
+                        <p class="font" style='font-weight:bold;'><span style='color:red;font-weight:bold;'>&yen;</span>&nbsp;<span style="font-size:x-large;font-weight:bold;">{{renderPrice}}&nbsp;</span>元</p>
+                        <p style='font-size:.24rem;color:#999999'>(含3%手续费不含邮费, 邮费{{postage}}元)</p>
                     </div>
-                    <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="submitOnTap">购买</a>
+                    <div class='mui-col-sm-5 mui-col-xs-5' style='text-align:right;padding:10px;font-size:.24rem;'>
+                        剩余数量：<span style='font-color:red'>{{stockCount-orderCount}}</span>
+                    </div>                
+                </div>
+
+                <div class='mui-row'>
+                    <div class='mui-col-sm-12 mui-col-xs-12'>
+                        <div class='gooddet_pricebox border_top' style='border-top:0px;padding-top:0px;margin-top:0px;'>
+                            <div class="bottom clearfix" v-show="submitEnabledFlag">
+                                <div class="gooddet__num_box fl clearfix">
+                                    <a id="sub" href="javascript:void(0);" class="min fl" v-on:tap="buyCountOnDec"></a>
+                                    <input type="text" v-model="buyCount" class="fl text">
+                                    <a id="add" href="javascript:void(0);" class="add fl" v-on:tap="buyCountOnInc"></a>
+                                </div>
+                                <a href="#" class="gooddet_pricebox_button pink_gradient fl" v-on:tap="submitOnTap">购买</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div v-show="role == 'buyer'" class="gooddet_eval border_top">
-            <ul class="gooddet_eval_list">
-                <li class="item" v-bind:key="question.id" v-for="(question, index) in filterredQuestions">
-                    <div class="item_t">
-                        <img v-bind:src="question.avatar == null ? 'images/goods_04.jpg' : question.avatar" alt="" class="hdimg"/>
-                        <span class="name">{{question.nickName}}</span>
+            <div style="height:10px;background-color:#f2f5f7;"></div>
+            <div class="mui-content">
+                <div class="mui-row">
+                    <div class='mui-col-sm-2 mui-col-xs-2' style="padding:10px;">支付</div>
+                    <div class='mui-col-sm-10 mui-col-xs-10'>
+                        <button style="padding:5px;margin:5px;" class="mui-btn mui-btn-outlined" v-bind:class="{'mui-btn-success': item.checked}" v-bind:key="item" v-for="(item, index) in filterredPayment">{{item.name}}</button>
                     </div>
-                    <div class="item_b">
-                        <div class="group clearfix">
-                            <em class="fz fl">问</em>
-                            <div class="txt fr">
-                                提问{{index + 1}}&nbsp;&nbsp;{{question.question}}
-                            </div>
-                        </div>
-                        <div class="group clearfix">
-                            <em class="fz fl">答</em>
-                            <div class="txt fr txt_apply">
-                                {{question.answer}}
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            <div class="gooddet_eval_textarea">
-                <textarea name="" class="ipt ipt_textarea" placeholder="这里是内容" v-model="questionInput"></textarea>
-                <input type="button" value="提问" class="ipt ipt_button yellow_gradient" v-on:tap="submitQuestionOnTap" />
+                </div>
             </div>
-        </div>
-        <div v-show="role == 'supplier'" class="gooddet_eval border_top">
-            <ul class="gooddet_eval_list">
-                <li class="item" v-bind:key="question.id" v-for="(question, index) in questions">
-                    <div class="item_t">
-                        <img v-bind:src="question.avatar == null ? 'images/goods_04.jpg' : question.avatar" alt="" class="hdimg"/>
-                        <span class="name">{{question.nickName}}</span>
+            <div style="height:10px;background-color:#f2f5f7;"></div>
+            <div class="mui-content">
+                
+                <div class='mui-row' v-on:tap="onSupplierGoods">
+                    <div class='mui-col-sm-6 mui-col-xs-6' style='padding:10px;'>
+                        <h6 class="title aunction-title auction-supplier" style='font-size:small;line-height:.5rem;height:.5rem;backgroundImage: url(images/seller.jpg)'>{{supplierName}}</h6>
                     </div>
-                    <div class="item_b">
-                        <div class="group clearfix">
-                            <em class="fz fl">问</em>
-                            <div class="txt fr">
-                                提问{{index + 1}}&nbsp;&nbsp;{{question.question}}
-                            </div>
-                        </div>
-                        <div class="group clearfix">
-                            <em class="fz fl">答</em>
-                            <div class="txt fr txt_apply">
-                                <span>{{question.answer}}</span>
-                                <a href="#" style="float:right" v-on:tap="onReply(question.id)">{{question.shownFlag ? '提交' : '回复'}}</a>
-                            </div>
-                        </div>
+                    <div class='mui-col-sm-6 mui-col-xs-6' style='padding:10px;text-align:right;font-size:small'>
+                        <span>在售商品</span>
+                        <img src='images/list.png' style='width:20px;'>
                     </div>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+    import imageViewer from '../components/ImageViewer.vue'
     import { mapGetters } from 'vuex'
     import nav from '../utils/nav.js'
     import fetch from '../utils/fetch.js'
     import mainMenu from '../components/MainMenu.vue'
-    import { formatImage, formatDateDiff, formatDate2, formatImageBackground } from '../utils/format.js'
+    import { formatImage, formatDateDiff, formatDate2, formatImageBackground, formatIconBackground } from '../utils/format.js'
 
     export default {
         components: {
-            mainMenu
+            mainMenu,
+            imageViewer
         },
         data(){
             return {
@@ -145,30 +120,21 @@
                 stockCount: null,
                 buyCount: 1,
                 supplierName: null,
-                supplierImage: null
+                supplierImage: null,
+                payment: [],
+                visibleView: 'MAIN_VIEW',
+                imageIndex: 0
             }
         },
         methods: {
-            onReply: function(questionId){
-                console.log(questionId);
-                var question = this.questions.filter(c => c.id == questionId)[0];
-                
-                if(question == null){
-                    return;
-                }
-
-                mui.prompt(question.question, question.answer, '挖掘机', ['取消', '回复'], function(e){
-                    if(e.index != 1){
-                        return;
-                    }
-                    var answer = e.value;
-                    fetch.post(`/user/v2/good/${this.id}/question/${questionId}`, {
-                        id: questionId,
-                        answer: answer,
-                    }, function(data){
-                        question.answer = answer;
-                    }.bind(this));
-                }.bind(this));
+            showImageView: function(){
+                this.visibleView = 'IMAGE_VIEW';
+            },
+            showMainView: function(){
+                this.visibleView = 'MAIN_VIEW';
+            },
+            questionOnTap: function(){
+                nav.go(`/question/${this.id}/${this.title}`);
             },
             onSupplierGoods: function(){
                 nav.go(`/supplier/goods/${this.supplier}`);
@@ -187,23 +153,10 @@
             formatImage: formatImage,
             formatDate2: formatDate2,
             formatImageBackground: formatImageBackground,
+            formatIconBackground: formatIconBackground,
             loadFavorite: function(goodId){
                 fetch.get(`/user/v2/good/${goodId}/favorite`, null, function(data){
                     this.favoriteFlag = data.data;
-                }.bind(this));
-            },
-            loadQuestions: function(goodId){
-                fetch.get(`/user/v2/good/${goodId}/questions`, null, function(data){
-                    this.questions = data.data.map(function(item, index){
-                        return {
-                            id: item.id,
-                            question: item.question,
-                            answer: item.answer == null ? '等待回答中' : item.answer,
-                            nickName: item.nickName,
-                            avatar: item.avatar,
-                            questionUser: item.questionUser
-                        }
-                    });
                 }.bind(this));
             },
             loadGood: function(goodId){
@@ -233,6 +186,10 @@
                         this.ownerFlag = data.data.order.ownerFlag;
                     }
                     this.stockCount = data.data.stockCount;
+
+                    if(data.data.payment != null){
+                        this.payment = JSON.parse(data.data.payment);
+                    }
                     
                     this.loadSupplier(data.data.supplier);
                 }.bind(this));
@@ -268,25 +225,13 @@
                     mui.toast('购买完成');
                     this.loadGood(this.id);
                 }.bind(this));
-            },
-            submitQuestionOnTap: function(){
-                if(this.questionInput == null){
-                    mui.alert('请输入提问');
-                    return;
-                }
-
-                var question = {
-                    goodId: this.id,
-                    question: this.questionInput
-                };
-                fetch.post(`/user/v2/good/${this.id}/question`, question, function(data){
-                    this.loadQuestions(this.id);
-                    this.questionInput = "";
-                }.bind(this));
             }
         },
         updated(){
             mui('#slider').slider({interval: 0});
+            document.querySelector('#slider').addEventListener('slide', function(event){
+                this.imageIndex = event.detail.slideNumber;
+            }.bind(this));
         },
         computed: {
             ...mapGetters({
@@ -306,10 +251,6 @@
 
                 return null;
             },
-            filterredQuestions: function(){
-
-                return this.questions.filter(e => e.questionUser == this.userId);
-            },
 			renderPrice: function(){
 				return Math.round(this.price * 1.03);				
 			},
@@ -325,6 +266,9 @@
             buyerFlag: function(){
                 var orders = this.orders.filter(e => e.buyer == this.userId);
                 return orders.length != 0;
+            },
+            filterredPayment: function(){
+                return this.payment.filter(e => e.checked == true);
             }
 		},
         mounted() {
@@ -332,7 +276,6 @@
             var goodId = this.$route.params.goodId;
 
             this.loadGood(goodId)
-            this.loadQuestions(goodId);
             this.loadFavorite(goodId);
         }
     }

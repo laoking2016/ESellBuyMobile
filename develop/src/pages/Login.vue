@@ -14,7 +14,7 @@
                 </li>
                 <input type="button" value="登录" class="ipt ipt_button pink_gradient" v-on:tap="handleLogin">
                 <a href="#" class="ipt ipt_button pink_gradient login-register-btn" v-on:tap="handleRegister">注册账号</a>
-                <img style="width:2rem;" src="images/weixin.png" class="ipt ipt_button pink_gradient" v-on:tap="handleWechatLogin">
+                <img style="width:1.5rem;" src="images/weixin.png" class="ipt ipt_button pink_gradient" v-on:tap="handleWechatLogin">
             </div>
         </div>
     </div>

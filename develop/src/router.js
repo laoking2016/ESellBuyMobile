@@ -26,6 +26,7 @@ import SupplierGoods from './pages/SupplierGoods.vue'
 import Contact from './pages/Contact.vue'
 import History from './pages/History.vue'
 import Question from './pages/Question.vue'
+import Goods from './pages/Goods.vue'
 
 const routes = [
     {
@@ -131,6 +132,10 @@ const routes = [
     {
         path: '/question/:id/:title',
         component: Question
+    },
+    {
+        path: '/goods',
+        component: Goods
     }
 ];
 

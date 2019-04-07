@@ -17,16 +17,20 @@
             <div class='mui-content'>
                 <div class="mui-row">
                     <div class="mui-col-sm-3 mui-col-xs-3" style='text-align:center'>
-                        <img style='width:60%' src='images/class.jpg' v-on:tap='onMoreCategory'>
+                        <div><img style='width:1.3rem;height:1.3rem;' src='images/class.jpg' v-on:tap='onMoreCategory'></div>
+                        <div style="font-size:.28rem;">分类</div>
                     </div>
                     <div class="mui-col-sm-3 mui-col-xs-3" style='text-align:center'>
-                        <img style='width:60%' src='images/contact.jpg' v-on:tap='onContact'/>
+                        <div><img style='width:1.3rem;height:1.3rem;' src='images/contact.jpg' v-on:tap='onContact'/></div>
+                        <div style="font-size:.28rem;">联系我们</div>
                     </div>
                     <div class="mui-col-sm-3 mui-col-xs-3" style='text-align:center'>
-                        <img style='width:60%' src='images/jingjia.jpg' v-on:tap='onInstruction'/>
+                        <div><img style='width:1.3rem;height:1.3rem;' src='images/jingjia.jpg' v-on:tap='onInstruction'/></div>
+                        <div style="font-size:.28rem;">竞价说明</div>
                     </div>
-                    <div class="mui-col-sm-3 mui-col-xs-3" style='text-align:center' v-on:tap='historyOnTap'>
-                        <img style='width:60%' src='images/paimai.jpg'/>
+                    <div class="mui-col-sm-3 mui-col-xs-3" style='text-align:center;padding-bottom:.2rem;' v-on:tap='historyOnTap'>
+                        <div><img style='width:1.3rem;height:1.3rem;' src='images/paimai.jpg'/></div>
+                        <div style="font-size:.28rem;">历史成交</div>
                     </div>
                 </div>
             </div>
@@ -42,8 +46,8 @@
                     <a href="#" class="lk" v-bind:key="item.id" v-bind:class="{'cur': second == item.id}" v-on:tap="onCategorySecond(item.id)" v-for="item in filterredCategorySeconds">{{item.title}}</a>
                 </div-->
                 <div class="idx_menu">
-                    <li class="lk" v-bind:class="{ cur: index == 0 }" v-on:tap="switchTo(0)">当前热拍</li>
-                    <li class="lk" v-bind:class="{ cur: index == 1 }" v-on:tap="switchTo(1)">精品商城</li>
+                    <li style="font-size:.4rem;" class="lk" v-bind:class="{ cur: index == 0 }" v-on:tap="switchTo(0)">当前热拍</li>
+                    <li style="font-size:.4rem;" class="lk" v-bind:class="{ cur: index == 1 }" v-on:tap="switchTo(1)">精品商城</li>
                     <!--li class="lk">最新消息</li-->
                 </div>
                 <div class="search_para home-price">

@@ -1,14 +1,15 @@
 <template>
     <div class="cata_main">
         <div class="cata_menu tabmenu">
-            <li v-bind:class="{ cur: id == first.id }" class="lk" v-bind:key="first.id" v-for="first in firsts" v-on:tap="firstOnTap(first.id)">{{first.title}}</li>
+            <li class="lk" v-bind:class="{ cur: id == -1}" v-on:tap="firstOnTap(-1, '全部')">全部</li>
+            <li v-bind:class="{ cur: id == first.id }" class="lk" v-bind:key="first.id" v-for="first in firsts" v-on:tap="firstOnTap(first.id, first.title)">{{first.title}}</li>
         </div>
         <div class="cata_conta tabwrap">
             <div class="module">
-                <ul class="cata_list clearfix">
+                <div style="line-height:40px;margin-left:.5rem;">{{title}} ></div>
+                <ul class="cata_list clearfix" style="marign-top:.2rem">
                     <li class="item" v-bind:key="second.id" v-for="second in seconds" v-on:tap="secondOnTap(second.id, second.title, second.firstId)">
                         <a href="#">
-                            <img v-bind:src="formatCategoryImage(second.image)" alt="" class="img"/>
                             <h6 class="title">{{second.title}}</h6>
                         </a>
                     </li>
@@ -29,14 +30,16 @@
         data(){
             return {
                 id: null,
+                title: null,
                 firsts: [],
                 seconds: []
             }
         },
         methods: {
             formatCategoryImage: formatCategoryImage,
-            firstOnTap: function(id){
+            firstOnTap: function(id, title){
                 this.id = id;
+                this.title = title;
                 this.fetchSeconds(id);
             },
             secondOnTap: function(id, title, firstId){
@@ -65,6 +68,7 @@
                 });
                 if(this.firsts.length > 0){
                     this.id = this.firsts[0].id;
+                    this.title = this.firsts[0].title;
                     this.fetchSeconds(this.firsts[0].id);
                 }
             }.bind(this));

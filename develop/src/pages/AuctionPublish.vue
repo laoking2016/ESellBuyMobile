@@ -149,7 +149,7 @@
                         quality: 10
                     }, function(zip){
                         uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
-                            this.icon = json.data;
+                            var icon = json.data;
                             
                              plus.zip.compressImage({
                                 src: path,
@@ -159,9 +159,16 @@
                             }, function(zip){
                                 uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
 
-                                    var url = json.data;
-                                    this.cropImage = url;
-                                    this.dialog = 'crop';
+                                    var imag = json.data;
+                                    var args = {
+                                        icon: icon,
+                                        image: image
+                                    }
+                                    var searchedImage = this.images.filter(c => c.image == args.image);
+                                    if(searchedImage.length == 0){
+                                        args.icon = this.icon;
+                                        this.images.push(args);
+                                    }
 
                                 }.bind(this));
                             }.bind(this), function(zipe){

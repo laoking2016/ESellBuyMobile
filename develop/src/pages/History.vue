@@ -1,6 +1,6 @@
 <template>
     <div>
-		<main-menu top-button-type="BACK" header-text="历史成交" />
+		<main-menu top-button-type="BACK" v-bind:search="onSearch" readonly="false" />
 		<div class="pm_main">
 			<div class="tabwrap">
 				<div id="good-list" class="module">
@@ -10,7 +10,7 @@
 							<div class="info fr">
 								<a href="#" class="title">{{good.title}}</a>
 								<div class="bot clearfix">
-									<span class="tag yellow_gradient">{{good.quote}}</span>
+                                    <span style="color: red; font-size: .3rem;">&yen; {{good.quote}}</span> 
 									<a href="#" class="pink_gradient button fr">{{good.type}}</a>
 								</div>
 							</div>
@@ -43,8 +43,15 @@
 					nav.go(`/auction/detail/${id}`);
 				}
             },
-            loadGoods: function(page){
-                fetch.get(`/user/v2/goods/history?page=${page}`, null, function(data){
+            onSearch: function(q){
+                this.q = q;
+                this.page = 1;
+                this.goods = [];
+                this.loadGoods();
+            },
+            loadGoods: function(){
+                console.log(this.q);
+                fetch.get(`/user/v2/goods/history?q=${this.q}&page=${this.page}`, null, function(data){
                     data.data.map(function(item, index){
                         var image = formatFeaturedImage(item.images);
                         this.goods.push({
@@ -66,11 +73,13 @@
         data(){
             return {
                 page: 1,
-				goods: []
+                goods: [],
+                q: ''
             }
         },
         mounted() {
-            this.loadGoods(this.page);
+            this.q = '';
+            this.loadGoods();
             
             var _this = this;
             mui("#good-list").pullToRefresh({

@@ -27,6 +27,7 @@ import Contact from './pages/Contact.vue'
 import History from './pages/History.vue'
 import Question from './pages/Question.vue'
 import Goods from './pages/Goods.vue'
+import GoodsCategory from './pages/GoodsCategory.vue'
 
 const routes = [
     {
@@ -136,6 +137,10 @@ const routes = [
     {
         path: '/goods',
         component: Goods
+    },
+    {
+        path: '/goods/category',
+        component: GoodsCategory
     }
 ];
 

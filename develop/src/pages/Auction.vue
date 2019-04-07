@@ -210,7 +210,6 @@
                 nav.go(`/auction/list/${id}`);
             },
             priceOnInc: function(){
-                console.log("ddid");
                 var inc = this.getInc(this.priceInput);
                 this.priceInput += inc;
             },
@@ -283,7 +282,10 @@
                 return formatDateDiff(new Date(), new Date(this.deadline));
             },
             submitEnabledFlag: function(){
-                return this.supplier != this.userId;
+                var now = new Date();
+                
+                var deadline = new Date(this.deadline);
+                return this.supplier != this.userId && deadline > now;
             },
             buyerFlag: function(){
                 var orders = this.orders.filter(e => e.buyer == this.userId);
@@ -297,7 +299,6 @@
 
             var goodId = this.$route.params.goodId;
             this.loadGood(goodId)
-            this.loadQuestions(goodId);
             this.loadFavorite(goodId);
         }
     }

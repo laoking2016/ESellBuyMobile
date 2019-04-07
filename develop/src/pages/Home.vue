@@ -1,7 +1,7 @@
 <template>
     <div>
         <main-menu top-button-type="MENU" readonly="true" />
-        <div v-show="showIndex == 0">
+        <div>
             <div class="mui-content" style="padding:.2rem .25rem .35rem;">
                 <div id="slider" class="mui-slider">
                     <div class="mui-slider-group">
@@ -36,15 +36,6 @@
             </div>
 
             <div class="idx_listwrap">
-                <div v-show='false' class="home-category">
-                    <a href="#" class="lk" v-bind:class="{'cur': first == -1 }" v-on:tap="onCategory(-1)">全部</a>
-                    <a href="#" v-bind:key="item.id" class="lk" v-bind:class="{'cur': first == item.id}" v-for="item in firsts" v-on:tap="onCategory(item.id)">{{item.title}}</a>
-                    <a href="#" class="lk" v-on:tap="onMoreCategory">更多分类</a>
-                </div>
-                <!--div class="home-category-second" v-show="first != -1">
-                    <a href="#" class="lk" v-bind:class="{'cur': second == -1}" v-on:tap="onCategorySecond(-1)">全部</a>
-                    <a href="#" class="lk" v-bind:key="item.id" v-bind:class="{'cur': second == item.id}" v-on:tap="onCategorySecond(item.id)" v-for="item in filterredCategorySeconds">{{item.title}}</a>
-                </div-->
                 <div class="idx_menu">
                     <li style="font-size:.4rem;" class="lk" v-bind:class="{ cur: index == 0 }" v-on:tap="switchTo(0)">当前热拍</li>
                     <li style="font-size:.4rem;" class="lk" v-bind:class="{ cur: index == 1 }" v-on:tap="switchTo(1)">精品商城</li>
@@ -77,20 +68,15 @@
                     </ul>
                     <ul v-show="index == 1" class="idx_list clearfix">
                         <li class="item" v-bind:key="good.id" v-on:tap="shopItemOnTap(good.id)" v-for="good in filterredShopGoods">
-    
-                                <a href="#" class="imgbox">
-                                    <div v-bind:style="formatIconBackground(good.image)" class="img"/>
-                                </a>
-                                <a href="#" class="title ellipsis">{{good.title}}</a>
-                                <p class="price">&yen;{{good.quote}}</p>
-                            
+                            <a href="#" class="imgbox">
+                                <div v-bind:style="formatIconBackground(good.image)" class="img"/>
+                            </a>
+                            <a href="#" class="title ellipsis">{{good.title}}</a>
+                            <p class="price">&yen;{{good.quote}}</p>
                         </li>
                     </ul>
                 </div>
             </div>
-        </div>
-        <div v-show="showIndex == 1">
-            <category v-bind:search="handleCategoryCallback" />
         </div>
     </div>
 </template>
@@ -110,9 +96,7 @@
         },
         methods: {
             ...mapActions({
-                storeIndex: 'home/storeIndex',
-                storeFirst: 'home/storeFirst',
-                storeSecond: 'home/storeSecond'
+                storeIndex: 'home/storeIndex'
             }),
             formatImage: formatImage,
             formatDateDiff: formatDateDiff,
@@ -166,20 +150,9 @@
             switchTo: function(index){
                 this.storeIndex(index);
             },
-            onCategory: function(id){
-                this.storeSecond(-1);
-                this.storeFirst(id);
-            },
-            onCategorySecond: function(id){
-                this.storeSecond(id);
-            },
-            handleCategoryCallback: function(id, title, firstId){
-                this.showIndex = 0;
-                this.storeFirst(firstId);
-                this.onCategorySecond(id)
-            },
             onMoreCategory: function(){
-                this.showIndex = 1;
+                nav.go(`/goods/category`);
+                //this.showIndex = 1;
             },
             onContact: function(){
                 nav.go('/contact');
@@ -213,26 +186,12 @@
         },
         computed: {
              ...mapGetters('home', {
-                index: 'index',
-                first: 'first',
-                second: 'second'
+                index: 'index'
             }),
             filterredAuctionGoods: function(){
-                if(this.second != -1){
-                    return this.goods.filter(e => e.status == '拍卖中' && e.type == '拍卖' && e.categorySecondId == this.second);
-                }
-                if(this.first != -1){
-                    return this.goods.filter(e => e.status == '拍卖中' && e.type == '拍卖' && e.categoryFirstId == this.first);
-                }
                 return this.goods.filter(e => e.status == '拍卖中' && e.type == '拍卖');
             },
             filterredShopGoods: function(){
-                if(this.second != -1){
-                    return this.goods.filter(e => e.status == '拍卖中' && e.type == '精品商城' && e.categorySecondId == this.second);
-                }
-                if(this.first != -1){
-                    return this.goods.filter(e => e.status == '拍卖中' && e.type == '精品商城' && e.categoryFirstId == this.first);
-                }
                 return this.goods.filter(e => e.status == '拍卖中' && e.type == '精品商城');
             },
             filterredCategorySeconds: function(){
@@ -246,27 +205,6 @@
                     return {
                         image: item.image
                     };
-                });
-            }.bind(this));
-
-            fetch.get(`/user/v2/category/first`, null, function(data){
-                this.firsts = data.data.map(function(item, index){
-                    return {
-                        index: index,
-                        title: item.categoryName,
-                        id: item.categoryFirstId
-                    }
-                });
-                
-            }.bind(this));
-
-            fetch.get(`/user/v1/category/second`, null, function(data){
-                this.seconds = data.data.map(function(item, index){
-                    return {
-                        title: item.categoryName,
-                        id: item.categorySecondId,
-                        parent: item.categoryFirstId
-                    }
                 });
             }.bind(this));
 
@@ -288,7 +226,6 @@
         data(){
             return {
                 page: 1,
-                showIndex: 0,
                 goods: [],
                 firsts: [],
                 seconds: [],

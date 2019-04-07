@@ -6,7 +6,7 @@
         </div>
         <div class="cata_conta tabwrap">
             <div class="module">
-                <div style="line-height:40px;margin-left:.5rem;">{{title}} ></div>
+                <div style="line-height:40px;margin-left:.5rem;" v-on:tap="secondOnTap(-1, title, id)">{{title}} ></div>
                 <ul class="cata_list clearfix" style="marign-top:.2rem">
                     <li class="item" v-bind:key="second.id" v-for="second in seconds" v-on:tap="secondOnTap(second.id, second.title, second.firstId)">
                         <a href="#">

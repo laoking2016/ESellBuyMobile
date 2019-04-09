@@ -4,10 +4,20 @@
         <div>
             <div class="mui-content" style="padding:.2rem .25rem .35rem;">
                 <div id="slider" class="mui-slider">
-                    <div class="mui-slider-group">
+                    <div class="mui-slider-group mui-slider-loop">
+                        <div class="mui-slider-item mui-slider-item-duplicate">
+                            <a href="#">
+                                <img v-bind:src="formatImage(images[images.length-1].image)" alt="" class="img"/>
+                            </a>
+                        </div>
                         <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
                             <a href="#">
                                 <img v-bind:src="formatImage(image.image)" alt="" class="img"/>
+                            </a>
+                        </div>
+                        <div class="mui-slider-item mui-slider-item-duplicate">
+                            <a href="#">
+                                <img v-bind:src="formatImage(images[0].image)" alt="" class="img"/>
                             </a>
                         </div>
                     </div>
@@ -234,7 +244,7 @@
             }
         },
         updated(){
-            mui('#slider').slider({interval: 0});
+            mui('#slider').slider({interval: 10000});
         }
     }
 </script>

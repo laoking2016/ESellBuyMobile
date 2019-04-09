@@ -62,7 +62,7 @@
             </div>
         </div>
         <div v-show="dialog == 'category'">
-            <category v-bind:search="handleCategoryCallback" />
+            <category v-bind:search="handleCategoryCallback" editFlag="true" />
         </div>
         <div v-show="dialog == 'crop'" style="margin-top: 1rem">
             <image-crop v-bind:image="cropImage" v-bind:on-crop="onCrop"/>
@@ -149,7 +149,7 @@
                         quality: 10
                     }, function(zip){
                         uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
-                            this.icon = json.data;
+                            var icon = json.data;
                             
                              plus.zip.compressImage({
                                 src: path,
@@ -159,9 +159,16 @@
                             }, function(zip){
                                 uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
 
-                                    var url = json.data;
-                                    this.cropImage = url;
-                                    this.dialog = 'crop';
+                                    var image = json.data;
+                                    var args = {
+                                        icon: icon,
+                                        image: image
+                                    }
+                                    var searchedImage = this.images.filter(c => c.image == args.image);
+                                    if(searchedImage.length == 0){
+                                        args.icon = this.icon;
+                                        this.images.push(args);
+                                    }
 
                                 }.bind(this));
                             }.bind(this), function(zipe){

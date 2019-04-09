@@ -1,12 +1,12 @@
 <template>
     <div class="cata_main">
         <div class="cata_menu tabmenu">
-            <li class="lk" v-bind:class="{ cur: id == -1}" v-on:tap="firstOnTap(-1, '全部')">全部</li>
+            <li v-show="editFlag == null || editFlag == false" class="lk" v-bind:class="{ cur: id == -1}" v-on:tap="firstOnTap(-1, '全部')">全部</li>
             <li v-bind:class="{ cur: id == first.id }" class="lk" v-bind:key="first.id" v-for="first in firsts" v-on:tap="firstOnTap(first.id, first.title)">{{first.title}}</li>
         </div>
         <div class="cata_conta tabwrap">
             <div class="module">
-                <div style="line-height:40px;margin-left:.5rem;" v-on:tap="secondOnTap(-1, title, id)">{{title}} ></div>
+                <div v-show="editFlag == null || editFlag == false" style="line-height:40px;margin-left:.5rem;" v-on:tap="secondOnTap(-1, title, id)">{{title}} ></div>
                 <ul class="cata_list clearfix" style="marign-top:.2rem">
                     <li class="item" v-bind:key="second.id" v-for="second in seconds" v-on:tap="secondOnTap(second.id, second.title, second.firstId)">
                         <a href="#">
@@ -26,7 +26,7 @@
     import { formatCategoryImage } from '../utils/format.js'
 
     export default {
-        props: ['search'],
+        props: ['search', 'editFlag'],
         data(){
             return {
                 id: null,

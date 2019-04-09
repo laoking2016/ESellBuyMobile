@@ -62,7 +62,7 @@
             </div>
         </div>
         <div v-show="dialog == 'category'">
-            <category v-bind:search="handleCategoryCallback" />
+            <category v-bind:search="handleCategoryCallback" editFlag="true" />
         </div>
         <div v-show="dialog == 'crop'" style="margin-top: 1rem">
             <image-crop v-bind:image="cropImage" v-bind:on-crop="onCrop"/>
@@ -159,7 +159,7 @@
                             }, function(zip){
                                 uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
 
-                                    var imag = json.data;
+                                    var image = json.data;
                                     var args = {
                                         icon: icon,
                                         image: image

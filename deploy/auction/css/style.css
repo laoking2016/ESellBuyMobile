@@ -301,9 +301,9 @@ html{font-size:13.333vw;}
 .cata_conta{padding:.2rem .2rem;position:fixed;left: 2rem;top: 1rem;right: 0;overflow-y: scroll;bottom: 0;}
 .cata_pic .img{border-radius:.1rem;}
 .cata_list{margin:.4rem 0 0 -2%;}
-.cata_list .item{text-align: center;float: left;margin:0 0 .3rem 2%;width: 31.3%;}
+.cata_list .item{text-align: center;float: left;margin:0 0 .3rem 2%;/*width: 31.3%;*/width:46.3%;}
 .cata_list .item .img{width:1.3rem;height:1.45rem;display: block;margin:0 auto;}
-.cata_list .item .title{font-size: .24rem;color: #333333;line-height: 1.6;margin-top: .15rem !important;}
+.cata_list .item .title{font-size: .24rem;color: #333333;line-height: 4.6;margin-top: .15rem !important;border: 1px solid #ddd;}
 
 body{
     background-color: white;
@@ -319,7 +319,8 @@ body{
 
 .detail-img{
     width: 100vw;
-    height: 100vw;
+    /*height: 100vw;*/
+    height: 4rem;
 }
 
 .hd_title{
@@ -596,8 +597,9 @@ input[type="text"]{
     position:inherit;
     padding:auto;
     border-bottom:none;
-    margin-top: -.75rem;
-    margin-bottom: .35rem;
+    /*margin-top: -.75rem;*/
+    margin-top: -.35rem;
+    /*margin-bottom: .35rem;*/
 }
 
 .red_gradient{

@@ -10,7 +10,7 @@
 							<div class="info fr">
 								<a href="#" class="title">{{good.title}}</a>
 								<div class="bot clearfix">
-									<span class="tag yellow_gradient">{{good.quote}}</span>
+									<span style="color: red; font-size: .3rem;">&yen; {{good.quote}}</span> 
 									<a href="#" class="pink_gradient button fr">{{good.type}}</a>
 								</div>
 							</div>

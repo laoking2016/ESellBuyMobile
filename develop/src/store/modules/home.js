@@ -1,7 +1,8 @@
 const state = {
     index: 0,
     first: -1,
-    second: -1
+    second: -1,
+    goods: []
 }
 
 const getters = {

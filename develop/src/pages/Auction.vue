@@ -74,7 +74,7 @@
                 <div class="mui-row">
                     <div class='mui-col-sm-2 mui-col-xs-2' style="padding:10px;">支付</div>
                     <div class='mui-col-sm-10 mui-col-xs-10'>
-                        <button style="padding:5px;margin:5px;" class="mui-btn mui-btn-outlined" v-bind:class="{'mui-btn-success': item.checked}" v-bind:key="item" v-for="(item, index) in filterredPayment">{{item.name}}</button>
+                        <button style="padding:5px;margin:5px;" class="mui-btn mui-btn-outlined" v-bind:key="item" v-for="(item, index) in filterredPayment">{{item.name}}</button>
                     </div>
                 </div>
             </div>

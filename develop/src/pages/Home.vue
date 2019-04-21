@@ -7,7 +7,7 @@
                     <div class="mui-slider-group mui-slider-loop">
                         <div class="mui-slider-item mui-slider-item-duplicate">
                             <a href="#">
-                                <img v-bind:src="formatImage(images[images.length-1].image)" alt="" class="img"/>
+                                <img v-bind:src="images.length == 0 ? null : formatImage(images[images.length-1].image)" alt="" class="img"/>
                             </a>
                         </div>
                         <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
@@ -17,7 +17,7 @@
                         </div>
                         <div class="mui-slider-item mui-slider-item-duplicate">
                             <a href="#">
-                                <img v-bind:src="formatImage(images[0].image)" alt="" class="img"/>
+                                <img v-bind:src="images.length == 0 ? null : formatImage(images[0].image)" alt="" class="img"/>
                             </a>
                         </div>
                     </div>

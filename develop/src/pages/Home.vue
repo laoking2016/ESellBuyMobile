@@ -2,8 +2,8 @@
     <div>
         <main-menu top-button-type="MENU" readonly="true" />
         <div class="mui-content">
-            <div  id="home-page" class="mui-scroll-wrapper">
-                <div class="mui-scroll">
+            <div  id="home-page">
+                <div>
                     <div style="padding:.2rem .25rem .35rem;">
                         <div id="slider" class="mui-slider">
                             <div class="mui-slider-group mui-slider-loop">
@@ -54,14 +54,14 @@
                         <div class="search_para home-price">
                             <li class="lk" v-on:tap="timeOnTap">
                                 按日期排序 <span class="arrow">
-                                    <em class="icon up" v-show="sortType == 'TIME_ASC'"></em>
-                                    <em class="icon down" v-show="sortType == 'TIME_DESC'"></em>
+                                    <em class="icon up" v-show="sortType == 'TIME_DESC'"></em>
+                                    <em class="icon down" v-show="sortType == 'TIME_ASC'"></em>
                                 </span>
                             </li>
                             <li class="lk" v-on:tap="priceOnTap">
                                 按价格排序 <span class="arrow">
-                                    <em class="icon up" v-show="sortType == 'PRICE_ASC'"></em>
-                                    <em class="icon down" v-show="sortType == 'PRICE_DESC'"></em>
+                                    <em class="icon up" v-show="sortType == 'PRICE_DESC'"></em>
+                                    <em class="icon down" v-show="sortType == 'PRICE_ASC'"></em>
                                 </span>
                             </li>
                         </div>
@@ -85,6 +85,12 @@
                                 <p class="price">&yen;{{good.quote}}</p>
                             </li>
                         </ul>
+                    </div>
+                    <div class="mui-pull-bottom-pocket mui-block mui-visibility" v-on:tap="loadMore">
+                        <div class="mui-pull">
+                            <div class="mui-pull-loading mui-icon mui-spinner mui-hidden"></div>
+                            <div class="mui-pull-caption mui-pull-caption-nomore">查看更多...</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -175,25 +181,12 @@
             historyOnTap: function(){
                 nav.go(`/history`);
             },
-            loadGoods: function(page){
-                fetch.get(`/user/v2/goods?page=${page}`, null, function(data){
-                    data.data.map(function(item, index){
-                        var image = formatFeaturedImage(item.images);
-                        this.goods.push({
-                            id: item.goodId,
-                            title: item.goodName,
-                            image: image,
-                            quote: item.type == '拍卖' ? Math.round(item.nextBid * 1.03) : item.topPrice,
-                            status: item.status,
-                            deadline: item.deadline,
-                            type: item.type,
-                            categorySecondId: item.categorySecondId,
-                            categoryFirstId: item.categoryFirstId
-                        });
-                        
-                    }.bind(this));
-                    this.onSort();
-                }.bind(this));
+            loadMore: function(){
+                if(this.index == 0){
+                    this.loadAuction(null);
+                }else{
+                    this.loadShop(null);
+                }
             },
             loadAuction: function(target){
                 fetch.get(`/user/v2/goods?page=${this.page0}&type=拍卖`, null, function(data){
@@ -201,7 +194,7 @@
                         this.page0 = this.page0 + 1;
                     }
                     if(target != null){
-                        target.endPullupToRefresh(false);
+                        target.endPullupToRefresh(true);
                     }
                     data.data.map(function(item, index){
                         
@@ -287,11 +280,17 @@
             this.loadShop(null);    
             var _this = this;
 
-            mui('.mui-scroll-wrapper').scroll({
-                deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
-            });
+            var deceleration = mui.os.ios ? 0.003 : 0.0009;
 
-            mui.init({
+            /*mui('.mui-scroll-wrapper').scroll({
+                bounce: false,
+                indicators: true, //是否显示滚动条
+                deceleration:deceleration
+            });*/
+
+            
+
+            /*mui.init({
                 pullRefresh: {
                     container: "#home-page",//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
                     up : {
@@ -308,7 +307,9 @@
                         } //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
                     }
                 }
-            });
+            });*/
+
+            //mui('.mui-scroll-wrapper').scroll();
 		},
         data(){
             return {
@@ -331,7 +332,6 @@
     @import "../assets/home.css";
     .mui-scroll-wrapper{
         top: 1rem;
-        height: 11rem;
     }
     
 </style>

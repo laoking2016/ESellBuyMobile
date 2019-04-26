@@ -32,9 +32,6 @@
             handleCategoryCallback: function(id, title, firstId){
                 this.storeFirst(firstId);
                 this.storeSecond(id)
-
-                console.log(id);
-                console.log(firstId);
                 nav.go(`/goods`);
             }
         }

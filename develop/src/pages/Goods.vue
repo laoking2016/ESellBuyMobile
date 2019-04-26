@@ -18,6 +18,12 @@
                     </ul>
                 </div>
             </div>
+            <div class="mui-pull-bottom-pocket mui-block mui-visibility" v-on:tap="loadMore">
+                <div class="mui-pull">
+                    <div class="mui-pull-loading mui-icon mui-spinner mui-hidden"></div>
+                    <div class="mui-pull-caption mui-pull-caption-nomore">查看更多...</div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -69,22 +75,30 @@
 				}else{
 					nav.go(`/auction/detail/${id}`);
 				}
-			},
-            loadGoods: function(page){
-                fetch.get(`/user/v2/goods?page=${page}`, null, function(data){
+            },
+            loadMore: function(){
+                this.loadGoods();
+            },
+            loadGoods: function(){
+                fetch.get(`/user/v2/goods?page=${this.page}&type=`, null, function(data){
+                    if(data.data.length > 0){
+                        this.page = this.page + 1;
+                    }
                     data.data.map(function(item, index){
                         var image = formatFeaturedImage(item.images);
-                        this.goods.push({
-                            id: item.goodId,
-                            title: item.goodName,
-                            image: image,
-                            quote: item.type == '拍卖' ? Math.round(item.nextBid * 1.03) : item.topPrice,
-                            status: item.status,
-                            deadline: item.deadline,
-                            type: item.type,
-                            categorySecondId: item.categorySecondId,
-                            categoryFirstId: item.categoryFirstId
-                        });
+                        if(this.goods.filter(e => e.id == item.goodId).length == 0){
+                            this.goods.push({
+                                id: item.goodId,
+                                title: item.goodName,
+                                image: image,
+                                quote: item.type == '拍卖' ? Math.round(item.nextBid * 1.03) : item.topPrice,
+                                status: item.status,
+                                deadline: item.deadline,
+                                type: item.type,
+                                categorySecondId: item.categorySecondId,
+                                categoryFirstId: item.categoryFirstId
+                            });
+                        }
                         
                     }.bind(this));
                     //this.onSort();
@@ -93,8 +107,8 @@
         },
         mounted(){
 
-            this.loadGoods(this.page);
-            var _this = this;
+            this.loadGoods();
+            /*var _this = this;
             mui("#good-list").pullToRefresh({
                 up: {
                     callback: function(){
@@ -106,7 +120,7 @@
                         }, 5000);
                     }
                 }
-            });
+            });*/
         }
     }
 </script>

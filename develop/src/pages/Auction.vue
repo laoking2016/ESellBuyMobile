@@ -84,10 +84,10 @@
             <div class="mui-content">
                 
                 <div class='mui-row' v-on:tap="onSupplierGoods">
-                    <div class='mui-col-sm-6 mui-col-xs-6' style='padding:10px;'>
+                    <div class='mui-col-sm-8 mui-col-xs-8' style='padding:10px;'>
                         <h6 class="title aunction-title auction-supplier" style='font-size:small;line-height:.5rem;height:.5rem;backgroundImage: url(images/seller.jpg)'>{{supplierName}}</h6>
                     </div>
-                    <div class='mui-col-sm-6 mui-col-xs-6' style='padding:10px;text-align:right;font-size:small'>
+                    <div class='mui-col-sm-4 mui-col-xs-4' style='padding:10px;text-align:right;font-size:small'>
                         <span>在售商品</span>
                         <img src='images/list.png' style='width:20px;'>
                     </div>

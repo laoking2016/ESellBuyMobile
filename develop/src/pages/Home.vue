@@ -54,37 +54,48 @@
                 <div class="search_para home-price">
                     <li class="lk" v-on:tap="timeOnTap">
                         按日期排序 <span class="arrow">
-                            <em class="icon up" v-show="sortType == 'TIME_ASC'"></em>
-                            <em class="icon down" v-show="sortType == 'TIME_DESC'"></em>
+                            <em class="icon up" v-show="sortType == 'TIME_DESC'"></em>
+                            <em class="icon down" v-show="sortType == 'TIME_ASC'"></em>
                         </span>
                     </li>
                     <li class="lk" v-on:tap="priceOnTap">
                         按价格排序 <span class="arrow">
-                            <em class="icon up" v-show="sortType == 'PRICE_ASC'"></em>
-                            <em class="icon down" v-show="sortType == 'PRICE_DESC'"></em>
+                            <em class="icon up" v-show="sortType == 'PRICE_DESC'"></em>
+                            <em class="icon down" v-show="sortType == 'PRICE_ASC'"></em>
                         </span>
                     </li>
                 </div>
-                <div id="good-list">
-                    <ul v-show="index == 0" class="idx_list clearfix">
-                        <li class="item" v-bind:key="good.id" v-on:tap="auctionItemOnTap(good.id)" v-for="good in filterredAuctionGoods">
-                            <a href="#" class="imgbox">
-                                <div v-bind:style="formatIconBackground(good.image)" class="img"/>
-                                <span class="time">还有{{formatDateDiff(new Date(), new Date(good.deadline))}}</span>
-                            </a>
-                            <a href="#" class="title ellipsis">{{good.title}}</a>
-                            <p class="price">&yen;{{good.quote}}</p>
-                        </li>
-                    </ul>
-                    <ul v-show="index == 1" class="idx_list clearfix">
-                        <li class="item" v-bind:key="good.id" v-on:tap="shopItemOnTap(good.id)" v-for="good in filterredShopGoods">
-                            <a href="#" class="imgbox">
-                                <div v-bind:style="formatIconBackground(good.image)" class="img"/>
-                            </a>
-                            <a href="#" class="title ellipsis">{{good.title}}</a>
-                            <p class="price">&yen;{{good.quote}}</p>
-                        </li>
-                    </ul>
+                 
+			    <!--内容...-->
+                <div v-show="index == 0">
+                    <mescroll-vue ref="mescroll0" :down="mescrollDown0" :up="mescrollUp0" @init="mescrollInit0">
+                        <ul class="idx_list clearfix">
+                        
+                            <li class="item" v-bind:key="good.id" v-on:tap="auctionItemOnTap(good.id)" v-for="good in filterredAuctionGoods">
+                                <a href="#" class="imgbox">
+                                    <div v-bind:style="formatIconBackground(good.image)" class="img"/>
+                                    <span class="time">还有{{formatDateDiff(new Date(), new Date(good.deadline))}}</span>
+                                </a>
+                                <a href="#" class="title ellipsis">{{good.title}}</a>
+                                <p class="price">&yen;{{good.quote}}</p>
+                            </li>
+                        </ul>
+                    </mescroll-vue>
+                </div>
+                <div v-show="index == 1">
+                    <div id="shop-list">
+                        <ul class="idx_list clearfix">
+                            
+                            <li class="item" v-bind:key="good.id" v-on:tap="shopItemOnTap(good.id)" v-for="good in filterredShopGoods">
+                                <a href="#" class="imgbox">
+                                    <div v-bind:style="formatIconBackground(good.image)" class="img"/>
+                                </a>
+                                <a href="#" class="title ellipsis">{{good.title}}</a>
+                                <p class="price">&yen;{{good.quote}}</p>
+                            </li>
+                            
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -92,6 +103,7 @@
 </template>
 
 <script>
+    import MescrollVue from 'mescroll.js/mescroll.vue'
     import { mapGetters, mapActions } from 'vuex'
     import mainMenu from '../components/MainMenu.vue'
     import category from '../components/Category.vue'
@@ -102,7 +114,8 @@
     export default {
         components: {
             mainMenu,
-            category
+            category,
+            MescrollVue
         },
         methods: {
             ...mapActions({
@@ -125,19 +138,24 @@
             onSort: function(){
                 switch(this.sortType){
                     case 'PRICE_DESC':
-                        this.goods.sort((a, b) => a.quote - b.quote);
+                        this.goods0.sort((a, b) => a.quote - b.quote);
+                        this.goods1.sort((a, b) => a.quote - b.quote);
                         break;
                     case 'PRICE_ASC':
-                        this.goods.sort((a, b) => b.quote - a.quote);
+                        this.goods0.sort((a, b) => b.quote - a.quote);
+                        this.goods1.sort((a, b) => b.quote - a.quote);
                         break;
                     case 'TIME_DESC':
-                        this.goods.sort((a, b) => a.deadline - b.deadline);
+                        this.goods0.sort((a, b) => a.deadline - b.deadline);
+                        this.goods1.sort((a, b) => a.deadline - b.deadline);
                         break;
                     case 'TIME_ASC':
-                        this.goods.sort((a, b) => b.deadline - a.deadline);
+                        this.goods0.sort((a, b) => b.deadline - a.deadline);
+                        this.goods1.sort((a, b) => b.deadline - a.deadline);
                         break;
                     default:
-                        this.goods.sort((a, b) => a.deadline - b.deadline);
+                        this.goods0.sort((a, b) => a.deadline - b.deadline);
+                        this.goods1.sort((a, b) => a.deadline - b.deadline);
                         break;
                 }
             },
@@ -173,11 +191,35 @@
             historyOnTap: function(){
                 nav.go(`/history`);
             },
-            loadGoods: function(page){
-                fetch.get(`/user/v2/goods?page=${page}`, null, function(data){
+            loadAuction: function(){
+                fetch.get(`/user/v2/goods?page=${this.page0}&type=拍卖`, null, function(data){
+                    this.page0 = this.page0 + 1;
+                    this.mescroll0.endSuccess(data.data.length);
                     data.data.map(function(item, index){
                         var image = formatFeaturedImage(item.images);
-                        this.goods.push({
+                        this.goods0.push({
+                            id: item.goodId,
+                            title: item.goodName,
+                            image: image,
+                            quote: item.type == '拍卖' ? Math.round(item.nextBid * 1.03) : item.topPrice,
+                            status: item.status,
+                            deadline: item.deadline,
+                            type: item.type,
+                            categorySecondId: item.categorySecondId,
+                            categoryFirstId: item.categoryFirstId
+                        });
+                    }.bind(this));
+                    this.onSort();
+                }.bind(this));
+            },
+            loadShop: function(){
+                fetch.get(`/user/v2/goods?page=${this.page1}&type=精品商城`, null, function(data){
+                    this.page1 = this.page1 + 1;
+                    mui('#shop-list').pullRefresh().endPullupToRefresh();
+                    //this.mescroll1.endSuccess(data.data.length);
+                    data.data.map(function(item, index){
+                        var image = formatFeaturedImage(item.images);
+                        this.goods1.push({
                             id: item.goodId,
                             title: item.goodName,
                             image: image,
@@ -192,6 +234,18 @@
                     }.bind(this));
                     this.onSort();
                 }.bind(this));
+            },
+            mescrollInit0 (mescroll) {
+                this.mescroll0 = mescroll  // 如果this.mescroll对象没有使用到,则mescrollInit可以不用配置
+            },
+            mescrollInit1 (mescroll) {
+                this.mescroll1 = mescroll  // 如果this.mescroll对象没有使用到,则mescrollInit可以不用配置
+            },
+            upCallback0 (page, mescroll) {
+                this.loadAuction();
+            },
+            upCallback1 (page, mescroll){
+                this.loadShop();
             }
         },
         computed: {
@@ -199,10 +253,10 @@
                 index: 'index'
             }),
             filterredAuctionGoods: function(){
-                return this.goods.filter(e => e.status == '拍卖中' && e.type == '拍卖');
+                return this.goods0.filter(e => e.status == '拍卖中' && e.type == '拍卖');
             },
             filterredShopGoods: function(){
-                return this.goods.filter(e => e.status == '拍卖中' && e.type == '精品商城');
+                return this.goods1.filter(e => e.status == '拍卖中' && e.type == '精品商城');
             },
             filterredCategorySeconds: function(){
                 return this.seconds.filter(e => e.parent == this.first);
@@ -218,16 +272,41 @@
                 });
             }.bind(this));
 
-            this.loadGoods(this.page);
+            //this.loadAuction();
+            //this.loadShop();
+
             var _this = this;
+
+            mui.init({
+                pullRefresh : {
+                    container: "#shop-list",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+                    up : {
+                        height:50,//可选.默认50.触发上拉加载拖动距离
+                        auto:true,//可选,默认false.自动上拉加载一次
+                        contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+                        contentnomore:'没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+                        callback :function(){
+                            _this.loadShop();
+                        } //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+                    }
+                }
+            });
+
             mui("#good-list").pullToRefresh({
                 up: {
                     callback: function(){
+                        console.log('sdaf');
                         var self = this;
                         setTimeout(function(){
-                            _this.page = _this.page + 1;
-                            _this.loadGoods(_this.page);
+                            if(_this.index == 0){
+                                _this.page0 = _this.page0 + 1;    
+                                _this.loadAuction();
+                            }else{
+                                _this.page1 = _this.page1 + 1;    
+                                _this.loadShop();
+                            }
                             self.endPullUpToRefresh();
+                            
                         }, 5000);
                     }
                 }
@@ -235,12 +314,29 @@
 		},
         data(){
             return {
-                page: 1,
-                goods: [],
+                page0: 1,
+                page1: 1,
+                goods0: [],
+                goods1: [],
                 firsts: [],
                 seconds: [],
-                sortType: "TIME_DESC",
-                images: []
+                sortType: "TIME_ASC",
+                images: [],
+                mescroll0: null,
+                mescrollDown0:{
+                    use: false,
+                    islock: true
+                },
+                mescrollUp0: {
+                    callback: this.upCallback0
+                },
+                mescroll1: null,
+                mescrollDown1:{
+                    use: false
+                },
+                mescrollUp1: {
+                    callback: this.upCallback1
+                }
             }
         },
         updated(){

@@ -20,15 +20,18 @@
             </div>
             <div class="mui-content">
                 <div class='mui-row'>
-                    <div class="mui-col-sm-6 mui-col-xs-6" style='padding:10px;'>
+                    <div class="mui-col-sm-7 mui-col-xs-7" style='padding:10px;'>
                         <h1 style='font-size:x-large;'>{{title}}</h1>
-                        <div style='font-size:.24rem;color:#999999'>{{description}}</div>
                     </div>
-                    <div class="mui-col-sm-6  mui-col-xs-6" style='text-align:right;padding:10px;'>
+                    
+                    <div class="mui-col-sm-5  mui-col-xs-5" style='text-align:right;padding:10px;'>
                         <span class='mui-icon mui-icon-help' style='font-size:.5rem;margin-right:10px;' v-on:tap="questionOnTap"></span>
                         <span class='mui-icon-extra mui-icon-extra-comment' style='font-size:.41rem;margin-right:10px;'></span>
                         <span class='mui-icon-extra mui-icon-extra-share' style='margin-right:10px;'></span>
                         <span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra mui-pull-right" v-on:tap="favoriteOnTap(id)"></span>
+                    </div>
+                    <div class="mui-col-sm-12 mui-col-xs-12" style='padding:10px;'>
+                        <div style='font-size:.24rem;color:#999999'>{{description}}</div>
                     </div>
                 </div>
 

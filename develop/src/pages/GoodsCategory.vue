@@ -2,6 +2,7 @@
     <div>
         <main-menu top-button-type="BACK" v-bind:header-text="title" />
         <category v-bind:search="handleCategoryCallback" />
+        
     </div>
 </template>
 

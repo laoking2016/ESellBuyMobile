@@ -54,14 +54,14 @@
                         <div class="search_para home-price">
                             <li class="lk" v-on:tap="timeOnTap">
                                 按日期排序 <span class="arrow">
-                                    <em class="icon up" v-show="sortType == 'TIME_DESC'"></em>
-                                    <em class="icon down" v-show="sortType == 'TIME_ASC'"></em>
+                                    <em class="icon up" v-show="sort == 'deadline asc'"></em>
+                                    <em class="icon down" v-show="sort == 'deadline desc'"></em>
                                 </span>
                             </li>
                             <li class="lk" v-on:tap="priceOnTap">
                                 按价格排序 <span class="arrow">
-                                    <em class="icon up" v-show="sortType == 'PRICE_DESC'"></em>
-                                    <em class="icon down" v-show="sortType == 'PRICE_ASC'"></em>
+                                    <em class="icon up" v-show="sort == 'next_bid asc'"></em>
+                                    <em class="icon down" v-show="sort == 'next_bid desc'"></em>
                                 </span>
                             </li>
                         </div>
@@ -120,29 +120,42 @@
             formatDateDiff: formatDateDiff,
             formatImageBackground: formatImageBackground,
             formatIconBackground: formatIconBackground,
+            cleanGoods: function(){
+                this.goods = [];                
+            },
             timeOnTap: function(){
-                if('TIME_DESC' == this.sortType){
-                    this.sortType = 'TIME_ASC';
-                }else if('TIME_ASC' == this.sortType){
-                    this.sortType = 'TIME_DESC';
+                    
+                this.cleanGoods();
+                if('deadline desc' == this.sort){
+                    this.sort = 'deadline asc';
+                }else if('deadline asc' == this.sort){
+                    this.sort = 'deadline desc';
                 }else{
-                    this.sortType = 'TIME_DESC';
+                    this.sort = 'deadline desc';
                 }
-                this.onSort();
+                if(this.index == 0){
+                    this.page0 = 1;
+                    this.loadAuction(null);
+                }else{
+                    this.page1 = 1;
+                    this.loadShop(null);
+                }
+                
             },
             onSort: function(){
-                switch(this.sortType){
-                    case 'PRICE_DESC':
-                        this.goods.sort((a, b) => a.quote - b.quote);
-                        break;
-                    case 'PRICE_ASC':
+                switch(this.sort){
+                    case 'next_bid desc':
                         this.goods.sort((a, b) => b.quote - a.quote);
                         break;
-                    case 'TIME_DESC':
-                        this.goods.sort((a, b) => a.deadline - b.deadline);
+                    case 'next_bid asc':
+                        this.goods.sort((a, b) => a.quote - b.quote);
                         break;
-                    case 'TIME_ASC':
+                    case 'deadline desc':
                         this.goods.sort((a, b) => b.deadline - a.deadline);
+                        break;
+                    case 'deadline asc':
+                        this.goods.sort((a, b) => a.deadline - b.deadline);
+                        
                         break;
                     default:
                         this.goods.sort((a, b) => a.deadline - b.deadline);
@@ -150,14 +163,21 @@
                 }
             },
             priceOnTap: function(){
-                if('PRICE_DESC' == this.sortType){
-                    this.sortType = 'PRICE_ASC';
-                }else if('PRICE_ASC' == this.sortType){
-                    this.sortType = 'PRICE_DESC';
+                this.cleanGoods();
+                if('next_bid desc' == this.sort){
+                    this.sort = 'next_bid asc';
+                }else if('next_bid asc' == this.sort){
+                    this.sort = 'next_bid desc';
                 }else{
-                    this.sortType = 'PRICE_DESC';
+                    this.sort = 'next_bid desc';
                 }
-                this.onSort();
+                if(this.index == 0){
+                    this.page0 = 1;
+                    this.loadAuction(null);
+                }else{
+                    this.page1 = 1;
+                    this.loadShop(null);
+                }
             },
             shopItemOnTap: function(id){
                 nav.go(`/shop/detail/${id}`);
@@ -166,7 +186,19 @@
                 nav.go(`/auction/detail/${id}`);
             },
             switchTo: function(index){
+                
+                if(index != this.index){
+                    this.cleanGoods();
+                    if(index == 0){
+                        this.page0 = 1;
+                        this.loadAuction(null);
+                    }else{
+                        this.page1 = 1;
+                        this.loadShop(null);
+                    }
+                }
                 this.storeIndex(index);
+                
             },
             onMoreCategory: function(){
                 nav.go(`/goods/category`);
@@ -189,7 +221,7 @@
                 }
             },
             loadAuction: function(target){
-                fetch.get(`/user/v2/goods?page=${this.page0}&type=拍卖`, null, function(data){
+                fetch.get(`/user/v2/goods?page=${this.page0}&type=拍卖&sort=${this.sort}`, null, function(data){
                     if(data.data.length > 0){
                         this.page0 = this.page0 + 1;
                     }
@@ -212,11 +244,11 @@
                         });
                         
                     }.bind(this));
-                    this.onSort();
+                    //this.onSort();
                 }.bind(this));
             },
             loadShop: function(target){
-                fetch.get(`/user/v2/goods?page=${this.page1}&type=精品商城`, null, function(data){
+                fetch.get(`/user/v2/goods?page=${this.page1}&type=精品商城&sort=${this.sort}`, null, function(data){
                     if(data.data.length > 0){
                         this.page1 = this.page1 + 1;
                     }
@@ -239,7 +271,7 @@
                         });
                         
                     }.bind(this));
-                    this.onSort();
+                    //this.onSort();
                 }.bind(this));
             }
         },
@@ -276,8 +308,12 @@
             }.bind(this));
 
             //this.loadGoods(this.page);
-            this.loadAuction(null);
-            this.loadShop(null);    
+            if(this.index == 0){
+                this.loadAuction(null);
+            }else{
+                this.loadShop(null);    
+            }
+            
             var _this = this;
 
             var deceleration = mui.os.ios ? 0.003 : 0.0009;
@@ -318,7 +354,7 @@
                 goods: [],
                 firsts: [],
                 seconds: [],
-                sortType: "TIME_ASC",
+                sort: "deadline desc",
                 images: []
             }
         },

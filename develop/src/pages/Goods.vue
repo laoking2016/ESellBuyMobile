@@ -80,7 +80,7 @@
                 this.loadGoods();
             },
             loadGoods: function(){
-                fetch.get(`/user/v2/goods?page=${this.page}&type=`, null, function(data){
+                fetch.get(`/user/v2/category/goods?page=${this.page}&first=${this.first}&second=${this.second}`, null, function(data){
                     if(data.data.length > 0){
                         this.page = this.page + 1;
                     }

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>香港联合拍卖</title>
+    <link href="css/mui.min.css" type="text/css" rel="stylesheet"/>
+    <!--link rel="stylesheet" type="text/css" href="css/app.css" /-->
+    <link rel="stylesheet" type="text/css" href="css/mui.picker.min.css" />
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/icons-extra.css" />
+
+    <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
+    <script src="scripts/mui.min.js"></script>
+    <script src="scripts/mui.picker.min.js"></script>
+    <script src="scripts/moment.min.js"></script>
+    <script src="scripts/mui.zoom.js"></script>
+    <script src="scripts/mui.previewimage.js"></script>
+    
+    <script src="scripts/common.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+      
+      mui.init({
+				swipeBack:true //启用右滑关闭功能
+      });
+      
+      window.auths = null;
+      window.shares = null;
+      window.sharewx = null;
+      
+      document.addEventListener( "plusready", function(){
+        // 扩展API加载完毕，现在可以正常调用扩展API
+        plus.oauth.getServices( function(services){
+          window.auths = services;
+        }, function(e){
+          alert( "获取分享服务列表失败："+e.message+" - "+e.code );
+        } );
+
+        plus.share.getServices(function(services){
+          window.shares = services;
+          for(var i in services){
+            if('weixin' == services[i].id){
+              window.sharewx = services[i];
+            }
+          }
+        }, function(e){
+          alert( "获取分享服务列表失败："+e.message );
+        });
+      }, false);
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="dist/build.js"></script>
+  </body>
+</html>

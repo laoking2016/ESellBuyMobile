@@ -45,7 +45,7 @@
                         </div>
                     </div>
 
-                    <div class="idx_listwrap">
+                    <div class="idx_listwrap" style="padding-bottom:0px;">
                         <div class="idx_menu">
                             <li style="font-size:.4rem;" class="lk" v-bind:class="{ cur: index == 0 }" v-on:tap="switchTo(0)">当前热拍</li>
                             <li style="font-size:.4rem;" class="lk" v-bind:class="{ cur: index == 1 }" v-on:tap="switchTo(1)">精品商城</li>
@@ -54,8 +54,8 @@
                         <div class="search_para home-price">
                             <li class="lk" v-on:tap="timeOnTap">
                                 按日期排序 <span class="arrow">
-                                    <em class="icon up" v-show="sort == 'deadline asc'"></em>
-                                    <em class="icon down" v-show="sort == 'deadline desc'"></em>
+                                    <em class="icon up" v-show="sort == 'good_id asc'"></em>
+                                    <em class="icon down" v-show="sort == 'good_id desc'"></em>
                                 </span>
                             </li>
                             <li class="lk" v-on:tap="priceOnTap">
@@ -70,7 +70,7 @@
                             <li class="item" v-bind:key="good.id" v-on:tap="auctionItemOnTap(good.id)" v-for="good in filterredAuctionGoods">
                                 <a href="#" class="imgbox">
                                     <div v-bind:style="formatIconBackground(good.image)" class="img"/>
-                                    <span class="time">还有{{formatDateDiff(new Date(), new Date(good.deadline))}}</span>
+                                    <span class="time">还有{{formatDateDiff(now, new Date(good.deadline))}}</span>
                                 </a>
                                 <a href="#" class="title ellipsis">{{good.title}}</a>
                                 <p class="price">&yen;{{good.quote}}</p>
@@ -114,75 +114,64 @@
         },
         methods: {
             ...mapActions({
-                storeIndex: 'home/storeIndex'
+                storeIndex: 'home/storeIndex',
+                storePage0: 'home/storePage0',
+                storePage1: 'home/storePage1',
+                storeSort: 'home/storeSort',
+                cleanGoods: 'home/cleanGoods',
+                addGood: 'home/addGood',
+                storeScrollTop: 'home/storeScrollTop'
             }),
             formatImage: formatImage,
             formatDateDiff: formatDateDiff,
             formatImageBackground: formatImageBackground,
             formatIconBackground: formatIconBackground,
-            cleanGoods: function(){
-                this.goods = [];                
-            },
             timeOnTap: function(){
                     
                 this.cleanGoods();
-                if('deadline desc' == this.sort){
-                    this.sort = 'deadline asc';
-                }else if('deadline asc' == this.sort){
-                    this.sort = 'deadline desc';
+                if('good_id desc' == this.sort){
+                    this.storeSort('good_id asc');
+                }else if('good_id asc' == this.sort){
+                    this.storeSort('good_id desc');
                 }else{
-                    this.sort = 'deadline desc';
+                    this.storeSort('good_id desc');
                 }
                 if(this.index == 0){
-                    this.page0 = 1;
+                    this.storePage0(1);
                     this.loadAuction(null);
                 }else{
-                    this.page1 = 1;
+                    this.storePage1(1);
                     this.loadShop(null);
                 }
                 
             },
-            onSort: function(){
-                switch(this.sort){
-                    case 'next_bid desc':
-                        this.goods.sort((a, b) => b.quote - a.quote);
-                        break;
-                    case 'next_bid asc':
-                        this.goods.sort((a, b) => a.quote - b.quote);
-                        break;
-                    case 'deadline desc':
-                        this.goods.sort((a, b) => b.deadline - a.deadline);
-                        break;
-                    case 'deadline asc':
-                        this.goods.sort((a, b) => a.deadline - b.deadline);
-                        
-                        break;
-                    default:
-                        this.goods.sort((a, b) => a.deadline - b.deadline);
-                        break;
-                }
-            },
             priceOnTap: function(){
                 this.cleanGoods();
                 if('next_bid desc' == this.sort){
-                    this.sort = 'next_bid asc';
+                    this.storeSort('next_bid asc');
                 }else if('next_bid asc' == this.sort){
-                    this.sort = 'next_bid desc';
+                    this.storeSort('next_bid desc');
                 }else{
-                    this.sort = 'next_bid desc';
+                    this.storeSort('next_bid desc');
                 }
                 if(this.index == 0){
-                    this.page0 = 1;
+                    this.storePage0(1);
                     this.loadAuction(null);
                 }else{
-                    this.page1 = 1;
+                    this.storePage1(1);
                     this.loadShop(null);
                 }
             },
             shopItemOnTap: function(id){
+                var top = 
+                    window.pageYOffset || document.documentElement.scrollTop
+                this.storeScrollTop(top);
                 nav.go(`/shop/detail/${id}`);
             },
             auctionItemOnTap: function(id){
+                var top = 
+                    window.pageYOffset || document.documentElement.scrollTop
+                this.storeScrollTop(top);
                 nav.go(`/auction/detail/${id}`);
             },
             switchTo: function(index){
@@ -190,10 +179,10 @@
                 if(index != this.index){
                     this.cleanGoods();
                     if(index == 0){
-                        this.page0 = 1;
+                        this.storePage0(1);
                         this.loadAuction(null);
                     }else{
-                        this.page1 = 1;
+                        this.storePage1(1);
                         this.loadShop(null);
                     }
                 }
@@ -201,16 +190,27 @@
                 
             },
             onMoreCategory: function(){
+                var top = 
+                    window.pageYOffset || document.documentElement.scrollTop
+                this.storeScrollTop(top);
                 nav.go(`/goods/category`);
-                //this.showIndex = 1;
             },
             onContact: function(){
+                var top = 
+                    window.pageYOffset || document.documentElement.scrollTop
+                this.storeScrollTop(top);
                 nav.go('/contact');
             },
             onInstruction: function(){
+                var top = 
+                    window.pageYOffset || document.documentElement.scrollTop
+                this.storeScrollTop(top);
                 nav.go('/instruction');
             },
             historyOnTap: function(){
+                var top = 
+                    window.pageYOffset || document.documentElement.scrollTop
+                this.storeScrollTop(top);
                 nav.go(`/history`);
             },
             loadMore: function(){
@@ -223,61 +223,62 @@
             loadAuction: function(target){
                 fetch.get(`/user/v2/goods?page=${this.page0}&type=拍卖&sort=${this.sort}`, null, function(data){
                     if(data.data.length > 0){
-                        this.page0 = this.page0 + 1;
-                    }
-                    if(target != null){
-                        target.endPullupToRefresh(true);
+                        this.storePage0(this.page0 + 1);
                     }
                     data.data.map(function(item, index){
                         
-                        var image = formatFeaturedImage(item.images);
-                        this.goods.push({
-                            id: item.goodId,
-                            title: item.goodName,
-                            image: image,
-                            quote: item.type == '拍卖' ? Math.round(item.nextBid * 1.03) : item.topPrice,
-                            status: item.status,
-                            deadline: item.deadline,
-                            type: item.type,
-                            categorySecondId: item.categorySecondId,
-                            categoryFirstId: item.categoryFirstId
-                        });
+                        if(this.goods.filter(e => e.id == item.goodId).length == 0){
+                            var image = formatFeaturedImage(item.images);
+                            this.addGood({
+                                id: item.goodId,
+                                title: item.goodName,
+                                image: image,
+                                quote: item.type == '拍卖' ? Math.round(item.nextBid * 1.03) : item.topPrice,
+                                status: item.status,
+                                deadline: item.deadline,
+                                type: item.type,
+                                categorySecondId: item.categorySecondId,
+                                categoryFirstId: item.categoryFirstId
+                            });
+                        }
                         
                     }.bind(this));
-                    //this.onSort();
                 }.bind(this));
             },
             loadShop: function(target){
                 fetch.get(`/user/v2/goods?page=${this.page1}&type=精品商城&sort=${this.sort}`, null, function(data){
                     if(data.data.length > 0){
-                        this.page1 = this.page1 + 1;
-                    }
-                    if(target != null){
-                        target.endPullupToRefresh(false);
+                        this.storePage1(this.page1 + 1);
                     }
                     data.data.map(function(item, index){
                         
-                        var image = formatFeaturedImage(item.images);
-                        this.goods.push({
-                            id: item.goodId,
-                            title: item.goodName,
-                            image: image,
-                            quote: item.type == '拍卖' ? Math.round(item.nextBid * 1.03) : item.topPrice,
-                            status: item.status,
-                            deadline: item.deadline,
-                            type: item.type,
-                            categorySecondId: item.categorySecondId,
-                            categoryFirstId: item.categoryFirstId
-                        });
+                        if(this.goods.filter(e => e.id == item.goodId).length == 0){
+                            var image = formatFeaturedImage(item.images);
+                            this.addGood({
+                                id: item.goodId,
+                                title: item.goodName,
+                                image: image,
+                                quote: item.type == '拍卖' ? Math.round(item.nextBid * 1.03) : item.topPrice,
+                                status: item.status,
+                                deadline: item.deadline,
+                                type: item.type,
+                                categorySecondId: item.categorySecondId,
+                                categoryFirstId: item.categoryFirstId
+                            });
+                        }
                         
                     }.bind(this));
-                    //this.onSort();
                 }.bind(this));
             }
         },
         computed: {
              ...mapGetters('home', {
-                index: 'index'
+                index: 'index',
+                goods: 'goods',
+                page0: 'page0',
+                page1: 'page1',
+                sort: 'sort',
+                scrollTop: 'scrollTop'
             }),
             filterredAuctionGoods: function(){
                 return this.goods.filter(e => e.status == '拍卖中' && e.type == '拍卖');
@@ -289,14 +290,6 @@
                 return this.seconds.filter(e => e.parent == this.first);
             }
         },
-        created(){
-            for(var i = mui.hooks.inits.length-1,item;i>=0;i--){  
-                item=mui.hooks.inits[i];  
-                if(item.name=="pullrefresh"){  
-                    item.repeat=true;  
-                }  
-            }  
-        },
 	  	mounted() {
 
             fetch.get(`/user/v2/advs`, null, function(data){
@@ -307,59 +300,35 @@
                 });
             }.bind(this));
 
-            //this.loadGoods(this.page);
             if(this.index == 0){
-                this.loadAuction(null);
-            }else{
-                this.loadShop(null);    
-            }
-            
-            var _this = this;
-
-            var deceleration = mui.os.ios ? 0.003 : 0.0009;
-
-            /*mui('.mui-scroll-wrapper').scroll({
-                bounce: false,
-                indicators: true, //是否显示滚动条
-                deceleration:deceleration
-            });*/
-
-            
-
-            /*mui.init({
-                pullRefresh: {
-                    container: "#home-page",//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
-                    up : {
-                        height: 50,//可选.默认50.触发上拉加载拖动距离
-                        auto: false,//可选,默认false.自动上拉加载一次
-                        contentrefresh: "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
-                        contentnomore: '没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
-                        callback: function(){
-                            if(_this.index == 0){
-                                _this.loadAuction(this);
-                            }else{
-                                _this.loadShop(this);
-                            }
-                        } //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-                    }
+                if(this.page0 == 1){
+                    this.loadAuction(null);
                 }
-            });*/
+            }else{
+                if(this.page1 == 1){
+                    this.loadShop(null);  
+                }
+            }
 
-            //mui('.mui-scroll-wrapper').scroll();
-		},
+            setTimeout(function(){
+                window.scrollTo(0, this.scrollTop);
+                
+            }.bind(this), 500)
+
+            setInterval(function(){
+                this.now = new Date();
+            }.bind(this), 1000);
+        },
         data(){
             return {
-                page0: 1,
-                page1: 1,
-                goods: [],
-                firsts: [],
-                seconds: [],
-                sort: "deadline desc",
-                images: []
+                images: [],
+                now: new Date()
             }
         },
         updated(){
             mui('#slider').slider({interval: 10000});
+            
+            
         }
     }
 </script>

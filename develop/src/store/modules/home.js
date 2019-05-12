@@ -1,19 +1,30 @@
 const state = {
     index: 0,
-    first: -1,
-    second: -1,
-    goods: []
+    page0: 1,
+    page1: 1,
+    sort: 'good_id desc',
+    goods: [],
+    scrollTop: 0
 }
 
 const getters = {
     index: (state, getters) => {
         return state.index
     },
-    first: (state, getters) => {
-        return state.first
+    page0: (state, getters) => {
+        return state.page0
     },
-    second: (state, getters) => {
-        return state.second
+    page1: (state, getters) => {
+        return state.page1
+    },
+    sort: (state, getters) => {
+        return state.sort
+    },
+    goods: (state, getters) => {
+        return state.goods
+    },
+    scrollTop: (state, getters) => {
+        return state.scrollTop
     }
 }
 
@@ -21,11 +32,23 @@ const actions = {
     storeIndex({commit, state}, index){
         commit('storeIndex', index)
     },
-    storeFirst({commit, state}, first){
-        commit('storeFirst', first)
+    storePage0({commit, state}, page0){
+        commit('storePage0', page0)
     },
-    storeSecond({commit, state}, second){
-        commit('storeSecond', second)
+    storePage1({commit, state}, page1){
+        commit('storePage1', page1)
+    },
+    storeSort({commit, state}, sort){
+        commit('storeSort', sort)
+    },
+    addGood({commit, state}, good){
+        commit('addGood', good)
+    },
+    cleanGoods({commit, state}){
+        commit('cleanGoods')
+    },
+    storeScrollTop({commit, state}, scrollTop){
+        commit('storeScrollTop', scrollTop)
     }
 }
 
@@ -33,11 +56,23 @@ const mutations = {
     storeIndex(state, index){
         state.index = index
     },
-    storeFirst(state, first){
-        state.first = first
+    storePage0(state, page0){
+        state.page0 = page0
     },
-    storeSecond(state, second){
-        state.second = second
+    storePage1(state, page1){
+        state.page1 = page1
+    },
+    storeSort(state, sort){
+        state.sort = sort
+    },
+    addGood(state, good){
+        state.goods.push(good)
+    },
+    cleanGoods(state){
+        state.goods = []
+    },
+    storeScrollTop(state, scrollTop){
+        state.scrollTop = scrollTop
     }
 }
 

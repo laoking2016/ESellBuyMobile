@@ -142,42 +142,17 @@
 
                     var name = path.substr(path.lastIndexOf('/') + 1);
 
-                    plus.zip.compressImage({
-                        src: path,
-                        dst: '_doc/icon_' + name,
-                        overwrite: true,
-                        quality: 10
-                    }, function(zip){
-                        uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
-                            var icon = json.data;
-                            
-                             plus.zip.compressImage({
-                                src: path,
-                                dst: '_doc/' + name,
-                                overwrite: true,
-                                quality: 50
-                            }, function(zip){
-                                uploadFileExt(`/api/v1/fileUpload`, zip.target, function(json){
+                    uploadFileExt(`/api/v1/fileUpload`, path, function(json){
 
-                                    var image = json.data;
-                                    var args = {
-                                        icon: icon,
-                                        image: image
-                                    }
-                                    var searchedImage = this.images.filter(c => c.image == args.image);
-                                    if(searchedImage.length == 0){
-                                        args.icon = this.icon;
-                                        this.images.push(args);
-                                    }
-
-                                }.bind(this));
-                            }.bind(this), function(zipe){
-
-                            }.bind(this));
-
-                        }.bind(this));
-                    }.bind(this), function(zipe){
-
+                        var image = json.data;
+                        var args = {
+                            icon: null,
+                            image: image
+                        }
+                        var searchedImage = this.images.filter(c => c.image == args.image);
+                        if(searchedImage.length == 0){
+                            this.images.push(args);
+                        }
                     }.bind(this));
                     
                 }.bind(this), function(e){
@@ -222,6 +197,16 @@
                 ];
             },
             submitOnTap: function(){
+                if(this.images.length == 0){
+                    mui.alert('请上传图片');
+                    return;
+                }
+
+                if(this.goodName == null){
+                    mui.alert('请输入商品名称');
+                    return;
+                }
+
                 if(this.category.id == -1){
                     mui.alert('请选择分类');
                     return;

@@ -1,16 +1,14 @@
 <template>
     <div>
         <main-menu top-button-type="BACK" v-bind:header-text="title" />
-        <div v-show="visibleView == 'IMAGE_VIEW'" style="width:100%;height:100%;background-color:black;position:absolute;z-index:999;"
-            v-on:tap="showMainView">
-            <image-viewer v-bind:image="images[imageIndex].image" />
-        </div>
-        <div  v-show="visibleView == 'MAIN_VIEW'"  style="margin-top:1rem;">
-            <div id="slider" class="mui-slider" v-on:tap="showImageView">
+        <div  v-show="visibleView == 'MAIN_VIEW'" style="margin-top:1rem;">
+            <div id="slider" class="mui-slider">
                 <div class="mui-slider-group">
                     <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
                         <a href="#" style="background-color:black;">
-                            <div class="detail-img" v-bind:style="formatIconBackground(image)" />
+                            <div class="detail-img" style="text-align:center">
+                                <img v-bind:src="formatImage(image.icon == null ? image.image : image.icon)" data-preview-src="" data-preview-group="1" style="width:auto;height:100%;">
+                            </div>
                         </a>
                     </div>
                 </div>
@@ -19,29 +17,25 @@
                 </div>
             </div>
             <div class="mui-content">
-                <div class='mui-row'>
-                    <div class="mui-col-sm-7 mui-col-xs-7" style='padding:10px;'>
-                        <h1 style='font-size:x-large;'>{{title}}</h1>
-                    </div>
-                    <div class="mui-col-sm-5  mui-col-xs-5" style='text-align:right;padding:10px;'>
-                        <span class='mui-icon mui-icon-help' style='font-size:.5rem;margin-right:10px;' v-on:tap="questionOnTap"></span>
-                        <span class='mui-icon-extra mui-icon-extra-comment' style='font-size:.41rem;margin-right:10px;'></span>
-                        <span class='mui-icon-extra mui-icon-extra-share' style='margin-right:10px;'></span>
-                        <span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra mui-pull-right" v-on:tap="favoriteOnTap(id)"></span>
-                    </div>
-                    <div class="mui-col-sm-12 mui-col-xs-12" style='padding:10px;'>
+                <div class='mui-row' style="padding:10px;">
+                    <div class="mui-col-sm-12 mui-col-xs-12">
+                        <h1 style='font-size:large;'>{{title}}</h1>
                         <div style='font-size:.24rem;color:#999999'>{{description}}</div>
                     </div>
                 </div>
 
-                <div class='mui-row' style='border-top:1px solid #f1f6f9;'>
-                    <div class='mui-col-sm-7 mui-col-xs-7' style='padding:10px;'>
+                <div class='mui-row' style='border-top:1px solid #f1f6f9;padding:10px;'>
+                    <div class='mui-col-sm-7 mui-col-xs-7'>
                         <p class="font" style='font-weight:bold;'><span style='color:red;font-weight:bold;'>&yen;</span>&nbsp;<span style="font-size:x-large;font-weight:bold;">{{renderPrice}}&nbsp;</span>元</p>
                         <p style='font-size:.24rem;color:#999999'>(含3%手续费不含邮费, 邮费{{postage}}元)</p>
                     </div>
-                    <div class='mui-col-sm-5 mui-col-xs-5' style='text-align:right;padding:10px;font-size:.24rem;'>
-                        剩余数量：<span style='font-color:red'>{{stockCount-orderCount}}</span>
-                    </div>                
+                    <div class="mui-col-sm-5  mui-col-xs-5" style='text-align:right;'>
+                        <span class='mui-icon mui-icon-help' style='font-size:.5rem;margin-right:10px;' v-on:tap="questionOnTap"></span>
+                        <span v-show="false" class='mui-icon-extra mui-icon-extra-comment' style='font-size:.41rem;margin-right:10px;'></span>
+                        <span class='mui-icon-extra mui-icon-extra-share' style='margin-right:10px;' v-on:tap="onShare"></span>
+                        <span v-show='userId != null' v-bind:class="favoriteFlag ? 'mui-icon-extra-heart-filled' : 'mui-icon-extra-heart'" class="mui-icon-extra mui-pull-right" v-on:tap="favoriteOnTap(id)"></span>
+                        <div style='text-align:right;font-size:.24rem;'>剩余数量：<span style='font-color:red'>{{stockCount-orderCount}}</span></div>
+                    </div>          
                 </div>
 
                 <div class='mui-row'>
@@ -71,11 +65,11 @@
             <div style="height:10px;background-color:#f2f5f7;"></div>
             <div class="mui-content">
                 
-                <div class='mui-row' v-on:tap="onSupplierGoods">
-                    <div class='mui-col-sm-8 mui-col-xs-8' style='padding:10px;'>
-                        <h6 class="title aunction-title auction-supplier" style='font-size:small;line-height:.5rem;height:.5rem;backgroundImage: url(images/seller.jpg)'>{{supplierName}}</h6>
+                <div class='mui-row' v-on:tap="onSupplierGoods" style='padding:10px;'>
+                    <div class='mui-col-sm-9 mui-col-xs-9' >
+                        <h6 class="title aunction-title auction-supplier" style='width:100%;font-size:small;line-height:.5rem;height:.5rem;backgroundImage: url(images/seller.jpg)'>{{supplierName}}</h6>
                     </div>
-                    <div class='mui-col-sm-4 mui-col-xs-4' style='padding:10px;text-align:right;font-size:small'>
+                    <div class='mui-col-sm-3 mui-col-xs-3' style='text-align:right;font-size:small'>
                         <span>在售商品</span>
                         <img src='images/list.png' style='width:20px;'>
                     </div>
@@ -124,16 +118,24 @@
                 supplierName: null,
                 supplierImage: null,
                 payment: [],
-                visibleView: 'MAIN_VIEW',
-                imageIndex: 0
+                visibleView: 'MAIN_VIEW'
             }
         },
         methods: {
-            showImageView: function(){
-                this.visibleView = 'IMAGE_VIEW';
-            },
-            showMainView: function(){
-                this.visibleView = 'MAIN_VIEW';
+            onShare: function(){
+                if(window.sharewx != null){
+                    window.sharewx.send( {
+                        content: this.title,
+                        href: `http://www.hkunitedauction.com/#/share/${this.id}`,
+                        extra: { 
+                            scene:"WXSceneSession"
+                            }
+                        }, function(){
+                            //mui.alert("分享成功！");
+                        }, function(e){
+                            mui.alert("分享失败："+e.message);
+                        });
+                }
             },
             questionOnTap: function(){
                 nav.go(`/question/${this.id}/${this.title}`);
@@ -231,9 +233,7 @@
         },
         updated(){
             mui('#slider').slider({interval: 0});
-            document.querySelector('#slider').addEventListener('slide', function(event){
-                this.imageIndex = event.detail.slideNumber;
-            }.bind(this));
+            mui.previewImage();
         },
         computed: {
             ...mapGetters({

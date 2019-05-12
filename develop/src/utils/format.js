@@ -29,12 +29,13 @@ export function formatDate(ticks){
 }
 
 export function formatDate2(date){
-    var year = date.getFullYear();
+    /*var year = date.getFullYear();
     var month = date.getMonth()+1;
     var day = date.getDate();
     var hour = date.getHours();
     var minute = date.getMinutes();
-    return `${year}-${month}-${day} ${hour}:${minute}`;
+    return `${year}-${month}-${day} ${hour}:${minute}`;*/
+    return moment(date).format('YYYY/MM/DD HH:mm:ss');
 }
 
 export function formatDate3(ticks){
@@ -73,7 +74,7 @@ export function formatDateDiff(date1, date2){
     
     var leave3=leave2%(60*1000)      
     var seconds=Math.round(leave3/1000)
-    return `${days}天${hours}小时${minutes}分`;
+    return `${days}天${hours}小时${minutes}分${seconds}秒`;
 }
 
 export function formatMessage(status){

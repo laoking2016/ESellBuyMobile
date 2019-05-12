@@ -28,7 +28,8 @@
         },
         "OAuth" : {
             "description" : "登录授权"
-        }
+        },
+        "Share" : {}
     },
     "plus" : {
         "splashscreen" : {
@@ -40,6 +41,12 @@
         "distribute" : {
             "plugins" : {
                 "oauth" : {
+                    "weixin" : {
+                        "appid" : "wx4715639df890742f",
+                        "appsecret" : "d5599a73572a677839fcdaaf01769dcf"
+                    }
+                },
+                "share" : {
                     "weixin" : {
                         "appid" : "wx4715639df890742f",
                         "appsecret" : "d5599a73572a677839fcdaaf01769dcf"
@@ -115,7 +122,7 @@
                         "spotlight" : "unpackage/res/icons/40x40.png",
                         "spotlight@2x" : "unpackage/res/icons/80x80.png"
                     },
-                    "appstore" : "D:/wwz/acc/wwz/codes/auction/eBuySellMobile/develop/images/logo.png"
+                    "appstore" : "D:\\wwz\\codes\\auction\\eBuySellMobile\\develop\\images\\logo.png"
                 },
                 "android" : {
                     "mdpi" : "unpackage/res/icons/48x48.png", /*普通屏程序图标，分辨率：48x48*/

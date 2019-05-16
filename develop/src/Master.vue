@@ -1,8 +1,8 @@
 <template>
     <div>
         <router-view></router-view>
-        <div class="bottom-menu-fixed" style="height:85px;" ></div>
-        <nav class="mui-bar mui-bar-tab bottom-menu bottom-menu-fixed">
+        <div style="height:85px;" ></div>
+        <nav class="mui-bar mui-bar-tab bottom-menu">
             <a class="mui-tab-item" href="#" v-on:tap="onHome">
                 <span class="index">首页</span>
             </a>

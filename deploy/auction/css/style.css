@@ -65,7 +65,7 @@ html{font-size:13.333vw;}
 .idx_list .item{float: left;margin:0 0 .2rem .2rem;width: 3.4rem;background-color: #f2f5f7;}
 .idx_list .item .imgbox{display: block;border-radius: none;overflow: hidden;height: 3.4rem;position:relative;}
 .idx_list .item .img{width: 3.4rem;max-height:3.4rem;height:3.4rem}
-.idx_list .item .time{font-size: .24rem;color: #fff;background: url(../images/idx_06.png) no-repeat center;background-size:contain;width: 2.75rem;height: .44rem;position:absolute;left: 0;top: 0;line-height: .44rem;padding:0 .1rem;}
+.idx_list .item .time{font-size: .24rem;color: #fff;background: url(../images/idx_06.png) no-repeat center;background-size:cover;width: 3.2rem;height: .44rem;position:absolute;left: 0;top: 0;line-height: .44rem;padding:0 .1rem;}
 .idx_list .item .title{font-size: .26rem;color: #333333;display: block;padding-left: .1rem;}
 .idx_list .item .price{font-size: .28rem;color: #fa192c;margin-bottom: .1rem;padding-left:.1rem}
 

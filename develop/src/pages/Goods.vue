@@ -5,7 +5,7 @@
             <div class="tabwrap">
                 <div class="module">
                     <ul class="pm_list">
-                        <li v-bind:key="good.id" v-for="good in filterredGoods" v-on:tap="goodOnTap(good.id, good.type)" class="item clearfix">
+                        <li v-bind:key="good.id" v-for="good in goods" v-on:tap="goodOnTap(good.id, good.type)" class="item clearfix">
                             <div v-bind:style="formatIconBackground(good.image)" class="img fl"/>
                             <div class="info fr">
                                 <a href="#" class="title">{{good.title}}</a>
@@ -51,16 +51,7 @@
                 first: 'first',
                 second: 'second',
                 goods: 'goods'
-            }),
-            filterredGoods: function(){
-                if(this.second != -1){
-                    return this.goods.filter(e => e.status == '拍卖中' && e.categorySecondId == this.second)
-                }
-                if(this.first != -1){
-                    return this.goods.filter(e => e.status == '拍卖中' && e.categoryFirstId == this.first);
-                }
-                return this.goods.filter(e => e.status == '拍卖中');
-            }
+            })
         },
         methods: {
             ...mapActions({

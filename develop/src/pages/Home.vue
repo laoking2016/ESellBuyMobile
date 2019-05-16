@@ -9,17 +9,17 @@
                             <div class="mui-slider-group mui-slider-loop">
                                 <div class="mui-slider-item mui-slider-item-duplicate">
                                     <a href="#">
-                                        <img v-bind:src="images.length == 0 ? null : formatImage(images[images.length-1].image)" alt="" class="img"/>
+                                        <img  style="width:100%" v-bind:src="images.length == 0 ? null : formatImage(images[images.length-1].image)" alt="" class="img"/>
                                     </a>
                                 </div>
                                 <div v-bind:key="image" class="mui-slider-item" v-for="image in images">
                                     <a href="#">
-                                        <img v-bind:src="formatImage(image.image)" alt="" class="img"/>
+                                        <img style="width:100%" v-bind:src="formatImage(image.image)" alt="" class="img"/>
                                     </a>
                                 </div>
                                 <div class="mui-slider-item mui-slider-item-duplicate">
                                     <a href="#">
-                                        <img v-bind:src="images.length == 0 ? null : formatImage(images[0].image)" alt="" class="img"/>
+                                        <img  style="width:100%" v-bind:src="images.length == 0 ? null : formatImage(images[0].image)" alt="" class="img"/>
                                     </a>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@
                             <li class="item" v-bind:key="good.id" v-on:tap="auctionItemOnTap(good.id)" v-for="good in filterredAuctionGoods">
                                 <a href="#" class="imgbox">
                                     <div v-bind:style="formatIconBackground(good.image)" class="img"/>
-                                    <span class="time">还有{{formatDateDiff(now, new Date(good.deadline))}}</span>
+                                    <span class="time">{{now > new Date(good.deadline) ? '已过期' : '还有' + formatDateDiff(now, new Date(good.deadline))}}</span>
                                 </a>
                                 <a href="#" class="title ellipsis">{{good.title}}</a>
                                 <p class="price">&yen;{{good.quote}}</p>
@@ -214,13 +214,17 @@
                 nav.go(`/history`);
             },
             loadMore: function(){
+                var top = 
+                    window.pageYOffset || document.documentElement.scrollTop
                 if(this.index == 0){
-                    this.loadAuction(null);
+                    
+                    this.loadAuction(top);
                 }else{
-                    this.loadShop(null);
+                    console.log(top);
+                    this.loadShop(top);
                 }
             },
-            loadAuction: function(target){
+            loadAuction: function(top){
                 fetch.get(`/user/v2/goods?page=${this.page0}&type=拍卖&sort=${this.sort}`, null, function(data){
                     if(data.data.length > 0){
                         this.storePage0(this.page0 + 1);
@@ -243,9 +247,12 @@
                         }
                         
                     }.bind(this));
+                    this.$nextTick(function(){
+                        //window.scrollTo(0, top);
+                    });
                 }.bind(this));
             },
-            loadShop: function(target){
+            loadShop: function(top){
                 fetch.get(`/user/v2/goods?page=${this.page1}&type=精品商城&sort=${this.sort}`, null, function(data){
                     if(data.data.length > 0){
                         this.storePage1(this.page1 + 1);
@@ -268,6 +275,9 @@
                         }
                         
                     }.bind(this));
+                    this.$nextTick(function(){
+                        //window.scrollTo(0, top);
+                    });
                 }.bind(this));
             }
         },
@@ -285,9 +295,6 @@
             },
             filterredShopGoods: function(){
                 return this.goods.filter(e => e.status == '拍卖中' && e.type == '精品商城');
-            },
-            filterredCategorySeconds: function(){
-                return this.seconds.filter(e => e.parent == this.first);
             }
         },
 	  	mounted() {
@@ -311,9 +318,12 @@
             }
 
             setTimeout(function(){
+                mui('#slider').slider({interval: 10000});
+            }.bind(this), 2000)
+
+            this.$nextTick(function () {
                 window.scrollTo(0, this.scrollTop);
-                
-            }.bind(this), 500)
+            })
 
             setInterval(function(){
                 this.now = new Date();
@@ -326,8 +336,6 @@
             }
         },
         updated(){
-            mui('#slider').slider({interval: 10000});
-            
             
         }
     }

@@ -2,7 +2,7 @@
 <html lang="en" class="has-topbar has-bottombar">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no;viewport-fit-contain" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no;viewport-fit-contain;" />
     <title>香港联合拍卖</title>
     <link href="css/mui.min.css" type="text/css" rel="stylesheet"/>
     <!--link rel="stylesheet" type="text/css" href="css/app.css" /-->
@@ -29,6 +29,7 @@
       window.auths = null;
       window.shares = null;
       window.sharewx = null;
+      window.wgtVer = null;
       
       document.addEventListener( "plusready", function(){
         // 扩展API加载完毕，现在可以正常调用扩展API
@@ -48,11 +49,16 @@
         }, function(e){
           alert( "获取分享服务列表失败："+e.message );
         });
+
+        plus.runtime.getProperty(plus.runtime.appid, function(inf){  
+					console.log(inf.version);
+          window.wgtVer=inf.version;  
+        });  
       }, false);
     </script>
   </head>
   <body>
     <div id="app"></div>
-    <script src="dist/build.js"></script>
+    <script src="dist/build.js?v=1.905191"></script>
   </body>
 </html>

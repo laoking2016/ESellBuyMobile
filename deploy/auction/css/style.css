@@ -52,6 +52,7 @@ html{font-size:13.333vw;}
 .hd_menu .menulist li.auction{background-image: url(../images/menu_06.png);}
 .hd_menu .menulist li.shop{background-image: url(../images/menu_07.png);}
 .hd_menu .menulist li.focus{background-image: url(../images/menu_08.png);}
+
 /*首页*/
 .idx_top{padding:.2rem .25rem .35rem;}
 .idx_listwrap{border-top:.2rem solid #f1f6f9;padding:.2rem .25rem;}
@@ -549,6 +550,10 @@ input[type="text"]{
 
 .reg_form .shop{
     background-image: url(../images/menu_07.png);
+}
+
+.reg_form .update{
+    background-image: url(../images/menu_01.png);
 }
 
 .message-message{

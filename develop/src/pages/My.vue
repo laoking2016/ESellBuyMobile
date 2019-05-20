@@ -12,6 +12,7 @@
             <li class="explan my-item" v-on:tap="onMessageList">我的消息<b v-show="unReadCount > 0">({{unReadCount}})</b></li>
             <li v-show="role == 'supplier'" class="auction my-item" v-on:tap="onAuction">拍卖出品</li>
             <li v-show="role == 'supplier'" class="shop my-item" v-on:tap="onShop">商城上架</li>
+            <li class="update my-item" v-on:tap="onUpdate">检查更新</li>
             <li class="login my-item" v-on:tap="onLogout">登出</li>
         </div>
     </div>
@@ -21,6 +22,7 @@
     import { mapGetters, mapActions } from 'vuex'
     import fetch from '../utils/fetch.js'
     import nav from '../utils/nav.js'
+    import { FILE_URL } from '../utils/const.js'
 
     export default {
         components: {
@@ -80,6 +82,46 @@
             },
             onShop: function(){
                 nav.go('/shop/publish');
+            },
+            onUpdate: function(){
+                plus.nativeUI.showWaiting("检测更新...");
+                fetch.get('/user/v2/configuration', null, function(data){
+                    plus.nativeUI.closeWaiting();
+                    var newVer = data.data.clientVersion;
+                    if(window.wgtVer && newVer && (window.wgtVer != newVer) ){  
+                        this.downWgt();  // 下载升级包  
+                    }else{  
+                        plus.nativeUI.alert("无新版本可更新！");  
+                    }  
+                }.bind(this), function(data){
+                    plus.nativeUI.closeWaiting();
+                    plus.nativeUI.alert("检测更新失败！");
+                }.bind(this));
+            },
+            downWgt: function(){
+                plus.nativeUI.showWaiting("下载wgt文件...");
+                var downloadUrl = `${FILE_URL}/upload_dir/update/H5075516E.wgt`;
+                var task = plus.downloader.createDownload(downloadUrl, {}, function(d, status){
+                    plus.nativeUI.closeWaiting();  
+                    if ( status == 200 ) {   
+                        this.installWgt(d.filename); // 安装wgt包  
+                    } else {  
+                        plus.nativeUI.alert("下载wgt失败！");  
+                    }  
+                }.bind(this));
+                task.start();
+            },
+            installWgt: function(path){
+                plus.nativeUI.showWaiting("安装wgt文件...");
+                plus.runtime.install(path, { force:true }, function(){  
+                    plus.nativeUI.closeWaiting();  
+                    plus.nativeUI.alert("应用资源更新完成！", function(){  
+                        plus.runtime.restart();  
+                    });  
+                },function(e){  
+                    plus.nativeUI.closeWaiting();  
+                    plus.nativeUI.alert("安装wgt文件失败[" + e.code + "]：" + e.message);  
+                });  
             },
             onLogout: function(){
                 for ( var i in window.auths ) {

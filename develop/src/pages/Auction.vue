@@ -141,8 +141,9 @@
             onShare: function(){
                 if(window.sharewx != null){
                     window.sharewx.send( {
-                        content: this.title,
-                        href: `http://www.hkunitedauction.com/#/share/${this.id}`,
+                        content: this.description,
+                        title: this.title,
+                        href: `http://www.hkunitedauction.com/app/#/share/${this.id}`,
                         extra: { 
                             scene:"WXSceneSession"
                             }

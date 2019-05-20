@@ -59,7 +59,7 @@
                         nav.go(`/`);
                     }
                 }.bind(this), function(data){
-                    this.error = data.message;
+                    mui.alert(data.message);
                 }.bind(this));
             },
             handleRegister: function(){

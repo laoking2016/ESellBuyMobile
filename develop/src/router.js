@@ -32,7 +32,10 @@ import GoodsCategory from './pages/GoodsCategory.vue'
 const routes = [
     {
         path: '/',
-        component: Home
+        component: Home,
+        meta: {
+            keepAlive: true
+        }
     },
     {
         path: '/search',

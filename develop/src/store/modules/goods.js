@@ -2,7 +2,9 @@ const state = {
     page: 1,
     first: -1,
     second: -1,
-    goods: []
+    title: null,
+    goods: [],
+    scrollTop: 0
 }
 
 const getters = {
@@ -15,8 +17,14 @@ const getters = {
     second: (state, getters) => {
         return state.second
     },
+    title: (state, getters) => {
+        return state.title
+    },
     goods: (state, getters) => {
         return state.goods
+    },
+    scrollTop: (state, getters) => {
+        return state.scrollTop
     }
 }
 
@@ -30,11 +38,17 @@ const actions = {
     storeSecond({commit, state}, second){
         commit('storeSecond', second)
     },
+    storeTitle({commit, state}, title){
+        commit('storeTitle', title)
+    },
     addGood({commit, state}, good){
         commit('addGood', good)
     },
     cleanGoods({commit, state}){
         commit('cleanGoods')
+    },
+    storeScrollTop({commit, state}, scrollTop){
+        commit('storeScrollTop', scrollTop)
     }
 }
 
@@ -48,11 +62,17 @@ const mutations = {
     storeSecond(state, second){
         state.second = second
     },
+    storeTitle(state, title){
+        state.title = title
+    },
     addGood(state, good){
         state.goods.push(good)
     },
     cleanGoods(state){
         state.goods = [];
+    },
+    storeScrollTop(state, scrollTop){
+        state.scrollTop = scrollTop
     }
 }
 

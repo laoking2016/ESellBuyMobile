@@ -36,11 +36,13 @@
 			</div>
 		</div>
 		<div v-show="customerShownFlag">
-			<div class="head clearfix">
-				<a href="javascript:;" class="hd_back fl" v-on:tap="closeCustomerModal"></a>
-				<span class="title" style="z-index:-1">卖家商品管理(按客户显示)</span>
-			</div>
-			<div class="goodscata_main">
+			<header style="height:1rem;border-bottom:1px solid #f1f6f9" class="mui-bar mui-bar-nav">
+				<a class="mui-pull-left" style="margin-top:.1rem;">
+					<a href="#" class="hd_back fl" v-on:tap="closeCustomerModal"></a>
+				</a>
+				<h1 style="z-index:-1;margin:auto !important;" class="mui-title title">卖家商品管理(按客户显示)</h1>
+			</header>
+			<div class="goodscata_main" style="margin-top:1rem;">
 				<ul class="goodscata_list">
 					<li v-on:tap="onCustomerTap(-1, null)">
 						<a href="#">全部</a>

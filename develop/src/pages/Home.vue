@@ -172,6 +172,7 @@
                 var top = 
                     window.pageYOffset || document.documentElement.scrollTop
                 this.storeScrollTop(top);
+                console.log(top);
                 nav.go(`/auction/detail/${id}`);
             },
             switchTo: function(index){
@@ -317,17 +318,20 @@
                 }
             }
 
+            this.$nextTick(function () {
+                window.scrollTo(0, this.scrollTop);
+                this.storeScrollTop(0);
+            })
+
             setTimeout(function(){
                 mui('#slider').slider({interval: 10000});
             }.bind(this), 2000)
 
-            this.$nextTick(function () {
-                window.scrollTo(0, this.scrollTop);
-            })
-
             setInterval(function(){
                 this.now = new Date();
             }.bind(this), 1000);
+
+            
         },
         data(){
             return {

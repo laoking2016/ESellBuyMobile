@@ -29,12 +29,16 @@
             ...mapActions({
                 storeFirst: 'goods/storeFirst',
                 storeSecond: 'goods/storeSecond',
+                storeTitle: 'goods/storeTitle',
                 cleanGoods: 'goods/cleanGoods',
-                storePage: 'goods/storePage'
+                storePage: 'goods/storePage',
+                storeScrollTop: 'goods/storeScrollTop'
             }),
             handleCategoryCallback: function(id, title, firstId){
                 this.storeFirst(firstId);
-                this.storeSecond(id)
+                this.storeSecond(id);
+                this.storeTitle(title);
+                this.storeScrollTop(0);
                 nav.go(`/goods`);
             }
         },

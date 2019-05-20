@@ -42,7 +42,7 @@
         },
         data(){
             return {
-                title: ''
+                
             }
         },
         computed: {
@@ -50,19 +50,25 @@
                 page: 'page',
                 first: 'first',
                 second: 'second',
-                goods: 'goods'
+                title: 'title',
+                goods: 'goods',
+                scrollTop: 'scrollTop'
             })
         },
         methods: {
             ...mapActions({
                 storePage: 'goods/storePage',
                 addGood: 'goods/addGood',
-                cleanGoods: 'goods/cleanGoods'
+                cleanGoods: 'goods/cleanGoods',
+                storeScrollTop: 'goods/storeScrollTop'
             }),
             formatImage: formatImage,
 			formatImageBackground: formatImageBackground,
 			formatIconBackground: formatIconBackground,
 			goodOnTap: function(id, type){
+                var top = 
+                    window.pageYOffset || document.documentElement.scrollTop
+                this.storeScrollTop(top);
 				if(type == '精品商城'){
 					nav.go(`/shop/detail/${id}`);
 				}else{
@@ -99,6 +105,10 @@
             if(this.page == 1){
                 this.loadGoods();
             }
+
+            this.$nextTick(function () {
+                window.scrollTo(0, this.scrollTop);
+            })
         }
     }
 </script>

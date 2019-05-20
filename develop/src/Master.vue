@@ -1,6 +1,6 @@
 <template>
     <div>
-        <router-view></router-view>
+        <router-view/>
         <div style="height:85px;" ></div>
         <nav class="mui-bar mui-bar-tab bottom-menu">
             <a class="mui-tab-item" href="#" v-on:tap="onHome">
@@ -31,9 +31,11 @@
         methods: {
             ...mapActions({
                 storeUserId: 'user/storeUserId',
-                storeToken: 'user/storeToken'
+                storeToken: 'user/storeToken',
+                storeScrollTop: 'home/storeScrollTop'
             }),
             onHome: function(){
+                this.storeScrollTop(0);
                 nav.go('/');
             },
             onLogin: function(){

@@ -2,7 +2,19 @@
     <div>
         <main-menu top-button-type="BACK" header-text="拍卖交易"/>
         <div class="deal_main">
-            <div class="deal_tip">{{message == null ? '截止到' + formatDate(deadline) : message}}</div>
+            <div class="mui-content">
+                <div class="mui-row">
+                    <div class="mui-col-sm-8 mui-col-xs-8">
+                        <div class="deal_tip">{{message == null ? '截止到' + formatDate(deadline) : message}}</div>
+                    </div>
+                    <div class="mui-col-sm-4 mui-col-xs-4">
+                        <div class="deal_tip" style="text-align:center;background-image:none;padding-left:0;">
+                            <a href="#" class="more pink_gradient" style="display:inline-block;border-radius:.33rem;color:#fff;width:2.1rem;" v-on:tap="finishOnTap">直接完成交易</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="deal_menu clearfix">
                 <li class="info cur"><a href="#">交易信息</a></li>
                 <li class="process"><a href="#">交易流程</a></li>
@@ -141,8 +153,13 @@
             auctionListOnTap: function(id){
                 nav.go(`/auction/list/${id}`);
             },
+            finishOnTap: function(){
+                fetch.post(`/user/v2/order/${this.orderId}/status?value=已完成`, null, function(data){
+                    nav.go(`/supplier/orders`);
+                }.bind(this));
+            },
             shippedOnTap: function(){
-                 fetch.post(`/user/v2/order/${this.orderId}/status?value=待签收`, null, function(data){
+                fetch.post(`/user/v2/order/${this.orderId}/status?value=待签收`, null, function(data){
                     nav.go(`/supplier/orders`);
                 }.bind(this));
             },
@@ -232,29 +249,6 @@
                         }
                 }.bind(this));
             }.bind(this));
-
-            /*mui(".mui-table-view").on('tap', '.response-btn', function(e){
-                
-                var id = $(e.target).data("id");
-                var question = this.questions.filter(c => c.id == id)[0];
-                
-                if(question == null){
-                    return;
-                }
-
-                if(question.shownFlag){
-                     var answer = $(`#response-input-${id}`).val();
-                    fetch.post(`/user/v2/good/${goodId}/question/${id}`, {
-                        id: id,
-                        answer: answer,
-                    }, function(data){
-                        question.answer = answer;
-                        question.shownFlag = !question.shownFlag;
-                    }.bind(this));
-                }else{
-                    question.shownFlag = !question.shownFlag;
-                }
-            }.bind(this));*/
         }
     }
 </script>

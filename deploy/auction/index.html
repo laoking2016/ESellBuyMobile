@@ -30,7 +30,8 @@
       window.shares = null;
       window.sharewx = null;
       window.wgtVer = null;
-      
+			window.storage = window.localStorage;
+			
       document.addEventListener( "plusready", function(){
         // 扩展API加载完毕，现在可以正常调用扩展API
         plus.oauth.getServices( function(services){
@@ -59,6 +60,6 @@
   </head>
   <body>
     <div id="app"></div>
-    <script src="dist/build.js?v=1.905191"></script>
+    <script src="dist/build.js?v=1.905273"></script>
   </body>
 </html>

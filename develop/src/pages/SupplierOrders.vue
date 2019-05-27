@@ -2,7 +2,19 @@
 
 	<div>
 		<div v-show="!customerShownFlag">
-			<main-menu top-button-type="MENU" v-bind:header-text="customer.id == -1 ? '卖家商品管理' : customer.name + '的拍品'" />
+			<div v-show="customer.id != -1" style="margin-top:1rem;">
+				<div class="head clearfix">
+					<header style="height:1rem;border-bottom:1px solid #f1f6f9;line-height:1rem;font-size:.32rem;" class="mui-bar mui-bar-nav">
+						<a class="mui-pull-left">
+							{{customer.name + '的拍品'}}
+						</a>
+						<a href="#" class="mui-pull-right" v-on:tap="onCustomerTap(-1, null)">返回全部</a>
+					</header>
+				</div>
+			</div>
+			<div v-show="customer.id == -1" style="margin-top:1rem;">
+				<main-menu top-button-type="MENU" header-text="卖家商品管理" />
+			</div>
 			<div class="pm_main">
 				<div class="pm_menu tabmenu">
 					<li class="lk" v-on:tap="tabOnTap('拍卖中')" v-bind:class="{cur: status=='拍卖中'}">拍卖中的商品</li>
@@ -45,7 +57,7 @@
 			<div class="goodscata_main" style="margin-top:1rem;">
 				<ul class="goodscata_list">
 					<li v-on:tap="onCustomerTap(-1, null)">
-						<a href="#">全部</a>
+						<a href="#">返回全部</a>
 					</li>
 					<li v-bind:key="customer.id" v-on:tap="onCustomerTap(customer.id, customer.name)" v-for="customer in customers">
 						<a href="#">{{customer.name}}</a>

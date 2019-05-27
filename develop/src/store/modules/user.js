@@ -30,12 +30,15 @@ const actions = {
 
 const mutations = {
     storeUserId(state, userId){
+        window.localStorage.setItem('userId', userId)
         state.userId = userId
     },
     storeToken(state, token){
+        window.localStorage.setItem('token', token)
         state.token = token
     },
     storeOpenId(state, openId){
+        window.localStorage.setItem('openId', openId)
         state.openId = openId
     }
 }

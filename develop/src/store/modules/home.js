@@ -2,7 +2,7 @@ const state = {
     index: 0,
     page0: 1,
     page1: 1,
-    sort: 'good_id desc',
+    sort: 'deadline asc, good_id asc',
     goods: [],
     scrollTop: 0
 }

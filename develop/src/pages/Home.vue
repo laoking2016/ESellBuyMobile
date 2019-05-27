@@ -54,8 +54,8 @@
                         <div class="search_para home-price">
                             <li class="lk" v-on:tap="timeOnTap">
                                 按日期排序 <span class="arrow">
-                                    <em class="icon up" v-show="sort == 'good_id asc'"></em>
-                                    <em class="icon down" v-show="sort == 'good_id desc'"></em>
+                                    <em class="icon up" v-show="sort == 'deadline asc, good_id asc'"></em>
+                                    <em class="icon down" v-show="sort == 'deadline desc, good_id desc'"></em>
                                 </span>
                             </li>
                             <li class="lk" v-on:tap="priceOnTap">
@@ -129,12 +129,12 @@
             timeOnTap: function(){
                     
                 this.cleanGoods();
-                if('good_id desc' == this.sort){
-                    this.storeSort('good_id asc');
-                }else if('good_id asc' == this.sort){
-                    this.storeSort('good_id desc');
+                if('deadline desc, good_id desc' == this.sort){
+                    this.storeSort('deadline asc, good_id asc');
+                }else if('deadline asc, good_id asc' == this.sort){
+                    this.storeSort('deadline desc, good_id desc');
                 }else{
-                    this.storeSort('good_id desc');
+                    this.storeSort('deadline desc, good_id desc');
                 }
                 if(this.index == 0){
                     this.storePage0(1);
@@ -180,9 +180,11 @@
                 if(index != this.index){
                     this.cleanGoods();
                     if(index == 0){
+                        this.storeSort("deadline asc, good_id asc");
                         this.storePage0(1);
                         this.loadAuction(null);
                     }else{
+                        this.storeSort("deadline desc, good_id desc");
                         this.storePage1(1);
                         this.loadShop(null);
                     }
@@ -221,7 +223,6 @@
                     
                     this.loadAuction(top);
                 }else{
-                    console.log(top);
                     this.loadShop(top);
                 }
             },

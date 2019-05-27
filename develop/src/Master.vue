@@ -32,6 +32,7 @@
             ...mapActions({
                 storeUserId: 'user/storeUserId',
                 storeToken: 'user/storeToken',
+                storeOpenId: 'user/storeOpenId',
                 storeScrollTop: 'home/storeScrollTop'
             }),
             onHome: function(){
@@ -44,11 +45,30 @@
                 }else{
                     this.storeUserId(null);
                     this.storeToken(null);
+                    this.storeOpenId(null);
                     nav.go('/login');
                 }
             }
         },
         mounted(){
+            
+        },
+        created(){
+            var userId = window.localStorage.getItem('userId');
+            var token = window.localStorage.getItem('token');
+            var openId = window.localStorage.getItem('openId');
+            console.log(token);
+            if(userId != "null"){
+                this.storeUserId(userId);
+            }
+
+            if(token != "null"){
+                this.storeToken(token);
+            }
+
+            if(openId != "null"){
+                this.storeOpenId(openId);
+            }
         }
     }
 </script>

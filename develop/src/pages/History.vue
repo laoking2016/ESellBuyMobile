@@ -18,11 +18,18 @@
 					</ul>
 				</div>
 			</div>
+            <div class="mui-pull-bottom-pocket mui-block mui-visibility" v-on:tap="loadMore">
+                <div class="mui-pull">
+                    <div class="mui-pull-loading mui-icon mui-spinner mui-hidden"></div>
+                    <div class="mui-pull-caption mui-pull-caption-nomore">查看更多...</div>
+                </div>
+            </div>
 		</div>
     </div>
 </template>
 
 <script>
+    import { mapGetters, mapActions } from 'vuex'
     import fetch from '../utils/fetch.js'
 	import mainMenu from '../components/MainMenu.vue'
     import nav from '../utils/nav.js'
@@ -31,12 +38,30 @@
     export default {
         components: {
 			mainMenu
-		},
+        },
+        computed: {
+            ...mapGetters('history', {
+                page: 'page',
+                q: 'q',
+                goods: 'goods',
+                scrollTop: 'scrollTop'
+            })
+        },
 		methods: {
+            ...mapActions({
+                storePage: 'history/storePage',
+                storeQ: 'history/storeQ',
+                addGood: 'history/addGood',
+                cleanGoods: 'history/cleanGoods',
+                storeScrollTop: 'history/storeScrollTop'
+            }),
 			formatImage: formatImage,
 			formatImageBackground: formatImageBackground,
 			formatIconBackground: formatIconBackground,
 			goodOnTap: function(id, type){
+                var top = 
+                    window.pageYOffset || document.documentElement.scrollTop
+                this.storeScrollTop(top);
 				if(type == '精品商城'){
 					nav.go(`/shop/detail/${id}`);
 				}else{
@@ -44,17 +69,22 @@
 				}
             },
             onSearch: function(q){
-                this.q = q;
-                this.page = 1;
-                this.goods = [];
+                if(q == null){
+                    q = '';
+                }
+                this.storeQ(q);
+                this.storePage(1);
+                this.cleanGoods();
                 this.loadGoods();
             },
             loadGoods: function(){
-                console.log(this.q);
                 fetch.get(`/user/v2/goods/history?q=${this.q}&page=${this.page}`, null, function(data){
+                    if(data.data.length > 0){
+                        this.storePage(this.page + 1);
+                    }
                     data.data.map(function(item, index){
                         var image = formatFeaturedImage(item.images);
-                        this.goods.push({
+                        this.addGood({
                             id: item.goodId,
                             title: item.goodName,
                             image: image,
@@ -65,23 +95,33 @@
                             categorySecondId: item.categorySecondId,
                             categoryFirstId: item.categoryFirstId
                         });
-                        
                     }.bind(this));
                 }.bind(this));
+            },
+            loadMore: function(){
+                this.loadGoods();
             }
 		},
         data(){
             return {
-                page: 1,
-                goods: [],
-                q: ''
             }
         },
         mounted() {
-            this.q = '';
-            this.loadGoods();
+
+            console.log(this.q);
+
+            /*if(this.page == 1){
+               this.loadGoods();
+            }*/
+
+            this.$nextTick(function () {
+                window.scrollTo(0, this.scrollTop);
+            })
+
+            //this.q = '';
+            //this.loadGoods();
             
-            var _this = this;
+           /* var _this = this;
             mui("#good-list").pullToRefresh({
                 up: {
                     callback: function(){
@@ -93,7 +133,7 @@
                         }, 1000);
                     }
                 }
-            });
+            });*/
         }
     }
 </script>

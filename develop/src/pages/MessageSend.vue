@@ -24,7 +24,8 @@
             </div>
             <div v-show="showIndex == 1" class="goodscata_main">
 				<ul class="goodscata_list">
-					<li v-bind:key="receiver.id" v-for="receiver in receivers" v-on:tap="onReceiverItem(receiver.id, receiver.name)">
+					<li style="background-image:none;padding:0px;"><input v-model="q" type="search" class="mui-input-clear" placeholder="输入收信人搜索"></li>
+                    <li v-bind:key="receiver.id" v-for="receiver in receivers" v-on:tap="onReceiverItem(receiver.id, receiver.name)">
 						<a href="#">{{receiver.name}}</a>
 					</li>
 				</ul>
@@ -45,19 +46,31 @@
         },
         data(){
             return {
+                q: '',
                 replyId: -1,
                 receiverId: -1,
                 receiver: '',
                 title: '',
                 message: '',
                 receivers: [],
-                showIndex: 0
+                showIndex: 0,
+                searching: false
             }
         },
         computed: {
             ...mapGetters({
                 userId: 'user/userId'
             })
+        },
+        watch: {
+            q(val){
+                if(!this.searching){
+                    this.searching = true;
+                    setTimeout(() => {
+                        this.searchUsers();
+                    }, 2000); 
+                }
+            }
         },
         methods: {
             onReceiver: function(){
@@ -97,6 +110,17 @@
                 }, function(data){
                     nav.go('/message/list');
                 }.bind(this));
+            },
+            searchUsers(){
+                fetch.get(`/user/v2/users?q=${this.q}`, null, function(data){
+                    this.receivers = data.data.filter(e => e.userId != this.userId).map(function(item, index){
+                        return {
+                            id: item.userId,
+                            name: item.nickName == null ? ' ' : item.nickName
+                        }
+                    }.bind(this));
+                    this.searching = false;
+                }.bind(this));
             }
         },
         mounted(){
@@ -111,15 +135,6 @@
                     this.receiverName = data.data.senderName;
                 }.bind(this));
             }
-
-            fetch.get(`/user/v2/users`, null, function(data){
-                this.receivers = data.data.filter(e => e.userId != this.userId).map(function(item, index){
-                    return {
-                        id: item.userId,
-                        name: item.nickName
-                    }
-                }.bind(this));
-            }.bind(this));
         }
     }
 </script>

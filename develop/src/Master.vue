@@ -57,7 +57,7 @@
             var userId = window.localStorage.getItem('userId');
             var token = window.localStorage.getItem('token');
             var openId = window.localStorage.getItem('openId');
-            console.log(token);
+            
             if(userId != "null"){
                 this.storeUserId(userId);
             }

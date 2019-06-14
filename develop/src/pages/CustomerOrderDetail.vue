@@ -9,7 +9,7 @@
             </div>
             <div class="deal_list">
                 <li class="item clearfix">
-                    <div v-bind:style="formatImageBackground(image)" class="pic"/>
+                    <div v-bind:style="formatIconBackground(image)" class="pic"/>
                     <span class="pic_fz">{{title}}</span>
                 </li>
                 <li class="item clearfix">
@@ -43,15 +43,27 @@
                     </div>
                 </li>
                 <li class="item clearfix">
-                    <span class="tit">联系人</span>
+                    <span class="tit">卖家</span>
                     <div class="info">
-                        <span class="fz">{{contact.name}}</span>
+                        <span class="fz">{{supplier.name}}</span>
                     </div>
                 </li>
                 <li class="item clearfix">
-                    <span class="tit">电话</span>
+                    <span class="tit">卖家电话</span>
                     <div class="info">
-                        <span class="fz">{{contact.phone}}</span>
+                        <span class="fz">{{supplier.phone}}</span>
+                    </div>
+                </li>
+                <li class="item clearfix">
+                    <span class="tit">卖家微信</span>
+                    <div class="info">
+                        <span class="fz">{{supplier.name}}</span>
+                    </div>
+                </li>
+                <li class="item clearfix">
+                    <span class="tit">卖家Email</span>
+                    <div class="info">
+                        <span class="fz">{{supplier.email}}</span>
                     </div>
                 </li>
                 <div style="text-align:center;">
@@ -67,7 +79,7 @@
     import fetch from '../utils/fetch.js'
     import nav from '../utils/nav.js'
     import mainMenu from '../components/MainMenu.vue'
-    import { formatImage, formatFeaturedImage, formatDate, formatMessage, formatImageBackground } from '../utils/format.js'
+    import { formatImage, formatFeaturedImage, formatDate, formatMessage, formatIconBackground } from '../utils/format.js'
 
     export default {
         components:{
@@ -85,9 +97,12 @@
                 postage: null,
                 orderId: null,
                 contact: {
-                    address: null,
+                    address: null
+                },
+                supplier: {
                     name: null,
-                    phone: null
+                    phone: null,
+                    email: null
                 },
                 status: null,
                 questions: []
@@ -95,11 +110,9 @@
         },
         methods: {
             formatImage: formatImage,
-            formatImageBackground: formatImageBackground,
+            formatIconBackground: formatIconBackground,
             paidOnTap: function(){
-                fetch.post(`/user/v2/order/${this.id}/status?value=待发货`, null, function(data){
-                    nav.go(`/customer/orders`);
-                }.bind(this));
+                nav.go(`/payment/${this.id}`);
             },
             receiveOnTap: function(){
                 fetch.post(`/user/v2/order/${this.id}/status?value=已完成`, null, function(data){
@@ -128,11 +141,13 @@
                 this.postage = order.data.postage;
                 this.status = order.data.status;
                 this.contact = {
-                    address: order.data.address,
-                    name: order.data.buyerName,
-                    phone: order.data.phone
+                    address: order.data.address
                 };
-                fetch
+                this.supplier = {
+                    name: order.data.supplierName,
+                    phone: order.data.supplierPhone,
+                    email: order.data.supplierEmail
+                };
             }.bind(this));
         }
     }

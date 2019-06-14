@@ -28,6 +28,7 @@ import History from './pages/History.vue'
 import Question from './pages/Question.vue'
 import Goods from './pages/Goods.vue'
 import GoodsCategory from './pages/GoodsCategory.vue'
+import Payment from './pages/Payment.vue'
 
 const routes = [
     {
@@ -144,6 +145,10 @@ const routes = [
     {
         path: '/goods/category',
         component: GoodsCategory
+    },
+    {
+        path: '/payment/:id',
+        component: Payment
     }
 ];
 

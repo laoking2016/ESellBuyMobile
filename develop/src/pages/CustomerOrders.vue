@@ -16,7 +16,7 @@
 						<a href="#" v-on:tap="tabOnTap('待签收')" class="lk" v-bind:class="{cur: status == '待签收'}">待签收</a>
 					</div>
 					<ul class="pm_list">
-						<li v-bind:key="order.id" v-on:tap="onOrderItemTap(order.id, order.goodId, order.status)" v-for="order in filterredOrders" class="item clearfix">
+						<li v-bind:key="order.id" v-on:tap="onOrderItemTap(order.id, order.goodId, order.status, order.type)" v-for="order in filterredOrders" class="item clearfix">
 							<div v-bind:style="formatIconBackground(order.image)" class="img fl"/>
 							<div class="info fr">
 								<a href="#" class="title">{{order.title}}</a>
@@ -52,12 +52,8 @@
 			formatImage: formatImage,
 			formatImageBackground: formatImageBackground,
 			formatIconBackground: formatIconBackground,
-			onOrderItemTap: function(id, goodId, status){
-				if(status=="拍卖中"){
-					nav.go(`/auction/detail/${goodId}`);
-				}else{
-					nav.go(`/customer/order/detail/${id}`);
-				}
+			onOrderItemTap: function(id, goodId, status, type){
+				nav.go(`/customer/order/detail/${id}`);
 			},
 			tabOnTap: function(status){
 				this.storeStatus(status);

@@ -76,7 +76,6 @@
                         var avatar = s.userInfo.headimgurl;
                         var phone = s.userInfo.phonenumber;
                         var email = s.userInfo.email;
-                        console.log(s.userInfo);
 
                         fetch.post(`/user/v2/wechat/user`, {
                             nickName: nickName,

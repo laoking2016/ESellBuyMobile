@@ -8,10 +8,10 @@
                 <input type="text" v-model="userName" class="ipt ipt_txt" placeholder="请输入您的账号"/>
             </li>
             <li class="password">
-                <input type="text" v-model="passWord" class="ipt ipt_txt" placeholder="请输入您的密码"/>
+                <input type="password" v-model="passWord" class="ipt ipt_txt" placeholder="请输入您的密码"/>
             </li>
             <li class="password">
-                <input type="text" v-model="confirmPassword" class="ipt ipt_txt" placeholder="请确认您的密码"/>
+                <input type="password" v-model="confirmPassword" class="ipt ipt_txt" placeholder="请确认您的密码"/>
             </li>
             <li class="nickname">
                 <input type="text" v-model="nickName" class="ipt ipt_txt" placeholder="请输入您的昵称"/>
@@ -56,6 +56,7 @@
         },
         methods: {
             ...mapActions({
+                storeUserId: 'user/storeUserId',
                 storeToken: 'user/storeToken'
             }),
             sexOnTap: function(event){
@@ -173,6 +174,7 @@
                     role: 'buyer'
                 }, function(data){
                     if(data.code == 100){
+                        this.storeUserId(data.data.userId);
                         this.storeToken(`${data.data.userId}_${data.data.token}_${data.data.role}`);
                         nav.go(`/`);
                     }else if(data.code = -1005){

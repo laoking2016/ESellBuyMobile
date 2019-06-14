@@ -5,6 +5,7 @@ import user from './modules/user'
 import home from './modules/home'
 import manage from './modules/manage'
 import goods from './modules/goods'
+import history from './modules/history'
 
 Vue.use(Vuex)
 
@@ -17,6 +18,7 @@ export default new Vuex.Store({
     home,
     manage,
     goods,
+    history
   },
   strict: debug,
   plugins: []
